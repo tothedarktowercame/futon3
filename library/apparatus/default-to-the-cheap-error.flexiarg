@@ -1,0 +1,33 @@
+@flexiarg apparatus/default-to-the-cheap-error
+@title Default To The Cheap Error
+@keywords blame, attribution, asymmetry, default-verdict, affirmative-evidence, budgets
+@audience apparatus builders, campaign designers, futon developers
+@tone technical
+@style pattern
+@status proposed (extracted from the APM failure record 2026-09-08; claude-9 draft, claude-1 redline; pending Joe's ruling)
+@references [apparatus/evidence-to-disposition-once]
+@see-also apparatus/replayable-not-precious
+@why APM, 2026-09-07/08 (futon3c ec97a42b and T-apm-recurring-failure-end-to-end.md): fault attribution was re-derived per consumer from an error's surface form, so bounding an unbounded substrate wait — a pure improvement — changed a client timeout (classified :transport → :apparatus) into a prompt HTTP 504 (classified :E-store → :agent) and would have STARTED charging roles for a fault they cannot repair.
+@how own mechanism: when the two error directions are asymmetric, the default verdict goes to the cheap-to-repair side; crossing to the expensive side requires affirmative evidence.
+@violation-signature A blame verdict flips when an unrelated surface changes; an unrepairable budget is spent on the strength of absent or ambiguous evidence.
+! conclusion: When the two directions of misjudgment cost differently, the default verdict goes to the cheap-to-repair side, and crossing to the expensive side requires affirmative evidence.
+
+  + context: The apparatus must judge something about an agent or a datum — who caused a fault, whether a witness still holds, whether an achievement occurred — and the evidence channel is lossy.
+
+  + IF:
+    A judgment must be made under uncertainty, and being wrong in one direction is cheap and reversible while the other direction spends something unrecoverable (a repair budget, a datum's validity, a binding).
+
+  + HOWEVER:
+    The classifier is written symmetric: it maps whatever evidence arrives to the most plausible verdict, so when evidence is absent or its surface shifts, the verdict lands on either side with equal ease.
+
+  + THEN:
+    Build the asymmetry into the default. Unclassifiable faults default to :apparatus, because wrongly blaming apparatus costs a re-check while wrongly charging a role spends an unrepairable budget and contaminates the measurement. Positive verdicts (achievement, binding, charge) are minted only from affirmative evidence.
+
+  + BECAUSE:
+    Surface form is not stable — statuses, timeouts and error shapes change when unrelated things are fixed — but the cost asymmetry is a property of the domain and does not change under refactoring.
+
+    + evidence: APM: the 504 flip above. War machine, running on this rule before it was stated: belief events are minted only from affirmative achievement answers, and the rebind probe refuses to re-bind any witness whose check fails — binding a failing witness being the expensive-irreversible direction.
+
+  + NEXT-STEPS:
+    - For each verdict your apparatus issues, write down both error costs; where they differ, check which side the *absence* of evidence currently lands on.
+    - Grep the classifier for inputs that are transport artifacts (status codes, timeout shapes); each is a future flip.

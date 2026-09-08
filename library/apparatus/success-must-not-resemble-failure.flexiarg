@@ -1,0 +1,33 @@
+@flexiarg apparatus/success-must-not-resemble-failure
+@title Success Must Not Resemble Failure
+@keywords normal-path, fault-shape, cancellation, ledger-vocabulary, delivery
+@audience apparatus builders, protocol designers, futon developers
+@tone technical
+@style pattern
+@status proposed (extracted from the APM failure record 2026-09-08; claude-9 draft, claude-1 redline; pending Joe's ruling)
+@references [apparatus/evidence-to-disposition-once]
+@see-also apparatus/every-wait-has-a-deadline
+@why futon3c/holes/T-typed-submission-wrapper-cancellation-evidence.md (987e8574): the wrapper cancels a job once an authenticated submission exists, so a DELIVERED role turn normally ends `cancelled` with a nil session id; 13 of 126 campaign parks descend from that one shape. Agency twin: `accepted` precedes and does not imply `running` — trusting it cost parked-forever seats.
+@how own mechanism: give the commonest good outcome a first-class success state in the primary record, so no consumer needs inference to tell delivery from fault.
+@violation-signature Consumers need cleverness to distinguish the happy path from a fault; error vocabulary (`cancelled`, nil ids, timeouts) appears in the record of a normal successful operation.
+! conclusion: The normal path may not produce fault-shaped evidence; the commonest good outcome gets a first-class success state in the primary record.
+
+  + context: A wrapper, relay, or driver sits between the worker and the ledger, and its bookkeeping actions (cancelling a superseded job, rotating a session) are recorded in the same vocabulary as failures.
+
+  + IF:
+    The primary record of an operation is written by machinery whose own lifecycle events are visible in it.
+
+  + HOWEVER:
+    The cheap implementation reuses an existing terminal state (`cancelled`, `timeout`) for a bookkeeping event on the success path. Every downstream consumer must then reconstruct "this cancellation is actually a delivery" — and each reconstructs it differently.
+
+  + THEN:
+    Extend the ledger's vocabulary instead: a distinct terminal state for the success case (e.g. `delivered-by-submission`), written at the moment the success evidence exists. Bookkeeping events that follow success must not overwrite or shadow it.
+
+  + BECAUSE:
+    When success looks like failure, every consumer of the record must be smart, and the divergence between their reconstructions becomes an open-ended source of attribution bugs — the inferential burden lands on N readers instead of one writer.
+
+    + evidence: APM jit-all-open-v3: 13/126 parks were `:student-terminal-session-id-erased` — successful deliveries whose wrapper cancellation destroyed the session evidence; most of the fault-attribution machinery the campaign accreted exists to see through this one lie.
+
+  + NEXT-STEPS:
+    - List the terminal states your primary ledger can record; for each, ask whether a successful operation can end in it. Each yes is this defect.
+    - Where a status precedes the fact it implies (accepted vs running), require consumers to wait for an event that entails the fact.

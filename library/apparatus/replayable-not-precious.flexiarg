@@ -1,0 +1,33 @@
+@flexiarg apparatus/replayable-not-precious
+@title Units Of Work Are Replayable, Not Precious
+@keywords crash-only, replay, idempotence, park, preservation, experiment-design
+@audience apparatus builders, campaign designers, futon developers
+@tone technical
+@style pattern
+@status proposed (extracted from the APM failure record 2026-09-08; claude-9 draft, claude-1 redline; pending Joe's ruling)
+@references [apparatus/default-to-the-cheap-error apparatus/new-failure-class-is-a-design-defect]
+@see-also apparatus/pin-moves-with-the-population
+@why APM: because attempts are sacred data by experimental design (each attempt is a datum in the a1-vs-a2/a3 contrast) and consume provider tokens, frames could not be killed and re-run — so every failure bought bespoke preservation machinery: parks, latches, rescue chains, repair budgets, superseded/ directories, replay tooling. The preciousness decision was never made once; it was made incident-by-incident by whoever wrote each park.
+@how own mechanism: a unit of work is either cheaply killable and re-runnable from pinned inputs, or its preciousness is an explicitly named, once-decided design commitment with the preservation machinery costed against it.
+@violation-signature Preservation machinery accreting one piece per failure class; the replayability-vs-evidence tension being resolved locally, per incident, always toward preservation; a review gate that cannot afford to refuse work because rebuilding is too expensive.
+! conclusion: A unit of work is cheaply killed and re-run from pinned inputs, or its preciousness is named as a design decision and paid for knowingly — never resolved incident-by-incident.
+
+  + context: An apparatus runs units of work (frames, slices, jobs) that consume budgets and produce evidence; failures interrupt them mid-flight.
+
+  + IF:
+    A unit of work can fail partway, and the question is what to do with its partial state.
+
+  + HOWEVER:
+    Re-running feels wasteful (tokens spent) or invalid (the attempt is a datum), so each incident's author preserves the partial state with one more bespoke mechanism — and the sum of those mechanisms becomes most of the apparatus.
+
+  + THEN:
+    Decide the tension once, at design time, and say it out loud: which units are replayable (then failures are handled by kill-and-rerun from pinned inputs, marked apparatus-caused so the rerun does not contaminate the measurement) and which are genuinely precious (then the preservation machinery is a costed commitment, not an accident). Where the experiment makes attempts sacred, that sentence belongs in the preregistration.
+
+  + BECAUSE:
+    Preciousness is the multiplier on every other failure cost: it is why a quiet failure must be rescued rather than discarded, why blame must be perfect rather than defaulted, and why the failure-class census grows. Replayability is also what lets a review gate afford to refuse work.
+
+    + evidence: APM: the park/latch/rescue inventory, ~57k lines of loop apparatus for a conceptually simple cycle. WM: slices are cheap to kill — the slice-7 review threw out an irreproducible artifact and rebuilt it in-place within the hour, a move impossible when every attempt is evidence.
+
+  + NEXT-STEPS:
+    - Classify your units: replayable or precious, in writing, with the experiment's owner signing the precious list.
+    - For each precious unit, total the preservation machinery it has bought; that number belongs in the next design review.

@@ -1,0 +1,33 @@
+@flexiarg apparatus/model-upstream-and-coupled
+@title The Formal Model Sits Upstream And Is Coupled
+@keywords lean, contract, perimeter, coupling, post-hoc, formalization
+@audience apparatus builders, formalizers, futon developers
+@tone technical
+@style pattern
+@status proposed (extracted from the APM failure record 2026-09-08; claude-9 draft, claude-1 redline; pending Joe's ruling)
+@references [apparatus/done-is-observed-running apparatus/one-authority-per-question]
+@see-also apparatus/monitors-measure-the-work
+@why APM register M8, known 2026-08-27, unfixed when it mattered: Lean emitter ↔ generated contract ↔ Clojure validator ↔ loaded namespace had no enforced coupling. The Lean contract perimeter stayed green throughout the campaign, and every registered defect landed OUTSIDE it — the register's own stated finding. APMCycleMachine.lean contains theorems named for incidents (f25ReusedStudentSession, f30CompiledButUnrecordedCandidate): the model trailed the incidents.
+@how own mechanism: the model is upstream when no new mechanism can ship without its contract obligation; post-hoc formalization is legitimate back-fill but may never constitute the perimeter; coupling between model, validator, and loaded runtime is enforced by a standing check.
+@violation-signature Every theorem is named after a past incident and none constrains an unshipped mechanism; a mechanism ships with no contract obligation; the model-to-runtime coupling is asserted in prose rather than checked by machinery.
+! conclusion: The formal model is upstream when nothing ships without its contract obligation, and it is real only while model, validator, and loaded runtime are coupled by an enforced check — otherwise it is commentary, however green.
+
+  + context: A system carries a formal model (Lean contracts, generated validators) alongside a live implementation, and both evolve under incident pressure.
+
+  + IF:
+    You maintain a formal perimeter and want it to prevent failures rather than memorialize them.
+
+  + HOWEVER:
+    The natural growth mode is post-hoc: each incident gets its refusal theorem, which is honest back-fill — the wm names checker theorems for their plants deliberately — but a perimeter that ONLY grows post-hoc guarantees every new defect lands outside it. Meanwhile the coupling from model to running code decays silently (an emitted contract nobody re-validates, a loaded namespace that diverged from the validator's source).
+
+  + THEN:
+    Two obligations. Upstream: a new mechanism cannot ship without its contract obligation stated in the model first — trailing formalization back-fills, it never constitutes. Coupled: a standing check round-trips model → contract → validator → loaded namespace, and drift is a loud fault (the check is itself subject to apparatus/done-is-observed-running).
+
+  + BECAUSE:
+    The perimeter's greenness is evidence about what it covers, not about the system; drawing it around the domain mathematics while the process (liveness, delivery, identity) stays unmodeled produces exactly a stable core inside an unstable machine.
+
+    + evidence: APM: green contract tests (18 tests, 98 assertions, ~15 mutation tests) throughout a campaign whose 111 apparatus parks all arose outside them. WM, on track to violate as of 2026-09-08: the F10 FlightDisposition.all enumeration not yet pinned by a theorem (a constructor could silently drop), and the runner/gate outcome-vocabulary seam a live uncoupled join — both flagged in review, not yet landed.
+
+  + NEXT-STEPS:
+    - Write down what your perimeter does NOT cover (liveness? delivery? identity?) and decide deliberately, not by omission.
+    - Automate the round-trip coupling check and put it on a timer.

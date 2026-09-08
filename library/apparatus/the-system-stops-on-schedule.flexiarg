@@ -1,0 +1,33 @@
+@flexiarg apparatus/the-system-stops-on-schedule
+@title The System Stops On Schedule
+@keywords halt, consolidation, defect-register, work-queue, wave-boundary, steward
+@audience apparatus builders, operators, campaign stewards
+@tone technical
+@style pattern
+@status proposed (extracted from the APM failure record 2026-09-08; claude-9 draft, claude-1 redline; pending Joe's ruling)
+@references [apparatus/done-is-observed-running apparatus/new-failure-class-is-a-design-defect]
+@see-also apparatus/loudness-is-conserved
+@why APM: the defect register (TN-apm-defect-register.md, 2026-08-27) defined the right standard — "guaranteed" means the defect cannot recur without a named mechanism failing — recorded 24 of 26 defects at "guarantee: none", and then sat as evidence rather than a work queue; twelve days later the singleton parks it predicted duly arrived. The end-to-end causal analysis (790c0491) happened within HOURS of the first deliberately scheduled halt, after weeks of patching a live campaign.
+@how own mechanism: halts are scheduled at wave boundaries; the defect register is the work queue for the halt; no new wave starts until the top "guarantee: none" rows have mechanisms.
+@violation-signature Register rows marked "guarantee: none" age across wave boundaries untouched; seam-level rebuilds happen only after an operator-forced halt; every fixing session runs against a live campaign.
+! conclusion: Halt-and-consolidate is scheduled at wave boundaries, with the defect register as its work queue — no new wave until the top "guarantee: none" rows have mechanisms — because seam rebuilds never fit inside sessions patching a live system.
+
+  + context: A campaign runs in waves; defects arrive continuously; every agent session that touches the apparatus does so while the campaign is mid-flight and data is accumulating.
+
+  + IF:
+    Fixes keep landing but the same defect families keep recurring.
+
+  + HOWEVER:
+    Against a live campaign, every fix is minimal by necessity — nobody is ever authorized or situated to stop and rebuild a seam, because stopping always costs something visible today while the seam's cost is spread across future incidents.
+
+  + THEN:
+    Put the halt on the schedule so it needs no one's courage: between waves, stop cleanly, re-read the register, and convert "guarantee: none" rows into mechanisms — the register defines done as "recurrence requires a named mechanism to fail". Only then start the next wave. Register stewards drain between waves so no raw queue reaches the operator.
+
+  + BECAUSE:
+    Analysis capacity exists — the register's standard and the causal through-line were both produced by the same agents who spent weeks patching — but it activates only when the system is stopped; unscheduled, that happens exactly when the operator's patience breaks, which is the most expensive possible trigger.
+
+    + evidence: APM: 08-27 register standard unused for twelve days; 09-08 end-to-end analysis within hours of the forced halt. Convergent wm mechanism: self-halting loop that bells its owner; ruled walkthroughs as scheduled halts; steward drain contract.
+
+  + NEXT-STEPS:
+    - Define your wave boundary and put the halt in the coordinator, not in the operator's judgment.
+    - Make "top N register rows have mechanisms" the precondition the next wave's start checks mechanically.

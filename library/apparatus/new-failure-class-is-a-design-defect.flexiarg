@@ -1,0 +1,33 @@
+@flexiarg apparatus/new-failure-class-is-a-design-defect
+@title A New Failure Class Is A Design Defect, Not A New Species
+@keywords failure-taxonomy, park-classes, census, catch-layers, capitulation
+@audience apparatus builders, campaign stewards, futon developers
+@tone technical
+@style pattern
+@status proposed (extracted from the APM failure record 2026-09-08; claude-9 draft, claude-1 redline; pending Joe's ruling)
+@references [apparatus/evidence-to-disposition-once apparatus/replayable-not-precious]
+@see-also apparatus/loudness-is-conserved
+@why APM jit-all-open-v3: ~40 park classes seen once or twice each, most born at a process boundary and each answered with its own catch-and-park layer. Joe's ruling (2026-09-07): "rather than finding 193 new special cases, we should focus on fixing downstream writes and any other cases of apparatus failure … finding other ways to handle the latch is kind of the wrong idea." WM same night: the loop's stall-key was widened three times, one key per incident, before the one-layer-down fix (hash the whole row, futon2 e84c114e).
+@how own mechanism: the failure-class census is a closed, small, shrinking set; a new class triggers elimination one layer down, not a new handler; census size AND growth rate are reported as first-class metrics.
+@violation-signature The class census grew this wave; a handler, rescue route, or park class was added for a failure shape rather than the shape being made impossible; the same detector or classifier has been widened once per incident.
+! conclusion: Treat every NEW failure class as a defect in the design that admitted it — eliminate it one layer down; the census of classes is closed, shrinking, and its growth rate is the reported metric.
+
+  + context: A running apparatus surfaces failures in classes (park reasons, error codes, stall causes), and each new class arrives with an obvious local response: catch it, name it, handle it.
+
+  + IF:
+    A failure appears that fits no existing class.
+
+  + HOWEVER:
+    Adding the class is always cheaper today than removing its cause, and each addition is locally reasonable — so the taxonomy grows monotonically, the handling machinery grows with it, and "reduce the failure rate" quietly becomes "improve the response".
+
+  + THEN:
+    Reverse the default. A new class opens a design question — what one layer down would make this shape impossible? — and the catch layer is the fallback only when that question has a recorded negative answer. Report the census and its growth rate wherever the apparatus reports health (the wm steward contract already requires growth rate alongside size — keep the two artifacts cross-cited).
+
+  + BECAUSE:
+    Each catch layer is capitulation to a failure that something one layer down should have made impossible, and the sum of capitulations is a system that survives everything and completes nothing.
+
+    + evidence: APM: 111 of 126 parks were apparatus, in ~40 mostly-singleton classes; the singletons trace to per-consumer evidence joins (see apparatus/evidence-to-disposition-once) — one seam, forty species. WM: three stall-key widenings vs one whole-row hash.
+
+  + NEXT-STEPS:
+    - Snapshot your census now; at the next wave boundary, diff it. Growth names the seams to fix.
+    - For each singleton class, ask which existing class it would merge into if the one-layer-down fix existed.

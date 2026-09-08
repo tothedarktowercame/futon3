@@ -1,0 +1,33 @@
+@flexiarg apparatus/every-wait-has-a-deadline
+@title Every Wait Has A Deadline
+@keywords deadline, timeout, hang, awaiting, absolute-time, expiry
+@audience apparatus builders, futon developers
+@tone technical
+@style pattern
+@status proposed (extracted from the APM failure record 2026-09-08; claude-9 draft, claude-1 redline; pending Joe's ruling)
+@references [apparatus/loudness-is-conserved apparatus/monitors-measure-the-work]
+@see-also apparatus/success-must-not-resemble-failure
+@why APM: `:awaiting-substrate` had no upper bound, so a wait was indistinguishable from a hang — T-apm-recurring-failure-end-to-end.md argues the quota fix and the f193 stall are the same defect seen a day apart. The park-deadline footgun (futon3c README-park.md) is the twin from the other side: a relative duration read as absolute epoch-ms fires instantly.
+@how own mechanism: every wait state carries a verifiably absolute expiry, and expiry routes to a decision (retry, escalate, alarm), never back into the same wait.
+@violation-signature A wait state with no expiry field; a deadline expressed in relative units where absolute is required (or vice versa); a component whose "waiting" and "hung" states produce identical observations.
+! conclusion: A wait that cannot expire is indistinguishable from a hang; every wait carries a verifiably absolute deadline whose expiry routes to a decision.
+
+  + context: An apparatus waits on things it does not control: a provider quota to lift, a substrate write to land, a reply to arrive.
+
+  + IF:
+    A component enters a state whose exit depends on an external event.
+
+  + HOWEVER:
+    The wait was added as a remedy (usually for a burn — see apparatus/loudness-is-conserved), and bounding it feels like re-introducing the failure it fixed; so it ships unbounded, and the stall detector then has nothing to distinguish patience from death.
+
+  + THEN:
+    Give every wait a deadline. Make the deadline verifiably absolute — an already-past deadline fires instantly, which is a fault wearing this principle's clothes — and route expiry to an explicit decision point, never silently back into the wait.
+
+  + BECAUSE:
+    Detectors can only work over bounded waits: an unbounded wait defeats the watchdog by definition, since no elapsed time is evidence of anything.
+
+    + evidence: APM 2026-09-06: 62 frames parked in one hour against a refusing provider, then the remedy created a wait with no upper bound; 2026-09-07: f193 sat in an unresolvable state for an hour with the coordinator ticking normally.
+
+  + NEXT-STEPS:
+    - Grep the apparatus for wait/awaiting/hold states; each needs an expiry and an expiry route.
+    - Test each deadline's clock basis by writing one that has already passed and confirming the instant-fire is caught.

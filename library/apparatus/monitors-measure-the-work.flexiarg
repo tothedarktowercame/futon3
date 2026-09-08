@@ -1,0 +1,33 @@
+@flexiarg apparatus/monitors-measure-the-work
+@title Monitors Measure The Work, Not The Machinery
+@keywords watchdog, stall-detector, progress-cursor, liveness, commissioning, dead-man-test
+@audience apparatus builders, monitor authors, futon developers
+@tone technical
+@style pattern
+@status proposed (extracted from the APM failure record 2026-09-08; claude-9 draft, claude-1 redline; pending Joe's ruling)
+@references [apparatus/loudness-is-conserved apparatus/done-is-observed-running]
+@see-also apparatus/new-failure-class-is-a-design-defect
+@why APM (durable_coordinator.clj:475, pre-fix): the stall watchdog built its cursor from the coordinator's regulator state, whose only populated field was the coordinator's own tick id — a value that changes every tick by construction — so the progress clock reset forever and the watchdog could never fire; f193 was dead 63 minutes at state: ok. The same error was made twice more independently (operator strip; suppression condition). WM (futon2 e84c114e): the inverse polarity — a detector over a four-key projection of the row false-stalled on a healthy frame writing a fifth key, the third such false stall.
+@how own mechanism: the progress cursor is a total function of the object of work read from its durable record; nil object-identity is an alarm; commissioning requires witnessing both an induced real failure fire the alarm and an induced healthy transition pass in silence.
+@violation-signature The cursor lacks the work object's identity, or its fields resolve nil and the monitor proceeds; the monitor has never fired in its lifetime; the monitored projection has been widened once per incident; the detector was commissioned by code review alone.
+! conclusion: A progress cursor is a total function of the object of work; a monitor whose inputs resolve to nothing alarms rather than degrades; and a detector is commissioned only by witnessing it fire on an induced failure AND stay silent across an induced healthy transition.
+
+  + context: A coordinator drives frames, slices, or jobs; a watchdog is asked "is work progressing?"; the coordinator's own state is the easiest thing to read.
+
+  + IF:
+    You are building or repairing a liveness or stall detector.
+
+  + HOWEVER:
+    The machinery's state is always lively (ticks tick by construction), so a cursor built from it guarantees false progress; and a cursor built from a *projection* of the work object goes stale as the object grows fields, producing false stalls that get "fixed" by naming the last field that burned you.
+
+  + THEN:
+    Read the cursor from the work object's own durable transitions, totally (hash the whole row, not named keys). Treat nil object-identity in the cursor as the alarm condition — in a monitor, absence of evidence IS the event. Commission in both directions: kill the watched thing and watch the alarm fire; drive a healthy transition and watch it stay silent. Only then trust it.
+
+  + BECAUSE:
+    A detector is the one component whose failure is invisible in operation — it fails by not firing, or by firing wrongly, and both look like normal life until the night the operator finds the corpse.
+
+    + evidence: APM: watchdog that could never fire (above); eight green F-triangle runs proved nothing because the smoke frame armed its own watchdog off the production path (defect register A10). WM: three false stalls from a projected cursor; the repaired detector is honestly still commissioned by reasoning, not by an induced true stall — the outstanding item its own author flagged.
+
+  + NEXT-STEPS:
+    - For each monitor: name the field that changes only when work happens, and confirm the work object's identity appears in the cursor.
+    - Run the two-direction commissioning test on every existing detector; a detector that has never fired is presumed broken until it does.

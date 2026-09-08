@@ -336,7 +336,10 @@
      ;; recorded as authored closure.
      :admitted-by #{}
      :nodes nodes
-     :edges (fast-forward nodes (:stands-on repository))
+     ;; Ruled O3 excludes nodes introduced by organise from the fast-forward
+     ;; carrier.  Otherwise an introduced node can justify the edge that
+     ;; introduced it, which is the bootstrap the F12 ruling rejects.
+     :edges (fast-forward (set/difference nodes added) (:stands-on repository))
      :precedence (vec (:precedence temperament))
      :acyclic? (:acyclic? repository)}))
 
@@ -523,10 +526,12 @@
   (every? (fn [[u v]] (contains? (descend stands-on u) v)) edges))
 
 (defn o3-fast-forward
-  "organiseO3FastForward (Holes.lean:354-358) -- a biconditional, so an edge the
-   cascade omits fails it exactly as an edge it invents does."
-  [{:keys [edges nodes stands-on]}]
-  (= (set edges) (set (fast-forward nodes stands-on))))
+  "Ruled O3 (F12RuledCarrier.lean:33-35) -- a biconditional over the nodes
+   not introduced by organise, so an edge the cascade omits fails it exactly
+   as an edge it invents does."
+  [{:keys [edges nodes added-by-organise stands-on]}]
+  (= (set edges)
+     (set (fast-forward (set/difference nodes added-by-organise) stands-on))))
 
 (defn o4-precedence-governance
   "organiseO4PrecedenceGovernance (Holes.lean:361-366): where the precedence

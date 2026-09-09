@@ -1,0 +1,218 @@
+{:basis "futon3 2741bdbf0b152737d6c210cf0e6cccda82d694d4",
+ :cases
+ [{:consumer construct-alfworld-cascade,
+   :route :cue-citation,
+   :pattern :alfworld/object-location-priors,
+   :entry
+   {:file
+    "../futon3c/library/alfworld/object-location-priors.flexiarg",
+    :if-lines [12 12],
+    :if-text
+    "You need to find an object (pillow, mug, potato, etc.) and the room has 20+ possible locations.",
+    :however-lines [14 14],
+    :however-text
+    "Exhaustive left-to-right search (cabinet 1, cabinet 2, ... shelf 12) wastes steps. ALFWorld rooms follow household conventions — objects are placed where they'd plausibly be in a real home."},
+   :extension
+   {:acknowledges
+    [{:block :however,
+      :clause :every-location-check-costs-a-step,
+      :cue "wastes steps",
+      :file
+      "../futon3c/library/alfworld/object-location-priors.flexiarg",
+      :lines [14 14]}
+     {:block :if,
+      :clause :the-room-offers-too-many-places-to-look,
+      :cue "possible locations",
+      :file
+      "../futon3c/library/alfworld/object-location-priors.flexiarg",
+      :lines [12 12]}
+     {:block :if,
+      :clause :the-room-offers-too-many-places-to-look,
+      :cue "20+",
+      :file
+      "../futon3c/library/alfworld/object-location-priors.flexiarg",
+      :lines [12 12]}
+     {:block :however,
+      :clause :the-room-offers-too-many-places-to-look,
+      :cue "exhaustive",
+      :file
+      "../futon3c/library/alfworld/object-location-priors.flexiarg",
+      :lines [14 14]}],
+    :match 2},
+   :note "First actual selected receipt captured before the repair."}
+  {:consumer construct-ants-cascade,
+   :route :cue-citation,
+   :pattern :ants/cargo-return-discipline,
+   :entry
+   {:file "library/ants/cargo-return-discipline.flexiarg",
+    :if-lines [32 33],
+    :if-text
+    "The agent has cargo ≥ 0.05, repeatedly chooses :return while `:dep` = 0, or stalls near the nest.",
+    :however-lines [36 37],
+    :however-text
+    "Without explicit clamps the agent “thrashes”: it walks home, refuses to deposit, and never re-enters outbound mode, starving the colony or the task."},
+   :extension
+   {:acknowledges
+    [{:block :if,
+      :clause :the-ant-thrashes-instead-of-depositing,
+      :cue "return",
+      :file "library/ants/cargo-return-discipline.flexiarg",
+      :lines [32 33]}
+     {:block :if,
+      :clause :the-ant-thrashes-instead-of-depositing,
+      :cue "cargo",
+      :file "library/ants/cargo-return-discipline.flexiarg",
+      :lines [32 33]}
+     {:block :if,
+      :clause :the-ant-thrashes-instead-of-depositing,
+      :cue "nest",
+      :file "library/ants/cargo-return-discipline.flexiarg",
+      :lines [32 33]}
+     {:block :however,
+      :clause :the-ant-thrashes-instead-of-depositing,
+      :cue "thrash",
+      :file "library/ants/cargo-return-discipline.flexiarg",
+      :lines [36 37]}
+     {:block :however,
+      :clause :the-ant-thrashes-instead-of-depositing,
+      :cue "deposit",
+      :file "library/ants/cargo-return-discipline.flexiarg",
+      :lines [36 37]}
+     {:block :however,
+      :clause :ticks-burn-where-the-traces-are-low,
+      :cue "outbound",
+      :file "library/ants/cargo-return-discipline.flexiarg",
+      :lines [36 37]}
+     {:block :however,
+      :clause :hunger-does-not-sharpen-precision,
+      :cue "clamp",
+      :file "library/ants/cargo-return-discipline.flexiarg",
+      :lines [36 37]}],
+    :match 3},
+   :note "First actual selected receipt captured before the repair."}
+  {:consumer construct-cascade,
+   :route :cue-citation,
+   :pattern :coordination/pattern-search-protocol,
+   :entry
+   {:file "library/coordination/pattern-search-protocol.flexiarg",
+    :if-lines [16 16],
+    :if-text "you want pattern retrieval quality to improve over time",
+    :however-lines [19 19],
+    :however-text
+    "without candidate logs, retrieval is a black box and failures cannot be debugged"},
+   :extension
+   {:acknowledges
+    [{:block :if,
+      :clause :find-has-no-search-space,
+      :cue "retrieval",
+      :file "library/coordination/pattern-search-protocol.flexiarg",
+      :lines [16 16]}
+     {:block :however,
+      :clause :find-has-no-search-space,
+      :cue "retrieval",
+      :file "library/coordination/pattern-search-protocol.flexiarg",
+      :lines [19 19]}],
+    :match 1},
+   :note "First actual selected receipt captured before the repair."}
+  {:consumer construct-open-cascade,
+   :route :cue-citation,
+   :pattern :agency/bounded-lifecycle,
+   :entry
+   {:file "library/agency/bounded-lifecycle.flexiarg",
+    :if-lines [17 17],
+    :if-text
+    "You store transient state (secrets, promises, connection entries, rendezvous tracking) in an in-memory atom.",
+    :however-lines [20 20],
+    :however-text
+    "Future-based cleanup (future (Thread/sleep ttl) (swap! atom dissoc key)) races with concurrent reads and writes. Between the sleep ending and the swap! executing, a concurrent operation may read the entry, begin work, and then find the entry gone. The acks atom is never cleaned. pending-whistles entries can be orphaned if the agent disconnects mid-flight."},
+   :extension {:acknowledges [], :match 0},
+   :note
+   "Callback shape only: the current open-cascade run has no selected patterns."}
+  {:consumer construct-retrodiction-cascade,
+   :route :cue-citation,
+   :pattern :math-informal-CT/check-it-on-generators,
+   :entry
+   {:file "library/math-informal-CT/check-it-on-generators.flexiarg",
+    :if-lines [20 24],
+    :if-text
+    "There is a dense (or strongly generating) subcategory, the property in question is stable under the colimits that rebuild arbitrary objects from it, and each generator can be checked directly. Then checking the generators checks everything, and the reduction is not an approximation — it is exact.",
+    :however-lines [27 36],
+    :however-text
+    "The reduction is only valid for properties the rebuilding colimits preserve, and this is where it fails silently. A functor that preserves colimits transports the property; one that merely preserves the *objects* does not. \"Suffices to check\" is often written when the author means \"suffices to check, given a preservation lemma proved three sections earlier\" — and sometimes when no such lemma exists. Beware also the generator that is dense in the wrong sense: dense, strongly generating, and separating are different conditions, and only density licenses the colimit reconstruction. If you cannot name the colimit that rebuilds a general object, you have not made a reduction, you have made a wish."},
+   :extension
+   {:acknowledges
+    [{:block :if,
+      :clause :generator-ignores-decisions,
+      :cue "generator",
+      :file "library/math-informal-CT/check-it-on-generators.flexiarg",
+      :lines [20 24]}
+     {:block :however,
+      :clause :generator-ignores-decisions,
+      :cue "generator",
+      :file "library/math-informal-CT/check-it-on-generators.flexiarg",
+      :lines [27 36]}],
+    :match 1},
+   :note "First actual selected receipt captured before the repair."}
+  {:consumer construct-zaif-cascade,
+   :route :cue-citation,
+   :pattern :ai4ci/funding-justification,
+   :entry
+   {:file "library/ai4ci/funding-justification.flexiarg",
+    :if-lines [21 23],
+    :if-text
+    "Job-argument and transformation-engine patterns already describe how to cost short bursts of research that leverage existing institutional and technical capacity.",
+    :however-lines [26 28],
+    :however-text
+    "Without a clear ledger of what the budget buys in terms of specific activities (specialist annotation, light AI usage, seminar facilitation), the request can look speculative or infrastructure-heavy."},
+   :extension
+   {:acknowledges
+    [{:block :if,
+      :clause :consult-the-store-before-attempting,
+      :cue "search",
+      :file "library/ai4ci/funding-justification.flexiarg",
+      :lines [21 23]}
+     {:block :however,
+      :clause :the-budget-is-stated-and-must-bind,
+      :cue "budget",
+      :file "library/ai4ci/funding-justification.flexiarg",
+      :lines [26 28]}],
+    :match 2},
+   :note "First actual selected receipt captured before the repair."}
+  {:consumer find-snatch,
+   :route :structured-antecedent,
+   :pattern :snatch/ask-for-surplus-not-surrender,
+   :entry
+   {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+    :if-lines [16 17],
+    :if-text
+    "You are offering a positive number of your tokens and may still choose what to ask in return.",
+    :however-lines [20 21],
+    :however-text
+    "Choosing only the give side turns an exchange into a transfer, while an ask that consumes the counterpart's entire benefit gives acceptance no reason."},
+   :extension {:however :none, :state-fields :not-instrumented},
+   :note "First actual selected receipt captured before the repair."}
+  {:consumer learn-edge-weights,
+   :route :cue-citation,
+   :pattern :coordination/pattern-search-protocol,
+   :entry
+   {:file "library/coordination/pattern-search-protocol.flexiarg",
+    :if-lines [16 16],
+    :if-text "you want pattern retrieval quality to improve over time",
+    :however-lines [19 19],
+    :however-text
+    "without candidate logs, retrieval is a black box and failures cannot be debugged"},
+   :extension
+   {:acknowledges
+    [{:block :if,
+      :clause :find-has-no-search-space,
+      :cue "retrieval",
+      :file "library/coordination/pattern-search-protocol.flexiarg",
+      :lines [16 16]}
+     {:block :however,
+      :clause :find-has-no-search-space,
+      :cue "retrieval",
+      :file "library/coordination/pattern-search-protocol.flexiarg",
+      :lines [19 19]}],
+    :match 1},
+   :note
+   "Receipt producer from learn_edge_weights.clj:766-772 exercised directly; the write-producing learning report was not run."}]}

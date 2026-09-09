@@ -236,19 +236,25 @@
    afterwards.  The check it kept -- that no runner id is unauthored -- is the
    other direction and stays where it is.)
 
-   `:receipt` may add fields; it may not remove `:route` or `:warrant`, so no
-   caller can make a receipt self-certifying by omission (F3)."
+   `:receipt` may add fields, but supplying any core key (`:if`, `:route`,
+   `:warrant`) throws a typed :receipt-core-key-collision naming the pattern
+   and keys. No caller may overwrite the evaluator's result or warrant (F3)."
   [{:keys [context fires? route receipt] :or {route :structured-antecedent}} repository]
   (let [firing (into [] (filter #(fires? % context)) (sort (:patterns repository)))]
     (sorted-map
      :absence (when (empty? firing) :no-pattern-addresses-this-tension)
      :receipts (into (sorted-map)
                      (map (fn [id]
-                            [id (into (sorted-map
-                                       :if true
-                                       :route route
-                                       :warrant (warrant repository id))
-                                      (when receipt (receipt id)))]))
+                            (let [core (sorted-map :if true :route route
+                                                   :warrant (warrant repository id))
+                                  extension (when receipt (receipt id))
+                                  collisions (vec (filter #(contains? extension %)
+                                                          (keys core)))]
+                              (when (seq collisions)
+                                (throw (ex-info "Find receipt extension supplies reserved core keys"
+                                                {:finding :receipt-core-key-collision
+                                                 :pattern id :keys collisions})))
+                              [id (into core extension)])))
                      firing)
      :selected (vec firing))))
 

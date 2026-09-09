@@ -259,7 +259,7 @@
 ;; the policy-grain rules
 ;; ---------------------------------------------------------------------------
 ;; Three rules, all three encoding ONE authored THEN --
-;; `library/snatch/widen-the-cascade-only-on-evidence.flexiarg:29-33`:
+;; `library/snatch/widen-the-cascade-only-on-evidence.flexiarg:31-35`:
 ;;
 ;;   "Admit patterns one at a time, ordered by what the previous admission
 ;;    bought, and stop on a rule stated in advance -- a marginal-gain floor, a
@@ -275,7 +275,7 @@
 ;; `:then-source` is re-read from disk on every run by `library-correspondence`.
 
 (def then-source
-  "library/snatch/widen-the-cascade-only-on-evidence.flexiarg:29-33")
+  "library/snatch/widen-the-cascade-only-on-evidence.flexiarg:31-35")
 
 (def collection
   [{:id :halt-on-budget :grain :policy :precedence 1

@@ -1,0 +1,1260 @@
+{:encoding
+ "Experiment-local instantiation of Lean Clause only: one receipt has a nonempty collection of query-clause acknowledgments and primary kind :if. Preserve executable IF and HOWEVER contributions independently. This is evidence toward the carrier choice, not adoption of an arm.",
+ :schema :experimental/f11-find-comparison-manifest-v1,
+ :interpretation-table
+ [{:query-mappings
+   [{:kind :if,
+     :clause :mark-opportunity,
+     :authored-span
+     "library/snatch/a-free-mark-is-always-worth-assigning.flexiarg:15-16"}],
+   :limit
+   "Advisory: prior snatch and shame availability only; no executable current-payoff/continuation valuation.",
+   :predicate-text
+   "   {:id :a-free-mark-is-always-worth-assigning :grain :play\n    :if (fn [s] (and (= :play (:grain s)) (:snatched? s) (:shame-available? s)))}",
+   :however-status :not-implemented,
+   :status :p1-executable,
+   :predicate-source
+   {:file "checks/playout_snatch.clj",
+    :lines [109 110],
+    :pointer "checks/playout_snatch.clj:109-110"},
+   :authored-spans
+   {:if
+    {:file
+     "library/snatch/a-free-mark-is-always-worth-assigning.flexiarg",
+     :lines [15 16],
+     :pointer
+     "library/snatch/a-free-mark-is-always-worth-assigning.flexiarg:15-16",
+     :text
+     "    You may attach a durable, visible mark to a counterpart who defected, and\n    assigning it changes no payoff in the current round."},
+    :however
+    {:file
+     "library/snatch/a-free-mark-is-always-worth-assigning.flexiarg",
+     :lines [19 20],
+     :pointer
+     "library/snatch/a-free-mark-is-always-worth-assigning.flexiarg:19-20",
+     :text
+     "    It is easy to read *\"changes nothing now\"* as *\"changes nothing\"*, and a\n    player optimising the round will decline a move with no immediate return."}},
+   :grain :play,
+   :pattern :snatch/a-free-mark-is-always-worth-assigning}
+  {:query-mappings
+   [{:kind :if,
+     :clause :received-offer,
+     :authored-span
+     "library/snatch/accept-an-offer-that-beats-holding.flexiarg:16-17"}],
+   :limit
+   "P2 actor is excluded before antecedent testing; offer-received? is never set by P1 play. No acceptance-value interpretation claimed.",
+   :predicate-text
+   "   {:id :accept-an-offer-that-beats-holding :grain :play :actor :p2\n    :if (fn [s] (and (= :play (:grain s)) (:offer-received? s)))}",
+   :however-status :not-implemented,
+   :status :p2-out-of-domain,
+   :predicate-source
+   {:file "checks/playout_snatch.clj",
+    :lines [117 118],
+    :pointer "checks/playout_snatch.clj:117-118"},
+   :authored-spans
+   {:if
+    {:file
+     "library/snatch/accept-an-offer-that-beats-holding.flexiarg",
+     :lines [16 17],
+     :pointer
+     "library/snatch/accept-an-offer-that-beats-holding.flexiarg:16-17",
+     :text
+     "    The offered tokens are worth more to you than the asked tokens you would\n    retain, and the offer leaves P1 a positive exchange gain too."},
+    :however
+    {:file
+     "library/snatch/accept-an-offer-that-beats-holding.flexiarg",
+     :lines [20 22],
+     :pointer
+     "library/snatch/accept-an-offer-that-beats-holding.flexiarg:20-22",
+     :text
+     "    Snatching dominates acceptance only when future marks, denunciation, and\n    continued mutually beneficial exchanges are priced at zero; refusal throws\n    away the current surplus outright."}},
+   :grain :play,
+   :pattern :snatch/accept-an-offer-that-beats-holding}
+  {:query-mappings
+   [{:kind :if,
+     :clause :observed-model-surprise,
+     :authored-span
+     "library/snatch/an-unmodelled-response-stops-the-line.flexiarg:17-18"}
+    {:kind :however,
+     :clause :continuation-remains,
+     :authored-span
+     "library/snatch/an-unmodelled-response-stops-the-line.flexiarg:21-23"}],
+   :limit
+   "unmodelled? is the runner support test; finality gates the counterforce.",
+   :predicate-text
+   "   {:id :an-unmodelled-response-stops-the-line :grain :play :precedence 1\n    :if (fn [s] (and (= :play (:grain s)) (:unmodelled? s)))\n    ;; \"Play continues whether or not you notice\" — in the final round it does\n    ;; not, so there is nothing left for a stop to protect.\n    :however (fn [s] (not (:last-round? s)))",
+   :however-status :executable,
+   :status :p1-executable,
+   :predicate-source
+   {:file "checks/playout_snatch.clj",
+    :lines [51 55],
+    :pointer "checks/playout_snatch.clj:51-55"},
+   :authored-spans
+   {:if
+    {:file
+     "library/snatch/an-unmodelled-response-stops-the-line.flexiarg",
+     :lines [17 18],
+     :pointer
+     "library/snatch/an-unmodelled-response-stops-the-line.flexiarg:17-18",
+     :text
+     "    The counterpart produces an outcome to which your model assigned no\n    probability."},
+    :however
+    {:file
+     "library/snatch/an-unmodelled-response-stops-the-line.flexiarg",
+     :lines [21 23],
+     :pointer
+     "library/snatch/an-unmodelled-response-stops-the-line.flexiarg:21-23",
+     :text
+     "    Play continues whether or not you notice, and the cheapest next move is\n    always to repeat the policy that just met a surprise — which is trying harder\n    inside a model you now know is wrong."}},
+   :grain :play,
+   :pattern :snatch/an-unmodelled-response-stops-the-line}
+  {:query-mappings
+   [{:kind :if,
+     :clause :available-resources,
+     :authored-span
+     "library/snatch/ask-for-surplus-not-surrender.flexiarg:16-17"}],
+   :limit
+   "Advisory: positive tokens only; neither ask size nor authored HOWEVER is executable here.",
+   :predicate-text
+   "   {:id :ask-for-surplus-not-surrender :grain :play\n    :if (fn [s] (and (= :play (:grain s)) (pos? (:tokens s))))}",
+   :however-status :not-implemented,
+   :status :p1-executable,
+   :predicate-source
+   {:file "checks/playout_snatch.clj",
+    :lines [107 108],
+    :pointer "checks/playout_snatch.clj:107-108"},
+   :authored-spans
+   {:if
+    {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+     :lines [16 17],
+     :pointer
+     "library/snatch/ask-for-surplus-not-surrender.flexiarg:16-17",
+     :text
+     "    You are offering a positive number of your tokens and may still choose what\n    to ask in return."},
+    :however
+    {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+     :lines [20 21],
+     :pointer
+     "library/snatch/ask-for-surplus-not-surrender.flexiarg:20-21",
+     :text
+     "    Choosing only the give side turns an exchange into a transfer, while an ask\n    that consumes the counterpart's entire benefit gives acceptance no reason."}},
+   :grain :play,
+   :pattern :snatch/ask-for-surplus-not-surrender}
+  {:query-mappings
+   [{:kind :if,
+     :clause :repair-opportunity,
+     :authored-span
+     "library/snatch/consult-the-remedy-before-exiting.flexiarg:18-19"}
+    {:kind :however,
+     :clause :exit-available,
+     :authored-span
+     "library/snatch/consult-the-remedy-before-exiting.flexiarg:22-24"}],
+   :limit
+   "IF requires prior snatch plus shame or judge. HOWEVER uses abstain availability as the proxy for the exit temptation.",
+   :predicate-text
+   "   {:id :consult-the-remedy-before-exiting :grain :play :precedence 2\n    :if (fn [s] (and (= :play (:grain s)) (:snatched? s)\n                     (or (:shame-available? s) (:judge-available? s))))\n    ;; \"a policy written for the state of nature exits on the first defection\" —\n    ;; the temptation requires that exiting be possible at all.\n    :however (fn [s] (contains? (:p1-actions s) :abstain))",
+   :however-status :executable,
+   :status :p1-executable,
+   :predicate-source
+   {:file "checks/playout_snatch.clj",
+    :lines [57 62],
+    :pointer "checks/playout_snatch.clj:57-62"},
+   :authored-spans
+   {:if
+    {:file "library/snatch/consult-the-remedy-before-exiting.flexiarg",
+     :lines [18 19],
+     :pointer
+     "library/snatch/consult-the-remedy-before-exiting.flexiarg:18-19",
+     :text
+     "    You have been defected against, and the arrangement provides a mark, an\n    adjudicator, or any other response."},
+    :however
+    {:file "library/snatch/consult-the-remedy-before-exiting.flexiarg",
+     :lines [22 24],
+     :pointer
+     "library/snatch/consult-the-remedy-before-exiting.flexiarg:22-24",
+     :text
+     "    A policy written for the state of nature exits on the first defection, and\n    exiting is indistinguishable — from the outside and from the policy itself —\n    whether or not a remedy existed."}},
+   :grain :play,
+   :pattern :snatch/consult-the-remedy-before-exiting}
+  {:query-mappings
+   [{:kind :if,
+     :clause :observed-prior-acceptance,
+     :authored-span
+     "library/snatch/escalate-only-as-far-as-you-can-lose.flexiarg:17-17"}
+    {:kind :however,
+     :clause :persistent-seizure-risk,
+     :authored-span
+     "library/snatch/escalate-only-as-far-as-you-can-lose.flexiarg:20-22"}],
+   :limit
+   "IF tests last accepted, not whether a larger offer is available. HOWEVER is constant true and non-discriminating; do not invent a measured risk.",
+   :predicate-text
+   "   {:id :escalate-only-as-far-as-you-can-lose :grain :play :precedence 5\n    :if (fn [s] (and (= :play (:grain s)) (= :accepted (:last s))))\n    ;; NON-DISCRIMINATING.  \"One acceptance is weak evidence\" and a snatch is\n    ;; always possible, so this force is live in every state where the IF holds.\n    ;; It names a permanent condition of the game rather than a tension in the\n    ;; situation, and is recorded as such instead of being given a guard.\n    :however (fn [_] true)",
+   :however-status :executable,
+   :status :p1-executable,
+   :predicate-source
+   {:file "checks/playout_snatch.clj",
+    :lines [83 89],
+    :pointer "checks/playout_snatch.clj:83-89"},
+   :authored-spans
+   {:if
+    {:file
+     "library/snatch/escalate-only-as-far-as-you-can-lose.flexiarg",
+     :lines [17 17],
+     :pointer
+     "library/snatch/escalate-only-as-far-as-you-can-lose.flexiarg:17-17",
+     :text
+     "    A counterpart has accepted an offer, and larger offers are available."},
+    :however
+    {:file
+     "library/snatch/escalate-only-as-far-as-you-can-lose.flexiarg",
+     :lines [20 22],
+     :pointer
+     "library/snatch/escalate-only-as-far-as-you-can-lose.flexiarg:20-22",
+     :text
+     "    One acceptance is weak evidence — a snatcher who accepts once has lost\n    nothing by waiting — and an offer sized to the belief rather than to the loss\n    turns a good read into an unrecoverable position."}},
+   :grain :play,
+   :pattern :snatch/escalate-only-as-far-as-you-can-lose}
+  {:query-mappings
+   [{:kind :if,
+     :clause :available-resources,
+     :authored-span
+     "library/snatch/exchange-when-both-sides-gain.flexiarg:17-18"}
+    {:kind :however,
+     :clause :salient-seizure-risk,
+     :authored-span
+     "library/snatch/exchange-when-both-sides-gain.flexiarg:21-22"}],
+   :limit
+   "Positive tokens stand for exchange availability; valuation assumptions belong to the game, not another predicate.",
+   :predicate-text
+   "   {:id :exchange-when-both-sides-gain :grain :play :precedence 7\n    :if (fn [s] (and (= :play (:grain s)) (pos? (:tokens s))))\n    ;; \"attention to seizure risk can make abstention look like the objective\" —\n    ;; live only where seizure is salient: it has happened, or the counterpart\n    ;; is still unread.  Against a known sharer the exchange needs no argument.\n    :however (fn [s] (or (:snatched? s) (nil? (:disposition-known s))))",
+   :however-status :executable,
+   :status :p1-executable,
+   :predicate-source
+   {:file "checks/playout_snatch.clj",
+    :lines [98 103],
+    :pointer "checks/playout_snatch.clj:98-103"},
+   :authored-spans
+   {:if
+    {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+     :lines [17 18],
+     :pointer
+     "library/snatch/exchange-when-both-sides-gain.flexiarg:17-18",
+     :text
+     "    Both players have something the other values twice as highly as its holder,\n    and an exchange remains available this round."},
+    :however
+    {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+     :lines [21 22],
+     :pointer
+     "library/snatch/exchange-when-both-sides-gain.flexiarg:21-22",
+     :text
+     "    Attention to seizure risk can make abstention look like the objective, even\n    though holding every token leaves the game's available surplus unrealised."}},
+   :grain :play,
+   :pattern :snatch/exchange-when-both-sides-gain}
+  {:query-mappings
+   [{:kind :if,
+     :clause :forced-exposure-after-snatch,
+     :authored-span
+     "library/snatch/forced-play-needs-a-loss-floor.flexiarg:17-17"}
+    {:kind :however,
+     :clause :resources-above-floor,
+     :authored-span
+     "library/snatch/forced-play-needs-a-loss-floor.flexiarg:20-21"}],
+   :limit
+   "Forced offer plus prior snatch; tokens > 1 represents a larger offer being reachable.",
+   :predicate-text
+   "   {:id :forced-play-needs-a-loss-floor :grain :play :precedence 4\n    :if (fn [s] (and (= :play (:grain s)) (:forced-offer? s) (:snatched? s)))\n    ;; \"compulsion does not make a large exposed offer safer\" — there is no\n    ;; large offer to be tempted by when the floor is all you hold.\n    :however (fn [s] (> (:tokens s) 1))",
+   :however-status :executable,
+   :status :p1-executable,
+   :predicate-source
+   {:file "checks/playout_snatch.clj",
+    :lines [77 81],
+    :pointer "checks/playout_snatch.clj:77-81"},
+   :authored-spans
+   {:if
+    {:file "library/snatch/forced-play-needs-a-loss-floor.flexiarg",
+     :lines [17 17],
+     :pointer
+     "library/snatch/forced-play-needs-a-loss-floor.flexiarg:17-17",
+     :text
+     "    Abstention is unavailable and a prior response makes seizure a live risk."},
+    :however
+    {:file "library/snatch/forced-play-needs-a-loss-floor.flexiarg",
+     :lines [20 21],
+     :pointer
+     "library/snatch/forced-play-needs-a-loss-floor.flexiarg:20-21",
+     :text
+     "    An exit-based policy cannot execute in this treatment, but compulsion does\n    not make a large exposed offer safer."}},
+   :grain :play,
+   :pattern :snatch/forced-play-needs-a-loss-floor}
+  {:pattern :snatch/grim-cuts-the-cascade-and-never-widens-it,
+   :authored-spans
+   {:if
+    {:file
+     "library/snatch/grim-cuts-the-cascade-and-never-widens-it.flexiarg",
+     :lines [20 21],
+     :pointer
+     "library/snatch/grim-cuts-the-cascade-and-never-widens-it.flexiarg:20-21",
+     :text
+     "    You are writing a temperament that answers a breach by narrowing what the\n    run will consult afterwards."},
+    :however
+    {:file
+     "library/snatch/grim-cuts-the-cascade-and-never-widens-it.flexiarg",
+     :lines [24 30],
+     :pointer
+     "library/snatch/grim-cuts-the-cascade-and-never-widens-it.flexiarg:24-30",
+     :text
+     "    Narrowing is easy to write and hard to see. A policy that has left looks,\n    from outside and from inside itself, exactly like a policy that never had a\n    remedy available — so the cost of the narrowing never appears as a cost.\n    Under G4 the remedies became applicable from round 2 onward and a\n    grim-trigger policy had already left the game, so they were applicable and\n    unused in every remaining round\n    (`snatch/consult-the-remedy-before-exiting.flexiarg:10-13`)."}},
+   :status :no-executable-interpretation,
+   :query-mappings [],
+   :limit
+   "Repository member, out of the executable domain. These spans assign no runtime semantics and are not evidence of semantic zero mass."}
+  {:pattern :snatch/have-a-temperament,
+   :authored-spans
+   {:if
+    {:file "library/snatch/have-a-temperament.flexiarg",
+     :lines [23 24],
+     :pointer "library/snatch/have-a-temperament.flexiarg:23-24",
+     :text
+     "    You are choosing which patterns a run will play from, or the order in which\n    they are consulted."},
+    :however
+    {:file "library/snatch/have-a-temperament.flexiarg",
+     :lines [27 32],
+     :pointer "library/snatch/have-a-temperament.flexiarg:27-32",
+     :text
+     "    A policy left in the runner is invisible to the library the run claims to be\n    playing from: it cannot be read before the run, cited, refused, or set\n    beside another one. `p4ng/app-snatch.tex:231` records the order under\n    *Limits* as \"authored by hand\", and the harness's own re-wiring shows the\n    choice is not cosmetic — the same eighteen patterns score +3 or −5 against a\n    snatcher under G4 depending on nothing but it."}},
+   :status :no-executable-interpretation,
+   :query-mappings [],
+   :limit
+   "Repository member, out of the executable domain. These spans assign no runtime semantics and are not evidence of semantic zero mass."}
+  {:query-mappings
+   [{:kind :if,
+     :clause :institution-design,
+     :authored-span
+     "library/snatch/institutions-vary-by-position-and-force.flexiarg:17-17"}],
+   :limit
+   "Design-grain marker only; no enumeration of institutional gaps.",
+   :predicate-text
+   "   {:id :institutions-vary-by-position-and-force :grain :design\n    :if (fn [s] (= :design (:grain s)))}",
+   :however-status :not-implemented,
+   :status :other-grain,
+   :predicate-source
+   {:file "checks/playout_snatch.clj",
+    :lines [34 35],
+    :pointer "checks/playout_snatch.clj:34-35"},
+   :authored-spans
+   {:if
+    {:file
+     "library/snatch/institutions-vary-by-position-and-force.flexiarg",
+     :lines [17 17],
+     :pointer
+     "library/snatch/institutions-vary-by-position-and-force.flexiarg:17-17",
+     :text
+     "    You must design, compare, or extend a family of institutional arrangements."},
+    :however
+    {:file
+     "library/snatch/institutions-vary-by-position-and-force.flexiarg",
+     :lines [20 21],
+     :pointer
+     "library/snatch/institutions-vary-by-position-and-force.flexiarg:20-21",
+     :text
+     "    A list of arrangements shows its members and not its gaps: nothing in a list\n    says what two entries share, or what is missing between them."}},
+   :grain :design,
+   :pattern :snatch/institutions-vary-by-position-and-force}
+  {:query-mappings
+   [{:kind :if,
+     :clause :exchange-rule-present,
+     :authored-span
+     "library/snatch/lead-with-the-exchange-rule.flexiarg:19-20"}
+    {:kind :however,
+     :clause :exchange-rule-not-first,
+     :authored-span
+     "library/snatch/lead-with-the-exchange-rule.flexiarg:23-28"}],
+   :limit
+   "Policy grain only; membership and current order proxies, not a play-state predicate.",
+   :predicate-text
+   "   {:id :lead-with-the-exchange-rule :grain :policy :precedence 1\n    :then-source \"library/snatch/lead-with-the-exchange-rule.flexiarg:28-31\"\n    ;; \"You want a temperament that leads with gains from trade\" — so the\n    ;; exchange rule has to be in the cascade to be led with.\n    :if (fn [s] (and (= :policy (:grain s))\n                     (contains? (:members s) :exchange-when-both-sides-gain)))\n    ;; The counter-force is the one-node cascade the promotion produces, and it\n    ;; is live only while the exchange rule is not already first: once it is,\n    ;; promoting it again would change nothing and the pattern has nothing to\n    ;; add.  This is also what terminates the construction.\n    :however (fn [s] (not= :exchange-when-both-sides-gain (first (fo/ordered s))))",
+   :however-status :executable,
+   :status :other-grain,
+   :predicate-source
+   {:file "checks/playout_snatch.clj",
+    :lines [148 158],
+    :pointer "checks/playout_snatch.clj:148-158"},
+   :authored-spans
+   {:if
+    {:file "library/snatch/lead-with-the-exchange-rule.flexiarg",
+     :lines [19 20],
+     :pointer
+     "library/snatch/lead-with-the-exchange-rule.flexiarg:19-20",
+     :text
+     "    You want a temperament that leads with gains from trade rather than with the\n    stop rule or the remedy."},
+    :however
+    {:file "library/snatch/lead-with-the-exchange-rule.flexiarg",
+     :lines [23 28],
+     :pointer
+     "library/snatch/lead-with-the-exchange-rule.flexiarg:23-28",
+     :text
+     "    The pattern this temperament promotes carries no `@why` at all — its only\n    structural directive is `@see-also`\n    (`snatch/exchange-when-both-sides-gain.flexiarg:6`) — so its upward closure\n    is itself. When the promotion makes it the only pattern that fires, the\n    cascade the run stands on has one node and no edges. The score moves with\n    it: +3 to −5 against a snatcher under G4."}},
+   :grain :policy,
+   :pattern :snatch/lead-with-the-exchange-rule}
+  {:query-mappings
+   [{:kind :if,
+     :clause :requested-sanction,
+     :authored-span
+     "library/snatch/mark-without-force.flexiarg:19-20"}],
+   :limit
+   "Design grain; want-sanction? does not encode the entire enforcement tradeoff.",
+   :predicate-text
+   "   {:id :mark-without-force :grain :design\n    :if (fn [s] (and (= :design (:grain s)) (:want-sanction? s)))}",
+   :however-status :not-implemented,
+   :status :other-grain,
+   :predicate-source
+   {:file "checks/playout_snatch.clj",
+    :lines [28 29],
+    :pointer "checks/playout_snatch.clj:28-29"},
+   :authored-spans
+   {:if
+    {:file "library/snatch/mark-without-force.flexiarg",
+     :lines [19 20],
+     :pointer "library/snatch/mark-without-force.flexiarg:19-20",
+     :text
+     "    You want a defection to have consequences and you have no enforcement\n    apparatus, or you do not want one."},
+    :however
+    {:file "library/snatch/mark-without-force.flexiarg",
+     :lines [23 25],
+     :pointer "library/snatch/mark-without-force.flexiarg:23-25",
+     :text
+     "    A sanction that alters the current payoff needs an adjudicator, a standard of\n    proof, and a way to be wrong — machinery that is expensive and that itself\n    becomes something to game."}},
+   :grain :design,
+   :pattern :snatch/mark-without-force}
+  {:query-mappings
+   [{:kind :if,
+     :clause :enforcement-unavailable,
+     :authored-span
+     "library/snatch/non-binding-talk-still-moves-play.flexiarg:18-18"}],
+   :limit
+   "Design grain; absent judge is the existing proxy, not a cooperation model.",
+   :predicate-text
+   "   {:id :non-binding-talk-still-moves-play :grain :design\n    :if (fn [s] (and (= :design (:grain s)) (not (:judge-available? s))))}",
+   :however-status :not-implemented,
+   :status :other-grain,
+   :predicate-source
+   {:file "checks/playout_snatch.clj",
+    :lines [32 33],
+    :pointer "checks/playout_snatch.clj:32-33"},
+   :authored-spans
+   {:if
+    {:file "library/snatch/non-binding-talk-still-moves-play.flexiarg",
+     :lines [18 18],
+     :pointer
+     "library/snatch/non-binding-talk-still-moves-play.flexiarg:18-18",
+     :text
+     "    You want more cooperation and cannot or will not add enforcement."},
+    :however
+    {:file "library/snatch/non-binding-talk-still-moves-play.flexiarg",
+     :lines [21 22],
+     :pointer
+     "library/snatch/non-binding-talk-still-moves-play.flexiarg:21-22",
+     :text
+     "    Promises made in an unenforceable channel change no payoff, and a player who\n    reasons only from payoffs should ignore them entirely."}},
+   :grain :design,
+   :pattern :snatch/non-binding-talk-still-moves-play}
+  {:query-mappings
+   [{:kind :if,
+     :clause :authored-precedence-present,
+     :authored-span
+     "library/snatch/play-the-authored-order-first.flexiarg:18-19"}
+    {:kind :however,
+     :clause :construction-unrecorded,
+     :authored-span
+     "library/snatch/play-the-authored-order-first.flexiarg:22-25"}],
+   :limit
+   "Policy grain only, not a P1 play query; no reinterpretation at play grain.",
+   :predicate-text
+   "   {:id :play-the-authored-order-first :grain :policy :precedence 1\n    :then-source \"library/snatch/play-the-authored-order-first.flexiarg:25-28\"\n    ;; \"You have a cascade with an authored precedence and are considering a\n    ;; temperament that re-wires it.\"\n    :if (fn [s] (and (= :policy (:grain s)) (seq (:precedence s))))\n    ;; \"An empty edit looks like no policy at all, so it goes unnamed\" — the\n    ;; force is live exactly while nothing has been recorded on this\n    ;; construction.  Once the temperament is on the record it has been named,\n    ;; and the rule would be repeating itself.\n    :however (fn [s] (empty? (:record s)))",
+   :however-status :executable,
+   :status :other-grain,
+   :predicate-source
+   {:file "checks/playout_snatch.clj",
+    :lines [134 143],
+    :pointer "checks/playout_snatch.clj:134-143"},
+   :authored-spans
+   {:if
+    {:file "library/snatch/play-the-authored-order-first.flexiarg",
+     :lines [18 19],
+     :pointer
+     "library/snatch/play-the-authored-order-first.flexiarg:18-19",
+     :text
+     "    You have a cascade with an authored precedence and are considering a\n    temperament that re-wires it."},
+    :however
+    {:file "library/snatch/play-the-authored-order-first.flexiarg",
+     :lines [22 25],
+     :pointer
+     "library/snatch/play-the-authored-order-first.flexiarg:22-25",
+     :text
+     "    An empty edit looks like no policy at all, so it goes unnamed — and once it\n    is unnamed there is nothing for a re-wiring to be measured against. Every\n    claim that a temperament helps is a difference, and a difference needs two\n    terms."}},
+   :grain :policy,
+   :pattern :snatch/play-the-authored-order-first}
+  {:query-mappings
+   [{:kind :if,
+     :clause :proposed-participation-rule,
+     :authored-span
+     "library/snatch/preserve-the-right-to-abstain.flexiarg:20-20"}],
+   :limit
+   "Design grain; rule-proposed? is a proxy, not a model of compulsion.",
+   :predicate-text
+   "   {:id :preserve-the-right-to-abstain :grain :design\n    :if (fn [s] (and (= :design (:grain s)) (:rule-proposed? s)))}",
+   :however-status :not-implemented,
+   :status :other-grain,
+   :predicate-source
+   {:file "checks/playout_snatch.clj",
+    :lines [26 27],
+    :pointer "checks/playout_snatch.clj:26-27"},
+   :authored-spans
+   {:if
+    {:file "library/snatch/preserve-the-right-to-abstain.flexiarg",
+     :lines [20 20],
+     :pointer
+     "library/snatch/preserve-the-right-to-abstain.flexiarg:20-20",
+     :text
+     "    A rule is proposed that increases participation in an exchange."},
+    :however
+    {:file "library/snatch/preserve-the-right-to-abstain.flexiarg",
+     :lines [23 25],
+     :pointer
+     "library/snatch/preserve-the-right-to-abstain.flexiarg:23-25",
+     :text
+     "    Compelling the exposed party to act removes the one move that protected\n    them — declining — and a rule that is enabled by default is not experienced\n    as a choice by anyone."}},
+   :grain :design,
+   :pattern :snatch/preserve-the-right-to-abstain}
+  {:query-mappings
+   [{:kind :if,
+     :clause :terminal-round,
+     :authored-span
+     "library/snatch/price-the-final-round-as-final.flexiarg:16-17"}],
+   :limit
+   "Advisory: last-round? only; no executable future-value calculation.",
+   :predicate-text
+   "   {:id :price-the-final-round-as-final :grain :play\n    :if (fn [s] (and (= :play (:grain s)) (:last-round? s)))}",
+   :however-status :not-implemented,
+   :status :p1-executable,
+   :predicate-source
+   {:file "checks/playout_snatch.clj",
+    :lines [113 114],
+    :pointer "checks/playout_snatch.clj:113-114"},
+   :authored-spans
+   {:if
+    {:file "library/snatch/price-the-final-round-as-final.flexiarg",
+     :lines [16 17],
+     :pointer
+     "library/snatch/price-the-final-round-as-final.flexiarg:16-17",
+     :text
+     "    No later round remains in which reputation, a shame mark, or promised future\n    exchange can change this counterpart's action."},
+    :however
+    {:file "library/snatch/price-the-final-round-as-final.flexiarg",
+     :lines [20 21],
+     :pointer
+     "library/snatch/price-the-final-round-as-final.flexiarg:20-21",
+     :text
+     "    A policy learned in rounds one through four may count future deterrence or\n    future cooperation that the horizon has reduced to zero."}},
+   :grain :play,
+   :pattern :snatch/price-the-final-round-as-final}
+  {:query-mappings
+   [{:kind :if,
+     :clause :unknown-prior-response,
+     :authored-span
+     "library/snatch/probe-before-committing.flexiarg:17-18"}
+    {:kind :however,
+     :clause :resources-above-floor,
+     :authored-span
+     "library/snatch/probe-before-committing.flexiarg:21-22"}],
+   :limit
+   "IF tests unknown disposition, not offer availability separately; tokens > 1 is the existing sizing proxy.",
+   :predicate-text
+   "   {:id :probe-before-committing :grain :play :precedence 6\n    :if (fn [s] (and (= :play (:grain s)) (nil? (:disposition-known s))))\n    ;; \"a large first offer is unrecoverable ... a zero offer buys nothing\" —\n    ;; both errors need to be reachable for the sizing advice to bite.\n    :however (fn [s] (> (:tokens s) 1))",
+   :however-status :executable,
+   :status :p1-executable,
+   :predicate-source
+   {:file "checks/playout_snatch.clj",
+    :lines [92 96],
+    :pointer "checks/playout_snatch.clj:92-96"},
+   :authored-spans
+   {:if
+    {:file "library/snatch/probe-before-committing.flexiarg",
+     :lines [17 18],
+     :pointer "library/snatch/probe-before-committing.flexiarg:17-18",
+     :text
+     "    You face a counterpart whose disposition you do not know, and an offer of any\n    size is available to you."},
+    :however
+    {:file "library/snatch/probe-before-committing.flexiarg",
+     :lines [21 22],
+     :pointer "library/snatch/probe-before-committing.flexiarg:21-22",
+     :text
+     "    A large first offer is unrecoverable if they snatch, and a zero offer buys\n    nothing — you end the round knowing exactly what you knew at its start."}},
+   :grain :play,
+   :pattern :snatch/probe-before-committing}
+  {:pattern :snatch/promote-the-remedy-before-the-exit,
+   :authored-spans
+   {:if
+    {:file
+     "library/snatch/promote-the-remedy-before-the-exit.flexiarg",
+     :lines [20 21],
+     :pointer
+     "library/snatch/promote-the-remedy-before-the-exit.flexiarg:20-21",
+     :text
+     "    A breach has been recorded and the arrangement supplies a response — a mark,\n    an adjudicator, a channel."},
+    :however
+    {:file
+     "library/snatch/promote-the-remedy-before-the-exit.flexiarg",
+     :lines [24 29],
+     :pointer
+     "library/snatch/promote-the-remedy-before-the-exit.flexiarg:24-29",
+     :text
+     "    Remedies sit low in a hand-authored order because they are rarely\n    applicable, and on the one round where they do become applicable \"rarely\" is\n    the wrong reason to be consulted late. Nothing inside a pattern can say when\n    that pattern should move: specificity fails here, because the pattern that\n    must be consulted first has the fewest conjuncts of any acting one\n    (`p4ng/app-snatch.tex:117-126`)."}},
+   :status :no-executable-interpretation,
+   :query-mappings [],
+   :limit
+   "Repository member, out of the executable domain. These spans assign no runtime semantics and are not evidence of semantic zero mass."}
+  {:query-mappings
+   [{:kind :if,
+     :clause :design-exposure,
+     :authored-span
+     "library/snatch/protect-the-unprotected-move.flexiarg:20-20"}],
+   :limit
+   "Design-grain predicate checks grain only; it does not measure exposure.",
+   :predicate-text
+   "  [{:id :protect-the-unprotected-move :grain :design\n    :if (fn [s] (= :design (:grain s)))}",
+   :however-status :not-implemented,
+   :status :other-grain,
+   :predicate-source
+   {:file "checks/playout_snatch.clj",
+    :lines [24 25],
+    :pointer "checks/playout_snatch.clj:24-25"},
+   :authored-spans
+   {:if
+    {:file "library/snatch/protect-the-unprotected-move.flexiarg",
+     :lines [20 20],
+     :pointer
+     "library/snatch/protect-the-unprotected-move.flexiarg:20-20",
+     :text
+     "    An exchange requires one party to part with something before receiving anything."},
+    :however
+    {:file "library/snatch/protect-the-unprotected-move.flexiarg",
+     :lines [23 25],
+     :pointer
+     "library/snatch/protect-the-unprotected-move.flexiarg:23-25",
+     :text
+     "    With no enforcement the receiver's best single-round move is to snatch, so\n    the entire risk of the exchange sits on the proposer, and the cooperative\n    move is the exposed one."}},
+   :grain :design,
+   :pattern :snatch/protect-the-unprotected-move}
+  {:query-mappings
+   [{:kind :if,
+     :clause :observed-repair-with-resources,
+     :authored-span
+     "library/snatch/re-enter-after-observed-repair.flexiarg:16-17"}
+    {:kind :however,
+     :clause :seizure-cleared,
+     :authored-span
+     "library/snatch/re-enter-after-observed-repair.flexiarg:20-21"}],
+   :limit
+   "IF requires prior snatch, observed repair, positive tokens; HOWEVER uses zero seized as the existing proxy for a spent remedy. Availability is not repair.",
+   :predicate-text
+   "   {:id :re-enter-after-observed-repair :grain :play :precedence 3\n    :if (fn [s] (and (= :play (:grain s)) (:snatched? s)\n                     (:repair-observed? s) (pos? (:tokens s))))\n    ;; \"permanent exit discards any improvement\" — live once the remedy is spent\n    ;; and exit is the only remaining alternative to re-entry.\n    :however (fn [s] (zero? (:seized s)))",
+   :however-status :executable,
+   :status :p1-executable,
+   :predicate-source
+   {:file "checks/playout_snatch.clj",
+    :lines [70 75],
+    :pointer "checks/playout_snatch.clj:70-75"},
+   :authored-spans
+   {:if
+    {:file "library/snatch/re-enter-after-observed-repair.flexiarg",
+     :lines [16 17],
+     :pointer
+     "library/snatch/re-enter-after-observed-repair.flexiarg:16-17",
+     :text
+     "    The seized tokens were restored or compensated, the remedy is recorded, and\n    a small new offer can test whether play changed."},
+    :however
+    {:file "library/snatch/re-enter-after-observed-repair.flexiarg",
+     :lines [20 21],
+     :pointer
+     "library/snatch/re-enter-after-observed-repair.flexiarg:20-21",
+     :text
+     "    Permanent exit discards any improvement the institution achieved, while\n    re-entry on a promise alone repeats the original exposure."}},
+   :grain :play,
+   :pattern :snatch/re-enter-after-observed-repair}
+  {:query-mappings
+   [{:kind :if,
+     :clause :adjudication-available,
+     :authored-span
+     "library/snatch/revert-then-invert.flexiarg:21-21"}],
+   :limit
+   "Design grain; judge availability alone does not evaluate detection or incentive costs.",
+   :predicate-text
+   "   {:id :revert-then-invert :grain :design\n    :if (fn [s] (and (= :design (:grain s)) (:judge-available? s)))}",
+   :however-status :not-implemented,
+   :status :other-grain,
+   :predicate-source
+   {:file "checks/playout_snatch.clj",
+    :lines [30 31],
+    :pointer "checks/playout_snatch.clj:30-31"},
+   :authored-spans
+   {:if
+    {:file "library/snatch/revert-then-invert.flexiarg",
+     :lines [21 21],
+     :pointer "library/snatch/revert-then-invert.flexiarg:21-21",
+     :text
+     "    A defection can be detected, denounced, and adjudicated."},
+    :however
+    {:file "library/snatch/revert-then-invert.flexiarg",
+     :lines [24 26],
+     :pointer "library/snatch/revert-then-invert.flexiarg:24-26",
+     :text
+     "    Reverting the theft alone leaves the defector exactly where refusing would\n    have left them, so the expected cost of defecting is zero and detection\n    changes nothing about the incentive."}},
+   :grain :design,
+   :pattern :snatch/revert-then-invert}
+  {:query-mappings
+   [{:kind :if,
+     :clause :pre-response-talk-opportunity,
+     :authored-span
+     "library/snatch/use-talk-to-make-a-testable-offer.flexiarg:16-16"}],
+   :limit
+   "Advisory: channel availability and nil last only; no message-content or assurance evaluation.",
+   :predicate-text
+   "   {:id :use-talk-to-make-a-testable-offer :grain :play\n    :if (fn [s] (and (= :play (:grain s)) (:chat-available? s) (nil? (:last s))))}",
+   :however-status :not-implemented,
+   :status :p1-executable,
+   :predicate-source
+   {:file "checks/playout_snatch.clj",
+    :lines [111 112],
+    :pointer "checks/playout_snatch.clj:111-112"},
+   :authored-spans
+   {:if
+    {:file "library/snatch/use-talk-to-make-a-testable-offer.flexiarg",
+     :lines [16 16],
+     :pointer
+     "library/snatch/use-talk-to-make-a-testable-offer.flexiarg:16-16",
+     :text
+     "    Cheap talk is available and the next offer and response have not yet occurred."},
+    :however
+    {:file "library/snatch/use-talk-to-make-a-testable-offer.flexiarg",
+     :lines [19 20],
+     :pointer
+     "library/snatch/use-talk-to-make-a-testable-offer.flexiarg:19-20",
+     :text
+     "    General assurances such as “I will cooperate” neither specify a move nor\n    produce an observation that can revise trust."}},
+   :grain :play,
+   :pattern :snatch/use-talk-to-make-a-testable-offer}
+  {:pattern :snatch/widen-the-cascade-only-on-evidence,
+   :authored-spans
+   {:if
+    {:file
+     "library/snatch/widen-the-cascade-only-on-evidence.flexiarg",
+     :lines [20 20],
+     :pointer
+     "library/snatch/widen-the-cascade-only-on-evidence.flexiarg:20-20",
+     :text
+     "    You are building a cascade rather than being handed one."},
+    :however
+    {:file
+     "library/snatch/widen-the-cascade-only-on-evidence.flexiarg",
+     :lines [23 29],
+     :pointer
+     "library/snatch/widen-the-cascade-only-on-evidence.flexiarg:23-29",
+     :text
+     "    Both ends fail, in opposite directions. The temperament alone is too little\n    to play from; the full closure is too much — in the g4/snatcher run three\n    patterns acted and four more were added by closure, so more than half the\n    cascade was present because it was stood on and never fired\n    (`checks/snatch-cascade.edn`). In an eighteen-pattern fixture that is\n    bounded. Over the eighty-five-pattern repository no bound is stated\n    anywhere."}},
+   :status :no-executable-interpretation,
+   :query-mappings [],
+   :limit
+   "Repository member, out of the executable domain. These spans assign no runtime semantics and are not evidence of semantic zero mass."}],
+ :g4-independent-expectations
+ [{:scenario [:g4 :snatcher],
+   :round 1,
+   :derivation
+   "Initial state gives 10 tokens, no snatch, no repair, no known disposition; G4 permits abstention, marking and adjudication. Authored probe IF acknowledges unknown counterpart, exchange/ask IF available resources, probe HOWEVER larger exposure, exchange HOWEVER salient seizure risk. These are text-derived receipt obligations for the named predicates.",
+   :state-assertions
+   {:tokens 10,
+    :snatched? false,
+    :repair-observed? false,
+    :seized 0,
+    :last-round? false},
+   :absent-state-keys [:last :disposition-known],
+   :sources
+   [{:file "checks/playout_snatch.clj",
+     :lines [171 179],
+     :pointer "checks/playout_snatch.clj:171-179"}
+    {:file "checks/playout_snatch.clj",
+     :lines [310 323],
+     :pointer "checks/playout_snatch.clj:310-323"}],
+   :expected-selected-receipts
+   [{:pattern :snatch/ask-for-surplus-not-surrender,
+     :primary-kind :if,
+     :acknowledgments
+     [{:kind :if,
+       :clause :available-resources,
+       :source
+       "library/snatch/ask-for-surplus-not-surrender.flexiarg:16-17"}],
+     :however-status :not-implemented}
+    {:pattern :snatch/exchange-when-both-sides-gain,
+     :primary-kind :if,
+     :acknowledgments
+     [{:kind :if,
+       :clause :available-resources,
+       :source
+       "library/snatch/exchange-when-both-sides-gain.flexiarg:17-18"}
+      {:kind :however,
+       :clause :salient-seizure-risk,
+       :source
+       "library/snatch/exchange-when-both-sides-gain.flexiarg:21-22"}],
+     :however-status :executable}
+    {:pattern :snatch/probe-before-committing,
+     :primary-kind :if,
+     :acknowledgments
+     [{:kind :if,
+       :clause :unknown-prior-response,
+       :source "library/snatch/probe-before-committing.flexiarg:17-18"}
+      {:kind :however,
+       :clause :resources-above-floor,
+       :source
+       "library/snatch/probe-before-committing.flexiarg:21-22"}],
+     :however-status :executable}]}
+  {:scenario [:g4 :snatcher],
+   :round 2,
+   :derivation
+   "The authored probe THEN offers the smallest discriminating amount; the existing precedence/policy selects its size-1 offer. Fixed snatcher returns O4; the transition removes one token, records the snatch and known disposition, leaves seizure 1 and repair false. Thus remedy/mark opportunities are live; observed repair and unknown counterpart are not. Derivation is from source, not receipt output.",
+   :state-assertions
+   {:tokens 9,
+    :snatched? true,
+    :repair-observed? false,
+    :seized 1,
+    :disposition-known true,
+    :last :snatched,
+    :last-round? false},
+   :sources
+   [{:file "checks/playout_snatch.clj",
+     :lines [92 104],
+     :pointer "checks/playout_snatch.clj:92-104"}
+    {:file "checks/playout_snatch.clj",
+     :lines [171 179],
+     :pointer "checks/playout_snatch.clj:171-179"}
+    {:file "checks/playout_snatch.clj",
+     :lines [190 206],
+     :pointer "checks/playout_snatch.clj:190-206"}
+    {:file "checks/playout_snatch.clj",
+     :lines [310 354],
+     :pointer "checks/playout_snatch.clj:310-354"}
+    {:file "library/snatch/probe-before-committing.flexiarg",
+     :lines [24 26],
+     :pointer
+     "library/snatch/probe-before-committing.flexiarg:24-26"}],
+   :expected-selected-receipts
+   [{:pattern :snatch/a-free-mark-is-always-worth-assigning,
+     :primary-kind :if,
+     :acknowledgments
+     [{:kind :if,
+       :clause :mark-opportunity,
+       :source
+       "library/snatch/a-free-mark-is-always-worth-assigning.flexiarg:15-16"}],
+     :however-status :not-implemented}
+    {:pattern :snatch/ask-for-surplus-not-surrender,
+     :primary-kind :if,
+     :acknowledgments
+     [{:kind :if,
+       :clause :available-resources,
+       :source
+       "library/snatch/ask-for-surplus-not-surrender.flexiarg:16-17"}],
+     :however-status :not-implemented}
+    {:pattern :snatch/consult-the-remedy-before-exiting,
+     :primary-kind :if,
+     :acknowledgments
+     [{:kind :if,
+       :clause :repair-opportunity,
+       :source
+       "library/snatch/consult-the-remedy-before-exiting.flexiarg:18-19"}
+      {:kind :however,
+       :clause :exit-available,
+       :source
+       "library/snatch/consult-the-remedy-before-exiting.flexiarg:22-24"}],
+     :however-status :executable}
+    {:pattern :snatch/exchange-when-both-sides-gain,
+     :primary-kind :if,
+     :acknowledgments
+     [{:kind :if,
+       :clause :available-resources,
+       :source
+       "library/snatch/exchange-when-both-sides-gain.flexiarg:17-18"}
+      {:kind :however,
+       :clause :salient-seizure-risk,
+       :source
+       "library/snatch/exchange-when-both-sides-gain.flexiarg:21-22"}],
+     :however-status :executable}],
+   :independent-exclusion-expectations
+   [{:pattern :snatch/re-enter-after-observed-repair,
+     :if-boolean false,
+     :however-boolean false,
+     :reason
+     "Repair not observed; seizure not cleared. HOWEVER here is an independent predicate prediction, not a claim of a short-circuit execution.",
+     :sources
+     ["library/snatch/re-enter-after-observed-repair.flexiarg:16-17"
+      "library/snatch/re-enter-after-observed-repair.flexiarg:20-21"
+      {:file "checks/playout_snatch.clj",
+       :lines [70 75],
+       :pointer "checks/playout_snatch.clj:70-75"}]}
+    {:pattern :snatch/probe-before-committing,
+     :if-boolean false,
+     :however-boolean true,
+     :reason
+     "Disposition is known, while tokens remain above 1; same diagnostic qualification.",
+     :sources
+     ["library/snatch/probe-before-committing.flexiarg:17-18"
+      "library/snatch/probe-before-committing.flexiarg:21-22"
+      {:file "checks/playout_snatch.clj",
+       :lines [92 96],
+       :pointer "checks/playout_snatch.clj:92-96"}]}]}],
+ :date "2026-09-09",
+ :source-basis
+ {:repository "futon3",
+  :read-commit "b98aa2ff1e8c3ad760e459cbd7a34e9dc59a5251",
+  :pins
+  [{:file
+    "library/snatch/a-free-mark-is-always-worth-assigning.flexiarg",
+    :git-blob "15121ecaf3970e4ab4a4d0914f0b8323ccb411be",
+    :sha256
+    "90245f0c725bd1486dee752c4f9fccfb8f42b452c85654da35ba0f65fe25edb0"}
+   {:file "library/snatch/accept-an-offer-that-beats-holding.flexiarg",
+    :git-blob "fd6f95bf1f0366ef640677c500f1b90ab8e23d2e",
+    :sha256
+    "3a2efbf7ccff4a1048921abd55ee598e3b3f482968c6611ea52f40aec822dc5e"}
+   {:file
+    "library/snatch/an-unmodelled-response-stops-the-line.flexiarg",
+    :git-blob "402f6db1435d6d0205679ff215c1e5f28d21fd5d",
+    :sha256
+    "a89918211d7700f73121c97decec2060d899131a80c3c2b865cf7ae79be8d00b"}
+   {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+    :git-blob "c6312c59e7e333a044043f571d7dfec27302af08",
+    :sha256
+    "d4b59fe05b98d0a3faa041714e0ea05a9ac11feaa1997efcff1da17db7288733"}
+   {:file "library/snatch/consult-the-remedy-before-exiting.flexiarg",
+    :git-blob "a050a12d2c3f02ddd876910fd675f16e7e0f761d",
+    :sha256
+    "6a01b7f17af02168f6a396722bd168aaf725428a0ae7447b5716c31c1cf5f221"}
+   {:file
+    "library/snatch/escalate-only-as-far-as-you-can-lose.flexiarg",
+    :git-blob "3b9be2691b438edd7739e5cea0386d13ad772bc0",
+    :sha256
+    "1a45d0aa5f3f25d3e8f30d9183c462ed05fe4c1317c7c8df82a87646b87ae05b"}
+   {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+    :git-blob "02ebe2f6c2cefa83a73128e2bc9e9d4b0c0d048f",
+    :sha256
+    "5f64f812b0ffc28ea3a31db93916fdd274aefc529fac09c48bb2babd20f3f7d9"}
+   {:file "library/snatch/forced-play-needs-a-loss-floor.flexiarg",
+    :git-blob "041ae06749b3cc62267ce50a0f3a93ace36087c2",
+    :sha256
+    "4caa611c2fb20f6a700d1ebe294357807e472ee6b989bba4a6bc182a53362092"}
+   {:file
+    "library/snatch/grim-cuts-the-cascade-and-never-widens-it.flexiarg",
+    :git-blob "047a11c23a70253e6bac0174394ed33f34abe791",
+    :sha256
+    "1526f002ced1c4b93c59513272afa0e56cf9b38d8e9984efa9398f5c3c2e67c0"}
+   {:file "library/snatch/have-a-temperament.flexiarg",
+    :git-blob "4e411f3d49c26df6664642de6fc00a5c73594b4d",
+    :sha256
+    "c78442dc9d8fd7cda018034f7ed639d5936efc586db6002d2f9e14e3ffbfdb10"}
+   {:file
+    "library/snatch/institutions-vary-by-position-and-force.flexiarg",
+    :git-blob "d3e57d665f6be3870e16c7186ad2593d1051d92f",
+    :sha256
+    "92fbccc8c41757fab2a087c993270bbd9b6f96fa0489e3dcd72fa1317d85c41a"}
+   {:file "library/snatch/lead-with-the-exchange-rule.flexiarg",
+    :git-blob "d8bd4a8fb752985d1a5a3e687162b20cd5db375d",
+    :sha256
+    "341fa7e31cce51da7efa0463e7335982ca71df19a76b5b6c51cc2412e416bcee"}
+   {:file "library/snatch/mark-without-force.flexiarg",
+    :git-blob "75b1976022782d95c00c45bc4298aba9b1ff43c3",
+    :sha256
+    "2bf4e20151c425bc49dd48f25b8fd90a67f95d8e63638d08f7f6f668345f125c"}
+   {:file "library/snatch/non-binding-talk-still-moves-play.flexiarg",
+    :git-blob "cf9b2c1abc7e143f6ba8310ba8ba80495fa81671",
+    :sha256
+    "6790bfd9259ce7098e713826b1e7999e708d072583cf23d17b2f926fda40117f"}
+   {:file "library/snatch/play-the-authored-order-first.flexiarg",
+    :git-blob "6bb19659d25b52c0b6a14345406d56b1b9be4959",
+    :sha256
+    "b21b7dd993ee1ad54cd66b4330b1ef6a2e111a682edd849f96bd384de1db1419"}
+   {:file "library/snatch/preserve-the-right-to-abstain.flexiarg",
+    :git-blob "0f68d4df95e0b5875899f7ac27a54637e3e26043",
+    :sha256
+    "95de16a04f4b9b23d3e63eac614008337c0943fec86a4d65e8363c872f4ff862"}
+   {:file "library/snatch/price-the-final-round-as-final.flexiarg",
+    :git-blob "e51c1b5bcbd5e88f1b0703c4b0656baf5236c7a6",
+    :sha256
+    "8ef954d197172721c081bb43cd1b8fdb2396589ddec9d91b50921a90328e3892"}
+   {:file "library/snatch/probe-before-committing.flexiarg",
+    :git-blob "93747b0b114f96f65599ebfe48623307d3873686",
+    :sha256
+    "2e12af8463e82db8333157f79448b911ead1bcc71b5ca25e8510d8463757bdc9"}
+   {:file "library/snatch/promote-the-remedy-before-the-exit.flexiarg",
+    :git-blob "72274f40973663768a0047ab2eb2dd5841e63b6a",
+    :sha256
+    "cad1c935a1e3fe753febd9b13d04359c040660186539ac3bb3336a2f3a4ccf6c"}
+   {:file "library/snatch/protect-the-unprotected-move.flexiarg",
+    :git-blob "5e7a70a39eb9b2f8a7754679a88136f10cb3b76e",
+    :sha256
+    "b75cc3b81ed7b6955d39e91e89f5bcb9ed29d6393202a9ef01c23456a655bfb4"}
+   {:file "library/snatch/re-enter-after-observed-repair.flexiarg",
+    :git-blob "1cba24a28107a89e3845a7b210e3791fd8dbe89b",
+    :sha256
+    "4293feb4d644d7d6661a622839b156ecc8a89e56a3bc3c66858a351a6feb30f6"}
+   {:file "library/snatch/revert-then-invert.flexiarg",
+    :git-blob "97a6eb51efce9725c7df0f2339f61a6072cafb31",
+    :sha256
+    "f7c579980a27c61738290951bde788ab0ecd75808d9fdeaa03ce69d154ad6f1d"}
+   {:file "library/snatch/use-talk-to-make-a-testable-offer.flexiarg",
+    :git-blob "8421c53a1a40c517993a56e461a267d2a4789f09",
+    :sha256
+    "b48a3edc5d9986c22fdd1672ecfd7c32130e3b04b772296923779b32574edc14"}
+   {:file "library/snatch/widen-the-cascade-only-on-evidence.flexiarg",
+    :git-blob "a3b3b21b8b82957bf0ed491874954cabdfe05e8d",
+    :sha256
+    "2e879dd5b43db450d97fed2c0dfff0f8710196cb60b76e238e4516b6c15f8fd6"}
+   {:file "checks/playout_snatch.clj",
+    :git-blob "90e9f65ae3d548842d7ea4df288eabac79c7e66d",
+    :sha256
+    "82770b78b422d5355c6abcf4fba0f757e7eefdbe48d84591236ab123f663dc59"}
+   {:file "checks/find_snatch.clj",
+    :git-blob "e232e5ca3877ca0d62ea2f93fcf42c345aadfdee",
+    :sha256
+    "5704fe29d76059cd01b5eb76bb448b84805db42a85a6a2cf7fdad4d769afb4d9"}
+   {:file "checks/find_organise.clj",
+    :git-blob "c6ea2dd60f226bbf76d82e9bee4df9c0ad67fbef",
+    :sha256
+    "64c3abb4a5a8655736ffc6391cbf7cbae17a76cdc3e026cfc3e6adcf0da1d9ce"}
+   {:file "checks/snatch-cascade.edn",
+    :git-blob "68a7c56597587440c21b90be49ad947dba9dc2dc",
+    :sha256
+    "00397dbe6fea4b58f63a13594bd9e4f53dbfa17a2a2cf0e07844c726e2e69069"}
+   {:file "library/process-coherence/refusal-becomes-pattern.flexiarg",
+    :git-blob "141c4a741bee5485733bc2f62acb0a869d20b1ef",
+    :sha256
+    "34832402cab254934b22f00ce073fc1cdb3e1a4df3257c587b7f5676e3eb0223"}],
+  :refusal
+  "Before a run, match the complete sorted 24-file population, blob identities and SHA256 of exact bytes (UTF-8, no newline normalization); reject missing, additional or modified sources. Check again after the run. A draft or absent independent review pin refuses execution. Implementation changes to a pinned executable require an explicit reviewed successor pin; never silently rebaseline. This manifest is itself pinned by the reviewer commit.",
+  :population-count 24},
+ :choice-status
+ {:find-f2-receipt-carrier :observed-not-decided,
+  :find-f4-reading :observed-not-decided,
+  :find-f3-citation-field :observed-not-decided},
+ :authority
+ "Agency invoke-1788927498211-15990-5dc670d2; claude-1 reviews and pins before implementation/evidence runs.",
+ :scenarios
+ [{:scenario [:g1 :snatcher],
+   :policy :patterns,
+   :requested-rounds 5,
+   :input-source
+   {:file "checks/snatch-cascade.edn",
+    :lines [6 21],
+    :pointer "checks/snatch-cascade.edn:6-21"},
+   :scenario-designated-exclusion
+   :snatch/consult-the-remedy-before-exiting}
+  {:scenario [:g1 :sharer],
+   :policy :patterns,
+   :requested-rounds 5,
+   :input-source
+   {:file "checks/snatch-cascade.edn",
+    :lines [27 43],
+    :pointer "checks/snatch-cascade.edn:27-43"},
+   :scenario-designated-exclusion
+   :snatch/consult-the-remedy-before-exiting}
+  {:scenario [:g1 :cautious],
+   :policy :patterns,
+   :requested-rounds 5,
+   :input-source
+   {:file "checks/snatch-cascade.edn",
+    :lines [49 65],
+    :pointer "checks/snatch-cascade.edn:49-65"},
+   :scenario-designated-exclusion
+   :snatch/consult-the-remedy-before-exiting}
+  {:scenario [:g4 :snatcher],
+   :policy :patterns,
+   :requested-rounds 5,
+   :input-source
+   {:file "checks/snatch-cascade.edn",
+    :lines [75 93],
+    :pointer "checks/snatch-cascade.edn:75-93"},
+   :scenario-designated-exclusion
+   :snatch/forced-play-needs-a-loss-floor}
+  {:scenario [:g2 :snatcher],
+   :policy :patterns,
+   :requested-rounds 12,
+   :input-source
+   {:file "checks/snatch-cascade.edn",
+    :lines [102 120],
+    :pointer "checks/snatch-cascade.edn:102-120"},
+   :scenario-designated-exclusion
+   :snatch/consult-the-remedy-before-exiting}
+  {:scenario [:g5 :sharer],
+   :policy :patterns,
+   :requested-rounds 5,
+   :input-source
+   {:file "checks/snatch-cascade.edn",
+    :lines [126 142],
+    :pointer "checks/snatch-cascade.edn:126-142"},
+   :scenario-designated-exclusion
+   :snatch/re-enter-after-observed-repair}],
+ :scenario-basis
+ {:order
+  {:file "checks/find_snatch.clj",
+   :lines [21 23],
+   :pointer "checks/find_snatch.clj:21-23"},
+  :B-designation
+  {:file "checks/find_snatch.clj",
+   :lines [25 31],
+   :pointer "checks/find_snatch.clj:25-31"},
+  :treatments
+  {:file "checks/playout_snatch.clj",
+   :lines [171 179],
+   :pointer "checks/playout_snatch.clj:171-179"},
+  :initial-state-and-round-transition
+  {:file "checks/playout_snatch.clj",
+   :lines [310 354],
+   :pointer "checks/playout_snatch.clj:310-354"},
+  :policy
+  {:file "checks/playout_snatch.clj",
+   :lines [190 206],
+   :pointer "checks/playout_snatch.clj:190-206"},
+  :policy-binding
+  {:file "checks/playout_snatch.clj",
+   :lines [291 291],
+   :pointer "checks/playout_snatch.clj:291-291"},
+  :limit
+  "Requested rounds are inputs, not guaranteed round counts: cautious play can stop early. Never pad stopped runs or copy recorded actions/selections as policy inputs."},
+ :comparison-cases
+ [{:id :F2-full-versus-presence,
+   :base-query [:g4 :snatcher 1],
+   :target :snatch/probe-before-committing,
+   :mutation
+   "Diagnostic copy only: replace IF acknowledgment unknown-prior-response with terminal-round; retain kind, citation, as-of, receipt key and selection.",
+   :expected
+   {:base-presence true,
+    :base-full true,
+    :control-presence true,
+    :control-full false},
+   :distinguished
+   "Base full passes, mutation fails attribution, and both project to identical receipt-presence records.",
+   :refuted
+   "Mutation passes full, base fails full, or presence projection changes. Report actual checks and refuse a purported validating control.",
+   :not-distinguished
+   "No nonempty eligible receipt or no independently detected content difference; do not choose another mutation to force the result."}
+  {:id :F2-as-of-cross-round,
+   :target :snatch/exchange-when-both-sides-gain,
+   :mutation
+   "Copy ONLY round-1 as-of into round-2 receipt of this same pattern. Keep round-2 clauses and citation intact.",
+   :expected
+   {:presence true,
+    :clause-attribution true,
+    :citation true,
+    :query-binding false},
+   :distinguished
+   "Both genuine receipts validate, controlled round-2 receipt fails query binding while identical pattern citation remains valid.",
+   :refuted
+   "Swapped as-of passes binding, or another check changes due to the mutation; record it rather than broadening the mutation.",
+   :not-distinguished
+   "Either genuine same-pattern receipt is absent or input identities cannot be independently separated."}
+  {:id :F3-two-check-matrix,
+   :base-query [:g4 :snatcher 1],
+   :target :snatch/probe-before-committing,
+   :columns [:clause-attribution :citation],
+   :rows
+   [{:case :genuine, :expected [true true]}
+    {:case :clause-only-swap,
+     :mutation
+     "Same IF unknown-prior-response -> terminal-round mutation as F2; all citation fields unchanged.",
+     :expected [false true]}
+    {:case :cited-pattern-only-swap,
+     :mutation
+     "Replace only the IF citation with the valid pinned IF file/blob/span/text for snatch/price-the-final-round-as-final; retain probe pattern id, IF kind, unknown-prior-response acknowledgment and as-of.",
+     :replacement-source
+     "library/snatch/price-the-final-round-as-final.flexiarg:16-17",
+     :expected [true false]}],
+   :distinguished
+   "All three observed pairs match the matrix and the base selected run is nonempty.",
+   :refuted
+   "Any matrix cell differs; report the actual matrix, no claim of separated checks.",
+   :not-distinguished
+   "No nonempty validated target or checks cannot isolate the two faults. Synthetic faults are controls, not observed live misattributions."}
+  {:B-at-scenario
+   "Recorded designated member is in repository and absent from the union of genuine selected sets at all visited rounds of that recorded scenario. Also report its round-local exclusion.",
+   :refuted
+   "Designated control member was already selected, an independent exclusion lacks its predicted reason, or expected differing values do not occur. Report actual values and refuse the claimed comparison.",
+   :C-at-input
+   "For every reviewer-designated member applicable to this query and in the repository, it is absent from selected. Report per-query observations only, not the universal-repository theorem. Empty applicable designation is vacuous.",
+   :control-B-versus-C
+   "After reviewer pins nonempty C, admit one extra C-designated round-2 member distinct from B into a diagnostic selection while preserving B exclusion. Expected B true and C false; report A too. Do not invent an external designation or a receipt to make the control pass.",
+   :distinguished
+   "Genuine records satisfy the respective nonvacuous checks; the stated controlled admission yields different local A/B or B/C truth values on the identical population.",
+   :id :F4-A-B-C,
+   :control-A-versus-B
+   "At g4 round 2, a diagnostic selected-set copy admits forced-play-needs-a-loss-floor while still omitting independently excluded re-enter-after-observed-repair and probe-before-committing. Keep all other genuine rounds for the diagnostic scenario union. Expected A true, B false.",
+   :A-at-input
+   "exists p in the same 24-member repository with p absent from selected. Report witness plus classification; only evaluated P1 exclusions support a semantic-zero-mass explanation. Unknown patterns are never such an explanation.",
+   :query [:g4 :snatcher 2],
+   :not-distinguished
+   "No eligible extra C member, empty designation (vacuous), no evaluated alternative omission, or equal observed results. These finite controls do not settle A/B/C universal meanings."}],
+ :F4-C-external-designation
+ {:status :empty-awaiting-reviewer-pin,
+  :reviewer "claude-1",
+  :members [],
+  :query-scope [],
+  :source-warrant nil,
+  :review-pin nil,
+  :empty-at-runtime :vacuous,
+  :rule
+  "Only the reviewer supplies membership, query scope and warrant in a follow-up pin. Drafting the two exclusion expectations above does not designate them. Empty applicable set earns no discrimination."},
+ :acceptance
+ {:minimum
+  "At least one declared comparison must distinguish on a genuinely nonempty selected run and explicitly labeled controls. If none does, refuse under the warrant counterfactual; emit not-distinguished-on-this-record rather than manufacture a verdict.",
+  :warrant
+  "library/process-coherence/refusal-becomes-pattern.flexiarg",
+  :no-ruling
+  "All three dependent choices remain observed-not-decided. This finite experiment, including the Clause serialization, supplies evidence only.",
+  :out-of-domain
+  [:snatch/have-a-temperament
+   :snatch/widen-the-cascade-only-on-evidence
+   :snatch/promote-the-remedy-before-the-exit
+   :snatch/grim-cuts-the-cascade-and-never-widens-it],
+  :accounting
+  "All 24 members must appear exactly once per candidate record: 11 executable P1 play, 6 design, 2 policy, 1 P2, 4 without interpretation. No missing interpretation becomes an evaluated false or a normative designation."},
+ :query-contract
+ {:route :structured-antecedent,
+  :lean-route "structuredAntecedent",
+  :state
+  "Complete actual play policy-callback input, preserving absent keys vs nil; query identity = scenario, round, SHA256 of canonical complete-state bytes. Encoding for this experiment: recursively turn each map into [:map [[key value] ...]] sorted by pr-str of the original keys, each set into [:set [elements ...]] sorted by pr-str of canonicalized elements, each vector into [:vector [elements ...]], each list into [:list [elements ...]], and leave EDN scalars unchanged; recursively canonicalize keys and values. UTF-8 encode pr-str of that tagged tree without a trailing newline; reject unsupported values. This preserves collection type and is independent of host map iteration. The round expectations below are partial assertions, not replay input.",
+  :tension
+  "Choose the next P1 move using the available resources, observed response, institutional opportunities, and remaining horizon.",
+  :clause-identity
+  "Query-clause names are shared across patterns where their interpreted proposition agrees. Each mapping below applies to the entire existing IF or HOWEVER predicate, including its grain guard; names do not authorize decomposition into unmeasured atomic propositions.",
+  :selection
+  {:actor-source
+   {:file "checks/playout_snatch.clj",
+    :lines [161 166],
+    :pointer "checks/playout_snatch.clj:161-166"},
+   :antecedent-source
+   {:file "checks/find_organise.clj",
+    :lines [402 407],
+    :pointer "checks/find_organise.clj:402-407"},
+   :rule
+   "P1 actor filter, then existing IF and (existing HOWEVER or true when absent). Record raw values, including nil, and their Boolean interpretation separately. Authored HOWEVER with no runner predicate is not-implemented, never measured true. Other grain and P2 remain distinct from evaluated P1 exclusion. If collecting a diagnostic HOWEVER after IF failed, label it diagnostic rather than claiming the short-circuited finder executed it."}},
+ :comparison-checks
+ {:presence
+  "For every selected id, a receipt key exists; do not smuggle clause-content validation into this projection.",
+  :clause-attribution
+  "Compare receipt (pattern, kind, clause) collection against the independent interpretation table, and g4 round-specific expectations. This check excludes citation fields and as-of so controls can isolate the checks.",
+  :citation
+  "Verify selected pattern owns cited file, blob, span, and exact bytes against the pinned source and correct IF/HOWEVER kind. This check excludes the acknowledged query-clause label. An internally valid citation to another pattern still fails ownership.",
+  :query-binding
+  "As-of must equal current scenario, round, complete-state digest and pinned library/interpretation basis. Citation equality cannot substitute for query equality.",
+  :full
+  "Presence AND clause-attribution AND citation AND query-binding; also require complete candidate accounting and unchanged actual selections. Never use mutated selections as accepted evidence."},
+ :author "codex-17",
+ :status :draft-awaiting-independent-pin,
+ :authorship
+ "Authored from git show of the pinned library and executable sources, and only the scenario input fields in snatch-cascade.edn. No find evidence output exists or was used. Expectations below are predictions for review, not run results."}

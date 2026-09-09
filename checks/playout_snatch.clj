@@ -132,7 +132,7 @@
    ;; without it the six files and these rules are two collections that merely
    ;; look alike, which is the facade LA1c §11 names.
    {:id :play-the-authored-order-first :grain :policy :precedence 1
-    :then-source "library/snatch/play-the-authored-order-first.flexiarg:25-28"
+    :then-source "library/snatch/play-the-authored-order-first.flexiarg:27-30"
     ;; "You have a cascade with an authored precedence and are considering a
     ;; temperament that re-wires it."
     :if (fn [s] (and (= :policy (:grain s)) (seq (:precedence s))))
@@ -146,7 +146,7 @@
     ;; a halt with a stated reason is.
     :then (fn [_] (fo/halt :authored-order-is-the-baseline))}
    {:id :lead-with-the-exchange-rule :grain :policy :precedence 1
-    :then-source "library/snatch/lead-with-the-exchange-rule.flexiarg:28-31"
+    :then-source "library/snatch/lead-with-the-exchange-rule.flexiarg:30-33"
     ;; "You want a temperament that leads with gains from trade" — so the
     ;; exchange rule has to be in the cascade to be led with.
     :if (fn [s] (and (= :policy (:grain s))

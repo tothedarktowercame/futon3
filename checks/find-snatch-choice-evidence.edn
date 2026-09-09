@@ -1,0 +1,2573 @@
+{:schema :experimental/f11-find-choice-evidence-v1,
+ :choice-status
+ {:find-f2-receipt-carrier :observed-not-decided,
+  :find-f4-reading :observed-not-decided,
+  :find-f3-citation-field :observed-not-decided},
+ :use
+ "NEXT-STEPS input only to find-f2-receipt-carrier, find-f4-reading and find-f3-citation-field; all remain observed-not-decided. No arm adopted and no registry updated.",
+ :primary-checks
+ [{:scenario [:g1 :snatcher],
+   :B-at-scenario true,
+   :queries
+   [{:query [:g1 :snatcher 1],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 8,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 3},
+     :receipt-checks
+     #:snatch{:ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :exchange-when-both-sides-gain
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :probe-before-committing
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/a-free-mark-is-always-worth-assigning
+       :snatch/an-unmodelled-response-stops-the-line
+       :snatch/consult-the-remedy-before-exiting
+       :snatch/escalate-only-as-far-as-you-can-lose
+       :snatch/forced-play-needs-a-loss-floor
+       :snatch/price-the-final-round-as-final
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/consult-the-remedy-before-exiting,
+      :C :vacuous,
+      :C-members [],
+      :query [:g1 :snatcher 1]}}
+    {:query [:g1 :snatcher 2],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 9,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 2},
+     :receipt-checks
+     #:snatch{:ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :exchange-when-both-sides-gain
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/a-free-mark-is-always-worth-assigning
+       :snatch/an-unmodelled-response-stops-the-line
+       :snatch/consult-the-remedy-before-exiting
+       :snatch/escalate-only-as-far-as-you-can-lose
+       :snatch/forced-play-needs-a-loss-floor
+       :snatch/price-the-final-round-as-final
+       :snatch/probe-before-committing
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/consult-the-remedy-before-exiting,
+      :C :vacuous,
+      :C-members [],
+      :query [:g1 :snatcher 2]}}
+    {:query [:g1 :snatcher 3],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 9,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 2},
+     :receipt-checks
+     #:snatch{:ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :exchange-when-both-sides-gain
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/a-free-mark-is-always-worth-assigning
+       :snatch/an-unmodelled-response-stops-the-line
+       :snatch/consult-the-remedy-before-exiting
+       :snatch/escalate-only-as-far-as-you-can-lose
+       :snatch/forced-play-needs-a-loss-floor
+       :snatch/price-the-final-round-as-final
+       :snatch/probe-before-committing
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/consult-the-remedy-before-exiting,
+      :C :vacuous,
+      :C-members [],
+      :query [:g1 :snatcher 3]}}
+    {:query [:g1 :snatcher 4],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 9,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 2},
+     :receipt-checks
+     #:snatch{:ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :exchange-when-both-sides-gain
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/a-free-mark-is-always-worth-assigning
+       :snatch/an-unmodelled-response-stops-the-line
+       :snatch/consult-the-remedy-before-exiting
+       :snatch/escalate-only-as-far-as-you-can-lose
+       :snatch/forced-play-needs-a-loss-floor
+       :snatch/price-the-final-round-as-final
+       :snatch/probe-before-committing
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/consult-the-remedy-before-exiting,
+      :C :vacuous,
+      :C-members [],
+      :query [:g1 :snatcher 4]}}
+    {:query [:g1 :snatcher 5],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 8,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 3},
+     :receipt-checks
+     #:snatch{:ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :exchange-when-both-sides-gain
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :price-the-final-round-as-final
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/a-free-mark-is-always-worth-assigning
+       :snatch/an-unmodelled-response-stops-the-line
+       :snatch/consult-the-remedy-before-exiting
+       :snatch/escalate-only-as-far-as-you-can-lose
+       :snatch/forced-play-needs-a-loss-floor
+       :snatch/probe-before-committing
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/consult-the-remedy-before-exiting,
+      :C :vacuous,
+      :C-members [],
+      :query [:g1 :snatcher 5]}}]}
+  {:scenario [:g1 :sharer],
+   :B-at-scenario true,
+   :queries
+   [{:query [:g1 :sharer 1],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 8,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 3},
+     :receipt-checks
+     #:snatch{:ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :exchange-when-both-sides-gain
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :probe-before-committing
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/a-free-mark-is-always-worth-assigning
+       :snatch/an-unmodelled-response-stops-the-line
+       :snatch/consult-the-remedy-before-exiting
+       :snatch/escalate-only-as-far-as-you-can-lose
+       :snatch/forced-play-needs-a-loss-floor
+       :snatch/price-the-final-round-as-final
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/consult-the-remedy-before-exiting,
+      :C :vacuous,
+      :C-members [],
+      :query [:g1 :sharer 1]}}
+    {:query [:g1 :sharer 2],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 9,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 2},
+     :receipt-checks
+     #:snatch{:ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :escalate-only-as-far-as-you-can-lose
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/a-free-mark-is-always-worth-assigning
+       :snatch/an-unmodelled-response-stops-the-line
+       :snatch/consult-the-remedy-before-exiting
+       :snatch/exchange-when-both-sides-gain
+       :snatch/forced-play-needs-a-loss-floor
+       :snatch/price-the-final-round-as-final
+       :snatch/probe-before-committing
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/consult-the-remedy-before-exiting,
+      :C :vacuous,
+      :C-members [],
+      :query [:g1 :sharer 2]}}
+    {:query [:g1 :sharer 3],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 9,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 2},
+     :receipt-checks
+     #:snatch{:ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :escalate-only-as-far-as-you-can-lose
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/a-free-mark-is-always-worth-assigning
+       :snatch/an-unmodelled-response-stops-the-line
+       :snatch/consult-the-remedy-before-exiting
+       :snatch/exchange-when-both-sides-gain
+       :snatch/forced-play-needs-a-loss-floor
+       :snatch/price-the-final-round-as-final
+       :snatch/probe-before-committing
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/consult-the-remedy-before-exiting,
+      :C :vacuous,
+      :C-members [],
+      :query [:g1 :sharer 3]}}
+    {:query [:g1 :sharer 4],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 9,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 2},
+     :receipt-checks
+     #:snatch{:ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :escalate-only-as-far-as-you-can-lose
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/a-free-mark-is-always-worth-assigning
+       :snatch/an-unmodelled-response-stops-the-line
+       :snatch/consult-the-remedy-before-exiting
+       :snatch/exchange-when-both-sides-gain
+       :snatch/forced-play-needs-a-loss-floor
+       :snatch/price-the-final-round-as-final
+       :snatch/probe-before-committing
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/consult-the-remedy-before-exiting,
+      :C :vacuous,
+      :C-members [],
+      :query [:g1 :sharer 4]}}
+    {:query [:g1 :sharer 5],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 8,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 3},
+     :receipt-checks
+     #:snatch{:ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :escalate-only-as-far-as-you-can-lose
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :price-the-final-round-as-final
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/a-free-mark-is-always-worth-assigning
+       :snatch/an-unmodelled-response-stops-the-line
+       :snatch/consult-the-remedy-before-exiting
+       :snatch/exchange-when-both-sides-gain
+       :snatch/forced-play-needs-a-loss-floor
+       :snatch/probe-before-committing
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/consult-the-remedy-before-exiting,
+      :C :vacuous,
+      :C-members [],
+      :query [:g1 :sharer 5]}}]}
+  {:scenario [:g1 :cautious],
+   :B-at-scenario true,
+   :queries
+   [{:query [:g1 :cautious 1],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 8,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 3},
+     :receipt-checks
+     #:snatch{:ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :exchange-when-both-sides-gain
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :probe-before-committing
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/a-free-mark-is-always-worth-assigning
+       :snatch/an-unmodelled-response-stops-the-line
+       :snatch/consult-the-remedy-before-exiting
+       :snatch/escalate-only-as-far-as-you-can-lose
+       :snatch/forced-play-needs-a-loss-floor
+       :snatch/price-the-final-round-as-final
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/consult-the-remedy-before-exiting,
+      :C :vacuous,
+      :C-members [],
+      :query [:g1 :cautious 1]}}
+    {:query [:g1 :cautious 2],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 7,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 4},
+     :receipt-checks
+     #:snatch{:an-unmodelled-response-stops-the-line
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :exchange-when-both-sides-gain
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :probe-before-committing
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/a-free-mark-is-always-worth-assigning
+       :snatch/consult-the-remedy-before-exiting
+       :snatch/escalate-only-as-far-as-you-can-lose
+       :snatch/forced-play-needs-a-loss-floor
+       :snatch/price-the-final-round-as-final
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/consult-the-remedy-before-exiting,
+      :C :vacuous,
+      :C-members [],
+      :query [:g1 :cautious 2]}}]}
+  {:scenario [:g4 :snatcher],
+   :B-at-scenario true,
+   :queries
+   [{:query [:g4 :snatcher 1],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 8,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 3},
+     :receipt-checks
+     #:snatch{:ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :exchange-when-both-sides-gain
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :probe-before-committing
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/a-free-mark-is-always-worth-assigning
+       :snatch/an-unmodelled-response-stops-the-line
+       :snatch/consult-the-remedy-before-exiting
+       :snatch/escalate-only-as-far-as-you-can-lose
+       :snatch/forced-play-needs-a-loss-floor
+       :snatch/price-the-final-round-as-final
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/forced-play-needs-a-loss-floor,
+      :C :vacuous,
+      :C-members [],
+      :query [:g4 :snatcher 1]}}
+    {:query [:g4 :snatcher 2],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 7,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 4},
+     :receipt-checks
+     #:snatch{:a-free-mark-is-always-worth-assigning
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :consult-the-remedy-before-exiting
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :exchange-when-both-sides-gain
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/an-unmodelled-response-stops-the-line
+       :snatch/escalate-only-as-far-as-you-can-lose
+       :snatch/forced-play-needs-a-loss-floor
+       :snatch/price-the-final-round-as-final
+       :snatch/probe-before-committing
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/forced-play-needs-a-loss-floor,
+      :C true,
+      :C-members
+      [:snatch/re-enter-after-observed-repair
+       :snatch/probe-before-committing],
+      :query [:g4 :snatcher 2]}}
+    {:query [:g4 :snatcher 3],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 6,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 5},
+     :receipt-checks
+     #:snatch{:a-free-mark-is-always-worth-assigning
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :consult-the-remedy-before-exiting
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :exchange-when-both-sides-gain
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :re-enter-after-observed-repair
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/an-unmodelled-response-stops-the-line
+       :snatch/escalate-only-as-far-as-you-can-lose
+       :snatch/forced-play-needs-a-loss-floor
+       :snatch/price-the-final-round-as-final
+       :snatch/probe-before-committing
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/forced-play-needs-a-loss-floor,
+      :C :vacuous,
+      :C-members [],
+      :query [:g4 :snatcher 3]}}
+    {:query [:g4 :snatcher 4],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 7,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 4},
+     :receipt-checks
+     #:snatch{:a-free-mark-is-always-worth-assigning
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :consult-the-remedy-before-exiting
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :exchange-when-both-sides-gain
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/an-unmodelled-response-stops-the-line
+       :snatch/escalate-only-as-far-as-you-can-lose
+       :snatch/forced-play-needs-a-loss-floor
+       :snatch/price-the-final-round-as-final
+       :snatch/probe-before-committing
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/forced-play-needs-a-loss-floor,
+      :C :vacuous,
+      :C-members [],
+      :query [:g4 :snatcher 4]}}
+    {:query [:g4 :snatcher 5],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 5,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 6},
+     :receipt-checks
+     #:snatch{:a-free-mark-is-always-worth-assigning
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :consult-the-remedy-before-exiting
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :exchange-when-both-sides-gain
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :price-the-final-round-as-final
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :re-enter-after-observed-repair
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/an-unmodelled-response-stops-the-line
+       :snatch/escalate-only-as-far-as-you-can-lose
+       :snatch/forced-play-needs-a-loss-floor
+       :snatch/probe-before-committing
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/forced-play-needs-a-loss-floor,
+      :C :vacuous,
+      :C-members [],
+      :query [:g4 :snatcher 5]}}]}
+  {:scenario [:g2 :snatcher],
+   :B-at-scenario true,
+   :queries
+   [{:query [:g2 :snatcher 1],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 8,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 3},
+     :receipt-checks
+     #:snatch{:ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :exchange-when-both-sides-gain
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :probe-before-committing
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/a-free-mark-is-always-worth-assigning
+       :snatch/an-unmodelled-response-stops-the-line
+       :snatch/consult-the-remedy-before-exiting
+       :snatch/escalate-only-as-far-as-you-can-lose
+       :snatch/forced-play-needs-a-loss-floor
+       :snatch/price-the-final-round-as-final
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/consult-the-remedy-before-exiting,
+      :C :vacuous,
+      :C-members [],
+      :query [:g2 :snatcher 1]}}
+    {:query [:g2 :snatcher 2],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 8,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 3},
+     :receipt-checks
+     #:snatch{:ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :exchange-when-both-sides-gain
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :forced-play-needs-a-loss-floor
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/a-free-mark-is-always-worth-assigning
+       :snatch/an-unmodelled-response-stops-the-line
+       :snatch/consult-the-remedy-before-exiting
+       :snatch/escalate-only-as-far-as-you-can-lose
+       :snatch/price-the-final-round-as-final
+       :snatch/probe-before-committing
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/consult-the-remedy-before-exiting,
+      :C :vacuous,
+      :C-members [],
+      :query [:g2 :snatcher 2]}}
+    {:query [:g2 :snatcher 3],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 8,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 3},
+     :receipt-checks
+     #:snatch{:ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :exchange-when-both-sides-gain
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :forced-play-needs-a-loss-floor
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/a-free-mark-is-always-worth-assigning
+       :snatch/an-unmodelled-response-stops-the-line
+       :snatch/consult-the-remedy-before-exiting
+       :snatch/escalate-only-as-far-as-you-can-lose
+       :snatch/price-the-final-round-as-final
+       :snatch/probe-before-committing
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/consult-the-remedy-before-exiting,
+      :C :vacuous,
+      :C-members [],
+      :query [:g2 :snatcher 3]}}
+    {:query [:g2 :snatcher 4],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 8,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 3},
+     :receipt-checks
+     #:snatch{:ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :exchange-when-both-sides-gain
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :forced-play-needs-a-loss-floor
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/a-free-mark-is-always-worth-assigning
+       :snatch/an-unmodelled-response-stops-the-line
+       :snatch/consult-the-remedy-before-exiting
+       :snatch/escalate-only-as-far-as-you-can-lose
+       :snatch/price-the-final-round-as-final
+       :snatch/probe-before-committing
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/consult-the-remedy-before-exiting,
+      :C :vacuous,
+      :C-members [],
+      :query [:g2 :snatcher 4]}}
+    {:query [:g2 :snatcher 5],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 8,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 3},
+     :receipt-checks
+     #:snatch{:ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :exchange-when-both-sides-gain
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :forced-play-needs-a-loss-floor
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/a-free-mark-is-always-worth-assigning
+       :snatch/an-unmodelled-response-stops-the-line
+       :snatch/consult-the-remedy-before-exiting
+       :snatch/escalate-only-as-far-as-you-can-lose
+       :snatch/price-the-final-round-as-final
+       :snatch/probe-before-committing
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/consult-the-remedy-before-exiting,
+      :C :vacuous,
+      :C-members [],
+      :query [:g2 :snatcher 5]}}
+    {:query [:g2 :snatcher 6],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 8,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 3},
+     :receipt-checks
+     #:snatch{:ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :exchange-when-both-sides-gain
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :forced-play-needs-a-loss-floor
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/a-free-mark-is-always-worth-assigning
+       :snatch/an-unmodelled-response-stops-the-line
+       :snatch/consult-the-remedy-before-exiting
+       :snatch/escalate-only-as-far-as-you-can-lose
+       :snatch/price-the-final-round-as-final
+       :snatch/probe-before-committing
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/consult-the-remedy-before-exiting,
+      :C :vacuous,
+      :C-members [],
+      :query [:g2 :snatcher 6]}}
+    {:query [:g2 :snatcher 7],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 8,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 3},
+     :receipt-checks
+     #:snatch{:ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :exchange-when-both-sides-gain
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :forced-play-needs-a-loss-floor
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/a-free-mark-is-always-worth-assigning
+       :snatch/an-unmodelled-response-stops-the-line
+       :snatch/consult-the-remedy-before-exiting
+       :snatch/escalate-only-as-far-as-you-can-lose
+       :snatch/price-the-final-round-as-final
+       :snatch/probe-before-committing
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/consult-the-remedy-before-exiting,
+      :C :vacuous,
+      :C-members [],
+      :query [:g2 :snatcher 7]}}
+    {:query [:g2 :snatcher 8],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 8,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 3},
+     :receipt-checks
+     #:snatch{:ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :exchange-when-both-sides-gain
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :forced-play-needs-a-loss-floor
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/a-free-mark-is-always-worth-assigning
+       :snatch/an-unmodelled-response-stops-the-line
+       :snatch/consult-the-remedy-before-exiting
+       :snatch/escalate-only-as-far-as-you-can-lose
+       :snatch/price-the-final-round-as-final
+       :snatch/probe-before-committing
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/consult-the-remedy-before-exiting,
+      :C :vacuous,
+      :C-members [],
+      :query [:g2 :snatcher 8]}}
+    {:query [:g2 :snatcher 9],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 8,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 3},
+     :receipt-checks
+     #:snatch{:ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :exchange-when-both-sides-gain
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :forced-play-needs-a-loss-floor
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/a-free-mark-is-always-worth-assigning
+       :snatch/an-unmodelled-response-stops-the-line
+       :snatch/consult-the-remedy-before-exiting
+       :snatch/escalate-only-as-far-as-you-can-lose
+       :snatch/price-the-final-round-as-final
+       :snatch/probe-before-committing
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/consult-the-remedy-before-exiting,
+      :C :vacuous,
+      :C-members [],
+      :query [:g2 :snatcher 9]}}
+    {:query [:g2 :snatcher 10],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 9,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 2},
+     :receipt-checks
+     #:snatch{:ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :exchange-when-both-sides-gain
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/a-free-mark-is-always-worth-assigning
+       :snatch/an-unmodelled-response-stops-the-line
+       :snatch/consult-the-remedy-before-exiting
+       :snatch/escalate-only-as-far-as-you-can-lose
+       :snatch/forced-play-needs-a-loss-floor
+       :snatch/price-the-final-round-as-final
+       :snatch/probe-before-committing
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/consult-the-remedy-before-exiting,
+      :C :vacuous,
+      :C-members [],
+      :query [:g2 :snatcher 10]}}
+    {:query [:g2 :snatcher 11],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 11,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1},
+     :receipt-checks {},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/a-free-mark-is-always-worth-assigning
+       :snatch/an-unmodelled-response-stops-the-line
+       :snatch/ask-for-surplus-not-surrender
+       :snatch/consult-the-remedy-before-exiting
+       :snatch/escalate-only-as-far-as-you-can-lose
+       :snatch/exchange-when-both-sides-gain
+       :snatch/forced-play-needs-a-loss-floor
+       :snatch/price-the-final-round-as-final
+       :snatch/probe-before-committing
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/consult-the-remedy-before-exiting,
+      :C :vacuous,
+      :C-members [],
+      :query [:g2 :snatcher 11]}}
+    {:query [:g2 :snatcher 12],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 10,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 1},
+     :receipt-checks
+     #:snatch{:price-the-final-round-as-final
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/a-free-mark-is-always-worth-assigning
+       :snatch/an-unmodelled-response-stops-the-line
+       :snatch/ask-for-surplus-not-surrender
+       :snatch/consult-the-remedy-before-exiting
+       :snatch/escalate-only-as-far-as-you-can-lose
+       :snatch/exchange-when-both-sides-gain
+       :snatch/forced-play-needs-a-loss-floor
+       :snatch/probe-before-committing
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/consult-the-remedy-before-exiting,
+      :C :vacuous,
+      :C-members [],
+      :query [:g2 :snatcher 12]}}]}
+  {:scenario [:g5 :sharer],
+   :B-at-scenario true,
+   :queries
+   [{:query [:g5 :sharer 1],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 7,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 4},
+     :receipt-checks
+     #:snatch{:ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :exchange-when-both-sides-gain
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :probe-before-committing
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :use-talk-to-make-a-testable-offer
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/a-free-mark-is-always-worth-assigning
+       :snatch/an-unmodelled-response-stops-the-line
+       :snatch/consult-the-remedy-before-exiting
+       :snatch/escalate-only-as-far-as-you-can-lose
+       :snatch/forced-play-needs-a-loss-floor
+       :snatch/price-the-final-round-as-final
+       :snatch/re-enter-after-observed-repair],
+      :B true,
+      :B-member :snatch/re-enter-after-observed-repair,
+      :C :vacuous,
+      :C-members [],
+      :query [:g5 :sharer 1]}}
+    {:query [:g5 :sharer 2],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 9,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 2},
+     :receipt-checks
+     #:snatch{:ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :escalate-only-as-far-as-you-can-lose
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/a-free-mark-is-always-worth-assigning
+       :snatch/an-unmodelled-response-stops-the-line
+       :snatch/consult-the-remedy-before-exiting
+       :snatch/exchange-when-both-sides-gain
+       :snatch/forced-play-needs-a-loss-floor
+       :snatch/price-the-final-round-as-final
+       :snatch/probe-before-committing
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/re-enter-after-observed-repair,
+      :C :vacuous,
+      :C-members [],
+      :query [:g5 :sharer 2]}}
+    {:query [:g5 :sharer 3],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 9,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 2},
+     :receipt-checks
+     #:snatch{:ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :escalate-only-as-far-as-you-can-lose
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/a-free-mark-is-always-worth-assigning
+       :snatch/an-unmodelled-response-stops-the-line
+       :snatch/consult-the-remedy-before-exiting
+       :snatch/exchange-when-both-sides-gain
+       :snatch/forced-play-needs-a-loss-floor
+       :snatch/price-the-final-round-as-final
+       :snatch/probe-before-committing
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/re-enter-after-observed-repair,
+      :C :vacuous,
+      :C-members [],
+      :query [:g5 :sharer 3]}}
+    {:query [:g5 :sharer 4],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 9,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 2},
+     :receipt-checks
+     #:snatch{:ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :escalate-only-as-far-as-you-can-lose
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/a-free-mark-is-always-worth-assigning
+       :snatch/an-unmodelled-response-stops-the-line
+       :snatch/consult-the-remedy-before-exiting
+       :snatch/exchange-when-both-sides-gain
+       :snatch/forced-play-needs-a-loss-floor
+       :snatch/price-the-final-round-as-final
+       :snatch/probe-before-committing
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/re-enter-after-observed-repair,
+      :C :vacuous,
+      :C-members [],
+      :query [:g5 :sharer 4]}}
+    {:query [:g5 :sharer 5],
+     :candidate-count 24,
+     :statuses
+     {:evaluated-excluded 8,
+      :no-executable-interpretation 4,
+      :other-grain 8,
+      :p2-out-of-domain 1,
+      :selected 3},
+     :receipt-checks
+     #:snatch{:ask-for-surplus-not-surrender
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :escalate-only-as-far-as-you-can-lose
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true},
+              :price-the-final-round-as-final
+              {:presence true,
+               :clause-attribution true,
+               :citation true,
+               :query-binding true,
+               :encoding true}},
+     :F1 true,
+     :F4
+     {:A true,
+      :A-evaluated-witnesses
+      [:snatch/a-free-mark-is-always-worth-assigning
+       :snatch/an-unmodelled-response-stops-the-line
+       :snatch/consult-the-remedy-before-exiting
+       :snatch/exchange-when-both-sides-gain
+       :snatch/forced-play-needs-a-loss-floor
+       :snatch/probe-before-committing
+       :snatch/re-enter-after-observed-repair
+       :snatch/use-talk-to-make-a-testable-offer],
+      :B true,
+      :B-member :snatch/re-enter-after-observed-repair,
+      :C :vacuous,
+      :C-members [],
+      :query [:g5 :sharer 5]}}]}],
+ :basis
+ {:manifest-file "checks/F11-find-comparison-manifest.edn",
+  :manifest-sha256
+  "f19842e630a6433c1923b7067c3f6f5174a3c25d9846d7ca3e4f6b48fc96b355",
+  :manifest-digest
+  "3e65d6d50157255a119b16e0c8641b43f4f1720190a5d1001fe1ca97423670ca",
+  :source-pins
+  [{:file
+    "library/snatch/a-free-mark-is-always-worth-assigning.flexiarg",
+    :git-blob "15121ecaf3970e4ab4a4d0914f0b8323ccb411be",
+    :sha256
+    "90245f0c725bd1486dee752c4f9fccfb8f42b452c85654da35ba0f65fe25edb0"}
+   {:file "library/snatch/accept-an-offer-that-beats-holding.flexiarg",
+    :git-blob "fd6f95bf1f0366ef640677c500f1b90ab8e23d2e",
+    :sha256
+    "3a2efbf7ccff4a1048921abd55ee598e3b3f482968c6611ea52f40aec822dc5e"}
+   {:file
+    "library/snatch/an-unmodelled-response-stops-the-line.flexiarg",
+    :git-blob "402f6db1435d6d0205679ff215c1e5f28d21fd5d",
+    :sha256
+    "a89918211d7700f73121c97decec2060d899131a80c3c2b865cf7ae79be8d00b"}
+   {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+    :git-blob "c6312c59e7e333a044043f571d7dfec27302af08",
+    :sha256
+    "d4b59fe05b98d0a3faa041714e0ea05a9ac11feaa1997efcff1da17db7288733"}
+   {:file "library/snatch/consult-the-remedy-before-exiting.flexiarg",
+    :git-blob "a050a12d2c3f02ddd876910fd675f16e7e0f761d",
+    :sha256
+    "6a01b7f17af02168f6a396722bd168aaf725428a0ae7447b5716c31c1cf5f221"}
+   {:file
+    "library/snatch/escalate-only-as-far-as-you-can-lose.flexiarg",
+    :git-blob "3b9be2691b438edd7739e5cea0386d13ad772bc0",
+    :sha256
+    "1a45d0aa5f3f25d3e8f30d9183c462ed05fe4c1317c7c8df82a87646b87ae05b"}
+   {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+    :git-blob "02ebe2f6c2cefa83a73128e2bc9e9d4b0c0d048f",
+    :sha256
+    "5f64f812b0ffc28ea3a31db93916fdd274aefc529fac09c48bb2babd20f3f7d9"}
+   {:file "library/snatch/forced-play-needs-a-loss-floor.flexiarg",
+    :git-blob "041ae06749b3cc62267ce50a0f3a93ace36087c2",
+    :sha256
+    "4caa611c2fb20f6a700d1ebe294357807e472ee6b989bba4a6bc182a53362092"}
+   {:file
+    "library/snatch/grim-cuts-the-cascade-and-never-widens-it.flexiarg",
+    :git-blob "047a11c23a70253e6bac0174394ed33f34abe791",
+    :sha256
+    "1526f002ced1c4b93c59513272afa0e56cf9b38d8e9984efa9398f5c3c2e67c0"}
+   {:file "library/snatch/have-a-temperament.flexiarg",
+    :git-blob "4e411f3d49c26df6664642de6fc00a5c73594b4d",
+    :sha256
+    "c78442dc9d8fd7cda018034f7ed639d5936efc586db6002d2f9e14e3ffbfdb10"}
+   {:file
+    "library/snatch/institutions-vary-by-position-and-force.flexiarg",
+    :git-blob "d3e57d665f6be3870e16c7186ad2593d1051d92f",
+    :sha256
+    "92fbccc8c41757fab2a087c993270bbd9b6f96fa0489e3dcd72fa1317d85c41a"}
+   {:file "library/snatch/lead-with-the-exchange-rule.flexiarg",
+    :git-blob "d8bd4a8fb752985d1a5a3e687162b20cd5db375d",
+    :sha256
+    "341fa7e31cce51da7efa0463e7335982ca71df19a76b5b6c51cc2412e416bcee"}
+   {:file "library/snatch/mark-without-force.flexiarg",
+    :git-blob "75b1976022782d95c00c45bc4298aba9b1ff43c3",
+    :sha256
+    "2bf4e20151c425bc49dd48f25b8fd90a67f95d8e63638d08f7f6f668345f125c"}
+   {:file "library/snatch/non-binding-talk-still-moves-play.flexiarg",
+    :git-blob "cf9b2c1abc7e143f6ba8310ba8ba80495fa81671",
+    :sha256
+    "6790bfd9259ce7098e713826b1e7999e708d072583cf23d17b2f926fda40117f"}
+   {:file "library/snatch/play-the-authored-order-first.flexiarg",
+    :git-blob "6bb19659d25b52c0b6a14345406d56b1b9be4959",
+    :sha256
+    "b21b7dd993ee1ad54cd66b4330b1ef6a2e111a682edd849f96bd384de1db1419"}
+   {:file "library/snatch/preserve-the-right-to-abstain.flexiarg",
+    :git-blob "0f68d4df95e0b5875899f7ac27a54637e3e26043",
+    :sha256
+    "95de16a04f4b9b23d3e63eac614008337c0943fec86a4d65e8363c872f4ff862"}
+   {:file "library/snatch/price-the-final-round-as-final.flexiarg",
+    :git-blob "e51c1b5bcbd5e88f1b0703c4b0656baf5236c7a6",
+    :sha256
+    "8ef954d197172721c081bb43cd1b8fdb2396589ddec9d91b50921a90328e3892"}
+   {:file "library/snatch/probe-before-committing.flexiarg",
+    :git-blob "93747b0b114f96f65599ebfe48623307d3873686",
+    :sha256
+    "2e12af8463e82db8333157f79448b911ead1bcc71b5ca25e8510d8463757bdc9"}
+   {:file "library/snatch/promote-the-remedy-before-the-exit.flexiarg",
+    :git-blob "72274f40973663768a0047ab2eb2dd5841e63b6a",
+    :sha256
+    "cad1c935a1e3fe753febd9b13d04359c040660186539ac3bb3336a2f3a4ccf6c"}
+   {:file "library/snatch/protect-the-unprotected-move.flexiarg",
+    :git-blob "5e7a70a39eb9b2f8a7754679a88136f10cb3b76e",
+    :sha256
+    "b75cc3b81ed7b6955d39e91e89f5bcb9ed29d6393202a9ef01c23456a655bfb4"}
+   {:file "library/snatch/re-enter-after-observed-repair.flexiarg",
+    :git-blob "1cba24a28107a89e3845a7b210e3791fd8dbe89b",
+    :sha256
+    "4293feb4d644d7d6661a622839b156ecc8a89e56a3bc3c66858a351a6feb30f6"}
+   {:file "library/snatch/revert-then-invert.flexiarg",
+    :git-blob "97a6eb51efce9725c7df0f2339f61a6072cafb31",
+    :sha256
+    "f7c579980a27c61738290951bde788ab0ecd75808d9fdeaa03ce69d154ad6f1d"}
+   {:file "library/snatch/use-talk-to-make-a-testable-offer.flexiarg",
+    :git-blob "8421c53a1a40c517993a56e461a267d2a4789f09",
+    :sha256
+    "b48a3edc5d9986c22fdd1672ecfd7c32130e3b04b772296923779b32574edc14"}
+   {:file "library/snatch/widen-the-cascade-only-on-evidence.flexiarg",
+    :git-blob "a3b3b21b8b82957bf0ed491874954cabdfe05e8d",
+    :sha256
+    "2e879dd5b43db450d97fed2c0dfff0f8710196cb60b76e238e4516b6c15f8fd6"}
+   {:file "checks/playout_snatch.clj",
+    :git-blob "90e9f65ae3d548842d7ea4df288eabac79c7e66d",
+    :sha256
+    "82770b78b422d5355c6abcf4fba0f757e7eefdbe48d84591236ab123f663dc59"}
+   {:file "checks/find_snatch.clj",
+    :git-blob "0a43712bb8d2f8a378c14e09053239c4dab6b5ed",
+    :sha256
+    "35cde326e9cfcb03abeb4ec5401cbd7dbcc124bcc93e1e3a953d5dbe1d8da9ee"}
+   {:file "checks/find_snatch_evidence.clj",
+    :git-blob "ca7ab9ea7eee38c13b637b29c8b2a967a14f0760",
+    :sha256
+    "b6b3d2547e47f862f35e9b12a934e679a54f24e2e9f343c3f4ef374c4b64a415"}
+   {:file "checks/find_organise.clj",
+    :git-blob "c6ea2dd60f226bbf76d82e9bee4df9c0ad67fbef",
+    :sha256
+    "64c3abb4a5a8655736ffc6391cbf7cbae17a76cdc3e026cfc3e6adcf0da1d9ce"}
+   {:file "checks/snatch-cascade.edn",
+    :git-blob "68a7c56597587440c21b90be49ad947dba9dc2dc",
+    :sha256
+    "00397dbe6fea4b58f63a13594bd9e4f53dbfa17a2a2cf0e07844c726e2e69069"}
+   {:file "library/process-coherence/refusal-becomes-pattern.flexiarg",
+    :git-blob "141c4a741bee5485733bc2f62acb0a869d20b1ef",
+    :sha256
+    "34832402cab254934b22f00ce073fc1cdb3e1a4df3257c587b7f5676e3eb0223"}],
+  :comparison-driver
+  {:file "checks/find_snatch_choices.clj",
+   :sha256
+   "52b2cbf2ca48f7d10bf799bcdc299444dee88457ccf652d8d96c0b92216ad1c2",
+   :review-status :awaiting-independent-review}},
+ :summary
+ "Query-clause content and per-query provenance detect faults that receipt presence alone preserves. The citation/attribution controls separate their checks. At the pinned g4 round-2 designation, controlled admissions separate A/B and B/C; the genuine selections are unchanged.",
+ :status :next-steps-evidence,
+ :primary-artifact-sha256
+ "e8e9bf808f5fbdb9cf126c70fa3760f198834d529fe502df6dbbec74ce3cc3fe",
+ :limits
+ "Finite records and explicitly labelled diagnostic faults distinguish checks on this record, not universal Lean propositions. Unknown interpretations remain outside semantic zero-mass claims.",
+ :comparisons
+ [{:comparison :F2-full-versus-presence,
+   :verdict :distinguished,
+   :genuine
+   {:presence true,
+    :clause-attribution true,
+    :citation true,
+    :query-binding true,
+    :encoding true,
+    :full true},
+   :control
+   {:control true,
+    :mutation :clause-attribution-only,
+    :receipt
+    {:evidence
+     {:schema :experimental/f11-find-receipt-v1,
+      :primary-kind :if,
+      :route :structured-antecedent,
+      :as-of
+      {:scenario [:g4 :snatcher],
+       :round 1,
+       :state-digest
+       "a0fc9f397c7860d895f5e54d239da51e64dd778511e4d45ead325654c8cdbdfb",
+       :source-pins
+       [{:file
+         "library/snatch/a-free-mark-is-always-worth-assigning.flexiarg",
+         :git-blob "15121ecaf3970e4ab4a4d0914f0b8323ccb411be",
+         :sha256
+         "90245f0c725bd1486dee752c4f9fccfb8f42b452c85654da35ba0f65fe25edb0"}
+        {:file
+         "library/snatch/accept-an-offer-that-beats-holding.flexiarg",
+         :git-blob "fd6f95bf1f0366ef640677c500f1b90ab8e23d2e",
+         :sha256
+         "3a2efbf7ccff4a1048921abd55ee598e3b3f482968c6611ea52f40aec822dc5e"}
+        {:file
+         "library/snatch/an-unmodelled-response-stops-the-line.flexiarg",
+         :git-blob "402f6db1435d6d0205679ff215c1e5f28d21fd5d",
+         :sha256
+         "a89918211d7700f73121c97decec2060d899131a80c3c2b865cf7ae79be8d00b"}
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :git-blob "c6312c59e7e333a044043f571d7dfec27302af08",
+         :sha256
+         "d4b59fe05b98d0a3faa041714e0ea05a9ac11feaa1997efcff1da17db7288733"}
+        {:file
+         "library/snatch/consult-the-remedy-before-exiting.flexiarg",
+         :git-blob "a050a12d2c3f02ddd876910fd675f16e7e0f761d",
+         :sha256
+         "6a01b7f17af02168f6a396722bd168aaf725428a0ae7447b5716c31c1cf5f221"}
+        {:file
+         "library/snatch/escalate-only-as-far-as-you-can-lose.flexiarg",
+         :git-blob "3b9be2691b438edd7739e5cea0386d13ad772bc0",
+         :sha256
+         "1a45d0aa5f3f25d3e8f30d9183c462ed05fe4c1317c7c8df82a87646b87ae05b"}
+        {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+         :git-blob "02ebe2f6c2cefa83a73128e2bc9e9d4b0c0d048f",
+         :sha256
+         "5f64f812b0ffc28ea3a31db93916fdd274aefc529fac09c48bb2babd20f3f7d9"}
+        {:file
+         "library/snatch/forced-play-needs-a-loss-floor.flexiarg",
+         :git-blob "041ae06749b3cc62267ce50a0f3a93ace36087c2",
+         :sha256
+         "4caa611c2fb20f6a700d1ebe294357807e472ee6b989bba4a6bc182a53362092"}
+        {:file
+         "library/snatch/grim-cuts-the-cascade-and-never-widens-it.flexiarg",
+         :git-blob "047a11c23a70253e6bac0174394ed33f34abe791",
+         :sha256
+         "1526f002ced1c4b93c59513272afa0e56cf9b38d8e9984efa9398f5c3c2e67c0"}
+        {:file "library/snatch/have-a-temperament.flexiarg",
+         :git-blob "4e411f3d49c26df6664642de6fc00a5c73594b4d",
+         :sha256
+         "c78442dc9d8fd7cda018034f7ed639d5936efc586db6002d2f9e14e3ffbfdb10"}
+        {:file
+         "library/snatch/institutions-vary-by-position-and-force.flexiarg",
+         :git-blob "d3e57d665f6be3870e16c7186ad2593d1051d92f",
+         :sha256
+         "92fbccc8c41757fab2a087c993270bbd9b6f96fa0489e3dcd72fa1317d85c41a"}
+        {:file "library/snatch/lead-with-the-exchange-rule.flexiarg",
+         :git-blob "d8bd4a8fb752985d1a5a3e687162b20cd5db375d",
+         :sha256
+         "341fa7e31cce51da7efa0463e7335982ca71df19a76b5b6c51cc2412e416bcee"}
+        {:file "library/snatch/mark-without-force.flexiarg",
+         :git-blob "75b1976022782d95c00c45bc4298aba9b1ff43c3",
+         :sha256
+         "2bf4e20151c425bc49dd48f25b8fd90a67f95d8e63638d08f7f6f668345f125c"}
+        {:file
+         "library/snatch/non-binding-talk-still-moves-play.flexiarg",
+         :git-blob "cf9b2c1abc7e143f6ba8310ba8ba80495fa81671",
+         :sha256
+         "6790bfd9259ce7098e713826b1e7999e708d072583cf23d17b2f926fda40117f"}
+        {:file "library/snatch/play-the-authored-order-first.flexiarg",
+         :git-blob "6bb19659d25b52c0b6a14345406d56b1b9be4959",
+         :sha256
+         "b21b7dd993ee1ad54cd66b4330b1ef6a2e111a682edd849f96bd384de1db1419"}
+        {:file "library/snatch/preserve-the-right-to-abstain.flexiarg",
+         :git-blob "0f68d4df95e0b5875899f7ac27a54637e3e26043",
+         :sha256
+         "95de16a04f4b9b23d3e63eac614008337c0943fec86a4d65e8363c872f4ff862"}
+        {:file
+         "library/snatch/price-the-final-round-as-final.flexiarg",
+         :git-blob "e51c1b5bcbd5e88f1b0703c4b0656baf5236c7a6",
+         :sha256
+         "8ef954d197172721c081bb43cd1b8fdb2396589ddec9d91b50921a90328e3892"}
+        {:file "library/snatch/probe-before-committing.flexiarg",
+         :git-blob "93747b0b114f96f65599ebfe48623307d3873686",
+         :sha256
+         "2e12af8463e82db8333157f79448b911ead1bcc71b5ca25e8510d8463757bdc9"}
+        {:file
+         "library/snatch/promote-the-remedy-before-the-exit.flexiarg",
+         :git-blob "72274f40973663768a0047ab2eb2dd5841e63b6a",
+         :sha256
+         "cad1c935a1e3fe753febd9b13d04359c040660186539ac3bb3336a2f3a4ccf6c"}
+        {:file "library/snatch/protect-the-unprotected-move.flexiarg",
+         :git-blob "5e7a70a39eb9b2f8a7754679a88136f10cb3b76e",
+         :sha256
+         "b75cc3b81ed7b6955d39e91e89f5bcb9ed29d6393202a9ef01c23456a655bfb4"}
+        {:file
+         "library/snatch/re-enter-after-observed-repair.flexiarg",
+         :git-blob "1cba24a28107a89e3845a7b210e3791fd8dbe89b",
+         :sha256
+         "4293feb4d644d7d6661a622839b156ecc8a89e56a3bc3c66858a351a6feb30f6"}
+        {:file "library/snatch/revert-then-invert.flexiarg",
+         :git-blob "97a6eb51efce9725c7df0f2339f61a6072cafb31",
+         :sha256
+         "f7c579980a27c61738290951bde788ab0ecd75808d9fdeaa03ce69d154ad6f1d"}
+        {:file
+         "library/snatch/use-talk-to-make-a-testable-offer.flexiarg",
+         :git-blob "8421c53a1a40c517993a56e461a267d2a4789f09",
+         :sha256
+         "b48a3edc5d9986c22fdd1672ecfd7c32130e3b04b772296923779b32574edc14"}
+        {:file
+         "library/snatch/widen-the-cascade-only-on-evidence.flexiarg",
+         :git-blob "a3b3b21b8b82957bf0ed491874954cabdfe05e8d",
+         :sha256
+         "2e879dd5b43db450d97fed2c0dfff0f8710196cb60b76e238e4516b6c15f8fd6"}
+        {:file "checks/playout_snatch.clj",
+         :git-blob "90e9f65ae3d548842d7ea4df288eabac79c7e66d",
+         :sha256
+         "82770b78b422d5355c6abcf4fba0f757e7eefdbe48d84591236ab123f663dc59"}
+        {:file "checks/find_snatch.clj",
+         :git-blob "0a43712bb8d2f8a378c14e09053239c4dab6b5ed",
+         :sha256
+         "35cde326e9cfcb03abeb4ec5401cbd7dbcc124bcc93e1e3a953d5dbe1d8da9ee"}
+        {:file "checks/find_snatch_evidence.clj",
+         :git-blob "ca7ab9ea7eee38c13b637b29c8b2a967a14f0760",
+         :sha256
+         "b6b3d2547e47f862f35e9b12a934e679a54f24e2e9f343c3f4ef374c4b64a415"}
+        {:file "checks/find_organise.clj",
+         :git-blob "c6ea2dd60f226bbf76d82e9bee4df9c0ad67fbef",
+         :sha256
+         "64c3abb4a5a8655736ffc6391cbf7cbae17a76cdc3e026cfc3e6adcf0da1d9ce"}
+        {:file "checks/snatch-cascade.edn",
+         :git-blob "68a7c56597587440c21b90be49ad947dba9dc2dc",
+         :sha256
+         "00397dbe6fea4b58f63a13594bd9e4f53dbfa17a2a2cf0e07844c726e2e69069"}
+        {:file
+         "library/process-coherence/refusal-becomes-pattern.flexiarg",
+         :git-blob "141c4a741bee5485733bc2f62acb0a869d20b1ef",
+         :sha256
+         "34832402cab254934b22f00ce073fc1cdb3e1a4df3257c587b7f5676e3eb0223"}],
+       :manifest-digest
+       "3e65d6d50157255a119b16e0c8641b43f4f1720190a5d1001fe1ca97423670ca"},
+      :clauses
+      [{:kind :if,
+        :clause :terminal-round,
+        :evaluation
+        {:raw true, :boolean true, :evaluation :antecedent},
+        :citation
+        {:constructor :patternText,
+         :pattern :snatch/probe-before-committing,
+         :kind :if,
+         :file "library/snatch/probe-before-committing.flexiarg",
+         :lines [17 18],
+         :text
+         "    You face a counterpart whose disposition you do not know, and an offer of any\n    size is available to you.",
+         :git-blob "93747b0b114f96f65599ebfe48623307d3873686",
+         :sha256
+         "2e12af8463e82db8333157f79448b911ead1bcc71b5ca25e8510d8463757bdc9"}}
+       {:kind :however,
+        :clause :resources-above-floor,
+        :evaluation
+        {:raw true, :boolean true, :evaluation :antecedent},
+        :citation
+        {:constructor :patternText,
+         :pattern :snatch/probe-before-committing,
+         :kind :however,
+         :file "library/snatch/probe-before-committing.flexiarg",
+         :lines [21 22],
+         :text
+         "    A large first offer is unrecoverable if they snatch, and a zero offer buys\n    nothing — you end the round knowing exactly what you knew at its start.",
+         :git-blob "93747b0b114f96f65599ebfe48623307d3873686",
+         :sha256
+         "2e12af8463e82db8333157f79448b911ead1bcc71b5ca25e8510d8463757bdc9"}}]},
+     :however true,
+     :if true,
+     :route :structured-antecedent,
+     :state-fields :not-instrumented,
+     :warrant
+     {:file "library/snatch/probe-before-committing.flexiarg",
+      :however-lines [21 22],
+      :however-text
+      "A large first offer is unrecoverable if they snatch, and a zero offer buys nothing — you end the round knowing exactly what you knew at its start.",
+      :if-lines [17 18],
+      :if-text
+      "You face a counterpart whose disposition you do not know, and an offer of any size is available to you."}},
+    :checks
+    {:presence true,
+     :clause-attribution false,
+     :citation true,
+     :query-binding true,
+     :encoding true,
+     :full false}},
+   :presence-projection
+   {:ask-for-surplus-not-surrender true,
+    :exchange-when-both-sides-gain true,
+    :probe-before-committing true}}
+  {:comparison :F2-as-of-cross-round,
+   :verdict :distinguished,
+   :control
+   {:control true,
+    :mutation :round-1-as-of-in-round-2,
+    :receipt
+    {:evidence
+     {:schema :experimental/f11-find-receipt-v1,
+      :primary-kind :if,
+      :route :structured-antecedent,
+      :as-of
+      {:scenario [:g4 :snatcher],
+       :round 1,
+       :state-digest
+       "a0fc9f397c7860d895f5e54d239da51e64dd778511e4d45ead325654c8cdbdfb",
+       :source-pins
+       [{:file
+         "library/snatch/a-free-mark-is-always-worth-assigning.flexiarg",
+         :git-blob "15121ecaf3970e4ab4a4d0914f0b8323ccb411be",
+         :sha256
+         "90245f0c725bd1486dee752c4f9fccfb8f42b452c85654da35ba0f65fe25edb0"}
+        {:file
+         "library/snatch/accept-an-offer-that-beats-holding.flexiarg",
+         :git-blob "fd6f95bf1f0366ef640677c500f1b90ab8e23d2e",
+         :sha256
+         "3a2efbf7ccff4a1048921abd55ee598e3b3f482968c6611ea52f40aec822dc5e"}
+        {:file
+         "library/snatch/an-unmodelled-response-stops-the-line.flexiarg",
+         :git-blob "402f6db1435d6d0205679ff215c1e5f28d21fd5d",
+         :sha256
+         "a89918211d7700f73121c97decec2060d899131a80c3c2b865cf7ae79be8d00b"}
+        {:file "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+         :git-blob "c6312c59e7e333a044043f571d7dfec27302af08",
+         :sha256
+         "d4b59fe05b98d0a3faa041714e0ea05a9ac11feaa1997efcff1da17db7288733"}
+        {:file
+         "library/snatch/consult-the-remedy-before-exiting.flexiarg",
+         :git-blob "a050a12d2c3f02ddd876910fd675f16e7e0f761d",
+         :sha256
+         "6a01b7f17af02168f6a396722bd168aaf725428a0ae7447b5716c31c1cf5f221"}
+        {:file
+         "library/snatch/escalate-only-as-far-as-you-can-lose.flexiarg",
+         :git-blob "3b9be2691b438edd7739e5cea0386d13ad772bc0",
+         :sha256
+         "1a45d0aa5f3f25d3e8f30d9183c462ed05fe4c1317c7c8df82a87646b87ae05b"}
+        {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+         :git-blob "02ebe2f6c2cefa83a73128e2bc9e9d4b0c0d048f",
+         :sha256
+         "5f64f812b0ffc28ea3a31db93916fdd274aefc529fac09c48bb2babd20f3f7d9"}
+        {:file
+         "library/snatch/forced-play-needs-a-loss-floor.flexiarg",
+         :git-blob "041ae06749b3cc62267ce50a0f3a93ace36087c2",
+         :sha256
+         "4caa611c2fb20f6a700d1ebe294357807e472ee6b989bba4a6bc182a53362092"}
+        {:file
+         "library/snatch/grim-cuts-the-cascade-and-never-widens-it.flexiarg",
+         :git-blob "047a11c23a70253e6bac0174394ed33f34abe791",
+         :sha256
+         "1526f002ced1c4b93c59513272afa0e56cf9b38d8e9984efa9398f5c3c2e67c0"}
+        {:file "library/snatch/have-a-temperament.flexiarg",
+         :git-blob "4e411f3d49c26df6664642de6fc00a5c73594b4d",
+         :sha256
+         "c78442dc9d8fd7cda018034f7ed639d5936efc586db6002d2f9e14e3ffbfdb10"}
+        {:file
+         "library/snatch/institutions-vary-by-position-and-force.flexiarg",
+         :git-blob "d3e57d665f6be3870e16c7186ad2593d1051d92f",
+         :sha256
+         "92fbccc8c41757fab2a087c993270bbd9b6f96fa0489e3dcd72fa1317d85c41a"}
+        {:file "library/snatch/lead-with-the-exchange-rule.flexiarg",
+         :git-blob "d8bd4a8fb752985d1a5a3e687162b20cd5db375d",
+         :sha256
+         "341fa7e31cce51da7efa0463e7335982ca71df19a76b5b6c51cc2412e416bcee"}
+        {:file "library/snatch/mark-without-force.flexiarg",
+         :git-blob "75b1976022782d95c00c45bc4298aba9b1ff43c3",
+         :sha256
+         "2bf4e20151c425bc49dd48f25b8fd90a67f95d8e63638d08f7f6f668345f125c"}
+        {:file
+         "library/snatch/non-binding-talk-still-moves-play.flexiarg",
+         :git-blob "cf9b2c1abc7e143f6ba8310ba8ba80495fa81671",
+         :sha256
+         "6790bfd9259ce7098e713826b1e7999e708d072583cf23d17b2f926fda40117f"}
+        {:file "library/snatch/play-the-authored-order-first.flexiarg",
+         :git-blob "6bb19659d25b52c0b6a14345406d56b1b9be4959",
+         :sha256
+         "b21b7dd993ee1ad54cd66b4330b1ef6a2e111a682edd849f96bd384de1db1419"}
+        {:file "library/snatch/preserve-the-right-to-abstain.flexiarg",
+         :git-blob "0f68d4df95e0b5875899f7ac27a54637e3e26043",
+         :sha256
+         "95de16a04f4b9b23d3e63eac614008337c0943fec86a4d65e8363c872f4ff862"}
+        {:file
+         "library/snatch/price-the-final-round-as-final.flexiarg",
+         :git-blob "e51c1b5bcbd5e88f1b0703c4b0656baf5236c7a6",
+         :sha256
+         "8ef954d197172721c081bb43cd1b8fdb2396589ddec9d91b50921a90328e3892"}
+        {:file "library/snatch/probe-before-committing.flexiarg",
+         :git-blob "93747b0b114f96f65599ebfe48623307d3873686",
+         :sha256
+         "2e12af8463e82db8333157f79448b911ead1bcc71b5ca25e8510d8463757bdc9"}
+        {:file
+         "library/snatch/promote-the-remedy-before-the-exit.flexiarg",
+         :git-blob "72274f40973663768a0047ab2eb2dd5841e63b6a",
+         :sha256
+         "cad1c935a1e3fe753febd9b13d04359c040660186539ac3bb3336a2f3a4ccf6c"}
+        {:file "library/snatch/protect-the-unprotected-move.flexiarg",
+         :git-blob "5e7a70a39eb9b2f8a7754679a88136f10cb3b76e",
+         :sha256
+         "b75cc3b81ed7b6955d39e91e89f5bcb9ed29d6393202a9ef01c23456a655bfb4"}
+        {:file
+         "library/snatch/re-enter-after-observed-repair.flexiarg",
+         :git-blob "1cba24a28107a89e3845a7b210e3791fd8dbe89b",
+         :sha256
+         "4293feb4d644d7d6661a622839b156ecc8a89e56a3bc3c66858a351a6feb30f6"}
+        {:file "library/snatch/revert-then-invert.flexiarg",
+         :git-blob "97a6eb51efce9725c7df0f2339f61a6072cafb31",
+         :sha256
+         "f7c579980a27c61738290951bde788ab0ecd75808d9fdeaa03ce69d154ad6f1d"}
+        {:file
+         "library/snatch/use-talk-to-make-a-testable-offer.flexiarg",
+         :git-blob "8421c53a1a40c517993a56e461a267d2a4789f09",
+         :sha256
+         "b48a3edc5d9986c22fdd1672ecfd7c32130e3b04b772296923779b32574edc14"}
+        {:file
+         "library/snatch/widen-the-cascade-only-on-evidence.flexiarg",
+         :git-blob "a3b3b21b8b82957bf0ed491874954cabdfe05e8d",
+         :sha256
+         "2e879dd5b43db450d97fed2c0dfff0f8710196cb60b76e238e4516b6c15f8fd6"}
+        {:file "checks/playout_snatch.clj",
+         :git-blob "90e9f65ae3d548842d7ea4df288eabac79c7e66d",
+         :sha256
+         "82770b78b422d5355c6abcf4fba0f757e7eefdbe48d84591236ab123f663dc59"}
+        {:file "checks/find_snatch.clj",
+         :git-blob "0a43712bb8d2f8a378c14e09053239c4dab6b5ed",
+         :sha256
+         "35cde326e9cfcb03abeb4ec5401cbd7dbcc124bcc93e1e3a953d5dbe1d8da9ee"}
+        {:file "checks/find_snatch_evidence.clj",
+         :git-blob "ca7ab9ea7eee38c13b637b29c8b2a967a14f0760",
+         :sha256
+         "b6b3d2547e47f862f35e9b12a934e679a54f24e2e9f343c3f4ef374c4b64a415"}
+        {:file "checks/find_organise.clj",
+         :git-blob "c6ea2dd60f226bbf76d82e9bee4df9c0ad67fbef",
+         :sha256
+         "64c3abb4a5a8655736ffc6391cbf7cbae17a76cdc3e026cfc3e6adcf0da1d9ce"}
+        {:file "checks/snatch-cascade.edn",
+         :git-blob "68a7c56597587440c21b90be49ad947dba9dc2dc",
+         :sha256
+         "00397dbe6fea4b58f63a13594bd9e4f53dbfa17a2a2cf0e07844c726e2e69069"}
+        {:file
+         "library/process-coherence/refusal-becomes-pattern.flexiarg",
+         :git-blob "141c4a741bee5485733bc2f62acb0a869d20b1ef",
+         :sha256
+         "34832402cab254934b22f00ce073fc1cdb3e1a4df3257c587b7f5676e3eb0223"}],
+       :manifest-digest
+       "3e65d6d50157255a119b16e0c8641b43f4f1720190a5d1001fe1ca97423670ca"},
+      :clauses
+      [{:kind :if,
+        :clause :available-resources,
+        :evaluation
+        {:raw true, :boolean true, :evaluation :antecedent},
+        :citation
+        {:constructor :patternText,
+         :pattern :snatch/exchange-when-both-sides-gain,
+         :kind :if,
+         :file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+         :lines [17 18],
+         :text
+         "    Both players have something the other values twice as highly as its holder,\n    and an exchange remains available this round.",
+         :git-blob "02ebe2f6c2cefa83a73128e2bc9e9d4b0c0d048f",
+         :sha256
+         "5f64f812b0ffc28ea3a31db93916fdd274aefc529fac09c48bb2babd20f3f7d9"}}
+       {:kind :however,
+        :clause :salient-seizure-risk,
+        :evaluation
+        {:raw true, :boolean true, :evaluation :antecedent},
+        :citation
+        {:constructor :patternText,
+         :pattern :snatch/exchange-when-both-sides-gain,
+         :kind :however,
+         :file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+         :lines [21 22],
+         :text
+         "    Attention to seizure risk can make abstention look like the objective, even\n    though holding every token leaves the game's available surplus unrealised.",
+         :git-blob "02ebe2f6c2cefa83a73128e2bc9e9d4b0c0d048f",
+         :sha256
+         "5f64f812b0ffc28ea3a31db93916fdd274aefc529fac09c48bb2babd20f3f7d9"}}]},
+     :however true,
+     :if true,
+     :route :structured-antecedent,
+     :state-fields :not-instrumented,
+     :warrant
+     {:file "library/snatch/exchange-when-both-sides-gain.flexiarg",
+      :however-lines [21 22],
+      :however-text
+      "Attention to seizure risk can make abstention look like the objective, even though holding every token leaves the game's available surplus unrealised.",
+      :if-lines [17 18],
+      :if-text
+      "Both players have something the other values twice as highly as its holder, and an exchange remains available this round."}},
+    :checks
+    {:presence true,
+     :clause-attribution true,
+     :citation true,
+     :query-binding false,
+     :encoding true,
+     :full false}}}
+  {:comparison :F3-two-check-matrix,
+   :verdict :distinguished,
+   :columns [:clause-attribution :citation],
+   :rows
+   [{:control false,
+     :case :genuine,
+     :checks
+     {:presence true,
+      :clause-attribution true,
+      :citation true,
+      :query-binding true,
+      :encoding true,
+      :full true}}
+    {:control true,
+     :case :clause-only-swap,
+     :checks
+     {:presence true,
+      :clause-attribution false,
+      :citation true,
+      :query-binding true,
+      :encoding true,
+      :full false},
+     :receipt
+     {:evidence
+      {:schema :experimental/f11-find-receipt-v1,
+       :primary-kind :if,
+       :route :structured-antecedent,
+       :as-of
+       {:scenario [:g4 :snatcher],
+        :round 1,
+        :state-digest
+        "a0fc9f397c7860d895f5e54d239da51e64dd778511e4d45ead325654c8cdbdfb",
+        :source-pins
+        [{:file
+          "library/snatch/a-free-mark-is-always-worth-assigning.flexiarg",
+          :git-blob "15121ecaf3970e4ab4a4d0914f0b8323ccb411be",
+          :sha256
+          "90245f0c725bd1486dee752c4f9fccfb8f42b452c85654da35ba0f65fe25edb0"}
+         {:file
+          "library/snatch/accept-an-offer-that-beats-holding.flexiarg",
+          :git-blob "fd6f95bf1f0366ef640677c500f1b90ab8e23d2e",
+          :sha256
+          "3a2efbf7ccff4a1048921abd55ee598e3b3f482968c6611ea52f40aec822dc5e"}
+         {:file
+          "library/snatch/an-unmodelled-response-stops-the-line.flexiarg",
+          :git-blob "402f6db1435d6d0205679ff215c1e5f28d21fd5d",
+          :sha256
+          "a89918211d7700f73121c97decec2060d899131a80c3c2b865cf7ae79be8d00b"}
+         {:file
+          "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+          :git-blob "c6312c59e7e333a044043f571d7dfec27302af08",
+          :sha256
+          "d4b59fe05b98d0a3faa041714e0ea05a9ac11feaa1997efcff1da17db7288733"}
+         {:file
+          "library/snatch/consult-the-remedy-before-exiting.flexiarg",
+          :git-blob "a050a12d2c3f02ddd876910fd675f16e7e0f761d",
+          :sha256
+          "6a01b7f17af02168f6a396722bd168aaf725428a0ae7447b5716c31c1cf5f221"}
+         {:file
+          "library/snatch/escalate-only-as-far-as-you-can-lose.flexiarg",
+          :git-blob "3b9be2691b438edd7739e5cea0386d13ad772bc0",
+          :sha256
+          "1a45d0aa5f3f25d3e8f30d9183c462ed05fe4c1317c7c8df82a87646b87ae05b"}
+         {:file
+          "library/snatch/exchange-when-both-sides-gain.flexiarg",
+          :git-blob "02ebe2f6c2cefa83a73128e2bc9e9d4b0c0d048f",
+          :sha256
+          "5f64f812b0ffc28ea3a31db93916fdd274aefc529fac09c48bb2babd20f3f7d9"}
+         {:file
+          "library/snatch/forced-play-needs-a-loss-floor.flexiarg",
+          :git-blob "041ae06749b3cc62267ce50a0f3a93ace36087c2",
+          :sha256
+          "4caa611c2fb20f6a700d1ebe294357807e472ee6b989bba4a6bc182a53362092"}
+         {:file
+          "library/snatch/grim-cuts-the-cascade-and-never-widens-it.flexiarg",
+          :git-blob "047a11c23a70253e6bac0174394ed33f34abe791",
+          :sha256
+          "1526f002ced1c4b93c59513272afa0e56cf9b38d8e9984efa9398f5c3c2e67c0"}
+         {:file "library/snatch/have-a-temperament.flexiarg",
+          :git-blob "4e411f3d49c26df6664642de6fc00a5c73594b4d",
+          :sha256
+          "c78442dc9d8fd7cda018034f7ed639d5936efc586db6002d2f9e14e3ffbfdb10"}
+         {:file
+          "library/snatch/institutions-vary-by-position-and-force.flexiarg",
+          :git-blob "d3e57d665f6be3870e16c7186ad2593d1051d92f",
+          :sha256
+          "92fbccc8c41757fab2a087c993270bbd9b6f96fa0489e3dcd72fa1317d85c41a"}
+         {:file "library/snatch/lead-with-the-exchange-rule.flexiarg",
+          :git-blob "d8bd4a8fb752985d1a5a3e687162b20cd5db375d",
+          :sha256
+          "341fa7e31cce51da7efa0463e7335982ca71df19a76b5b6c51cc2412e416bcee"}
+         {:file "library/snatch/mark-without-force.flexiarg",
+          :git-blob "75b1976022782d95c00c45bc4298aba9b1ff43c3",
+          :sha256
+          "2bf4e20151c425bc49dd48f25b8fd90a67f95d8e63638d08f7f6f668345f125c"}
+         {:file
+          "library/snatch/non-binding-talk-still-moves-play.flexiarg",
+          :git-blob "cf9b2c1abc7e143f6ba8310ba8ba80495fa81671",
+          :sha256
+          "6790bfd9259ce7098e713826b1e7999e708d072583cf23d17b2f926fda40117f"}
+         {:file
+          "library/snatch/play-the-authored-order-first.flexiarg",
+          :git-blob "6bb19659d25b52c0b6a14345406d56b1b9be4959",
+          :sha256
+          "b21b7dd993ee1ad54cd66b4330b1ef6a2e111a682edd849f96bd384de1db1419"}
+         {:file
+          "library/snatch/preserve-the-right-to-abstain.flexiarg",
+          :git-blob "0f68d4df95e0b5875899f7ac27a54637e3e26043",
+          :sha256
+          "95de16a04f4b9b23d3e63eac614008337c0943fec86a4d65e8363c872f4ff862"}
+         {:file
+          "library/snatch/price-the-final-round-as-final.flexiarg",
+          :git-blob "e51c1b5bcbd5e88f1b0703c4b0656baf5236c7a6",
+          :sha256
+          "8ef954d197172721c081bb43cd1b8fdb2396589ddec9d91b50921a90328e3892"}
+         {:file "library/snatch/probe-before-committing.flexiarg",
+          :git-blob "93747b0b114f96f65599ebfe48623307d3873686",
+          :sha256
+          "2e12af8463e82db8333157f79448b911ead1bcc71b5ca25e8510d8463757bdc9"}
+         {:file
+          "library/snatch/promote-the-remedy-before-the-exit.flexiarg",
+          :git-blob "72274f40973663768a0047ab2eb2dd5841e63b6a",
+          :sha256
+          "cad1c935a1e3fe753febd9b13d04359c040660186539ac3bb3336a2f3a4ccf6c"}
+         {:file "library/snatch/protect-the-unprotected-move.flexiarg",
+          :git-blob "5e7a70a39eb9b2f8a7754679a88136f10cb3b76e",
+          :sha256
+          "b75cc3b81ed7b6955d39e91e89f5bcb9ed29d6393202a9ef01c23456a655bfb4"}
+         {:file
+          "library/snatch/re-enter-after-observed-repair.flexiarg",
+          :git-blob "1cba24a28107a89e3845a7b210e3791fd8dbe89b",
+          :sha256
+          "4293feb4d644d7d6661a622839b156ecc8a89e56a3bc3c66858a351a6feb30f6"}
+         {:file "library/snatch/revert-then-invert.flexiarg",
+          :git-blob "97a6eb51efce9725c7df0f2339f61a6072cafb31",
+          :sha256
+          "f7c579980a27c61738290951bde788ab0ecd75808d9fdeaa03ce69d154ad6f1d"}
+         {:file
+          "library/snatch/use-talk-to-make-a-testable-offer.flexiarg",
+          :git-blob "8421c53a1a40c517993a56e461a267d2a4789f09",
+          :sha256
+          "b48a3edc5d9986c22fdd1672ecfd7c32130e3b04b772296923779b32574edc14"}
+         {:file
+          "library/snatch/widen-the-cascade-only-on-evidence.flexiarg",
+          :git-blob "a3b3b21b8b82957bf0ed491874954cabdfe05e8d",
+          :sha256
+          "2e879dd5b43db450d97fed2c0dfff0f8710196cb60b76e238e4516b6c15f8fd6"}
+         {:file "checks/playout_snatch.clj",
+          :git-blob "90e9f65ae3d548842d7ea4df288eabac79c7e66d",
+          :sha256
+          "82770b78b422d5355c6abcf4fba0f757e7eefdbe48d84591236ab123f663dc59"}
+         {:file "checks/find_snatch.clj",
+          :git-blob "0a43712bb8d2f8a378c14e09053239c4dab6b5ed",
+          :sha256
+          "35cde326e9cfcb03abeb4ec5401cbd7dbcc124bcc93e1e3a953d5dbe1d8da9ee"}
+         {:file "checks/find_snatch_evidence.clj",
+          :git-blob "ca7ab9ea7eee38c13b637b29c8b2a967a14f0760",
+          :sha256
+          "b6b3d2547e47f862f35e9b12a934e679a54f24e2e9f343c3f4ef374c4b64a415"}
+         {:file "checks/find_organise.clj",
+          :git-blob "c6ea2dd60f226bbf76d82e9bee4df9c0ad67fbef",
+          :sha256
+          "64c3abb4a5a8655736ffc6391cbf7cbae17a76cdc3e026cfc3e6adcf0da1d9ce"}
+         {:file "checks/snatch-cascade.edn",
+          :git-blob "68a7c56597587440c21b90be49ad947dba9dc2dc",
+          :sha256
+          "00397dbe6fea4b58f63a13594bd9e4f53dbfa17a2a2cf0e07844c726e2e69069"}
+         {:file
+          "library/process-coherence/refusal-becomes-pattern.flexiarg",
+          :git-blob "141c4a741bee5485733bc2f62acb0a869d20b1ef",
+          :sha256
+          "34832402cab254934b22f00ce073fc1cdb3e1a4df3257c587b7f5676e3eb0223"}],
+        :manifest-digest
+        "3e65d6d50157255a119b16e0c8641b43f4f1720190a5d1001fe1ca97423670ca"},
+       :clauses
+       [{:kind :if,
+         :clause :terminal-round,
+         :evaluation
+         {:raw true, :boolean true, :evaluation :antecedent},
+         :citation
+         {:constructor :patternText,
+          :pattern :snatch/probe-before-committing,
+          :kind :if,
+          :file "library/snatch/probe-before-committing.flexiarg",
+          :lines [17 18],
+          :text
+          "    You face a counterpart whose disposition you do not know, and an offer of any\n    size is available to you.",
+          :git-blob "93747b0b114f96f65599ebfe48623307d3873686",
+          :sha256
+          "2e12af8463e82db8333157f79448b911ead1bcc71b5ca25e8510d8463757bdc9"}}
+        {:kind :however,
+         :clause :resources-above-floor,
+         :evaluation
+         {:raw true, :boolean true, :evaluation :antecedent},
+         :citation
+         {:constructor :patternText,
+          :pattern :snatch/probe-before-committing,
+          :kind :however,
+          :file "library/snatch/probe-before-committing.flexiarg",
+          :lines [21 22],
+          :text
+          "    A large first offer is unrecoverable if they snatch, and a zero offer buys\n    nothing — you end the round knowing exactly what you knew at its start.",
+          :git-blob "93747b0b114f96f65599ebfe48623307d3873686",
+          :sha256
+          "2e12af8463e82db8333157f79448b911ead1bcc71b5ca25e8510d8463757bdc9"}}]},
+      :however true,
+      :if true,
+      :route :structured-antecedent,
+      :state-fields :not-instrumented,
+      :warrant
+      {:file "library/snatch/probe-before-committing.flexiarg",
+       :however-lines [21 22],
+       :however-text
+       "A large first offer is unrecoverable if they snatch, and a zero offer buys nothing — you end the round knowing exactly what you knew at its start.",
+       :if-lines [17 18],
+       :if-text
+       "You face a counterpart whose disposition you do not know, and an offer of any size is available to you."}}}
+    {:control true,
+     :case :cited-pattern-only-swap,
+     :checks
+     {:presence true,
+      :clause-attribution true,
+      :citation false,
+      :query-binding true,
+      :encoding true,
+      :full false},
+     :receipt
+     {:evidence
+      {:schema :experimental/f11-find-receipt-v1,
+       :primary-kind :if,
+       :route :structured-antecedent,
+       :as-of
+       {:scenario [:g4 :snatcher],
+        :round 1,
+        :state-digest
+        "a0fc9f397c7860d895f5e54d239da51e64dd778511e4d45ead325654c8cdbdfb",
+        :source-pins
+        [{:file
+          "library/snatch/a-free-mark-is-always-worth-assigning.flexiarg",
+          :git-blob "15121ecaf3970e4ab4a4d0914f0b8323ccb411be",
+          :sha256
+          "90245f0c725bd1486dee752c4f9fccfb8f42b452c85654da35ba0f65fe25edb0"}
+         {:file
+          "library/snatch/accept-an-offer-that-beats-holding.flexiarg",
+          :git-blob "fd6f95bf1f0366ef640677c500f1b90ab8e23d2e",
+          :sha256
+          "3a2efbf7ccff4a1048921abd55ee598e3b3f482968c6611ea52f40aec822dc5e"}
+         {:file
+          "library/snatch/an-unmodelled-response-stops-the-line.flexiarg",
+          :git-blob "402f6db1435d6d0205679ff215c1e5f28d21fd5d",
+          :sha256
+          "a89918211d7700f73121c97decec2060d899131a80c3c2b865cf7ae79be8d00b"}
+         {:file
+          "library/snatch/ask-for-surplus-not-surrender.flexiarg",
+          :git-blob "c6312c59e7e333a044043f571d7dfec27302af08",
+          :sha256
+          "d4b59fe05b98d0a3faa041714e0ea05a9ac11feaa1997efcff1da17db7288733"}
+         {:file
+          "library/snatch/consult-the-remedy-before-exiting.flexiarg",
+          :git-blob "a050a12d2c3f02ddd876910fd675f16e7e0f761d",
+          :sha256
+          "6a01b7f17af02168f6a396722bd168aaf725428a0ae7447b5716c31c1cf5f221"}
+         {:file
+          "library/snatch/escalate-only-as-far-as-you-can-lose.flexiarg",
+          :git-blob "3b9be2691b438edd7739e5cea0386d13ad772bc0",
+          :sha256
+          "1a45d0aa5f3f25d3e8f30d9183c462ed05fe4c1317c7c8df82a87646b87ae05b"}
+         {:file
+          "library/snatch/exchange-when-both-sides-gain.flexiarg",
+          :git-blob "02ebe2f6c2cefa83a73128e2bc9e9d4b0c0d048f",
+          :sha256
+          "5f64f812b0ffc28ea3a31db93916fdd274aefc529fac09c48bb2babd20f3f7d9"}
+         {:file
+          "library/snatch/forced-play-needs-a-loss-floor.flexiarg",
+          :git-blob "041ae06749b3cc62267ce50a0f3a93ace36087c2",
+          :sha256
+          "4caa611c2fb20f6a700d1ebe294357807e472ee6b989bba4a6bc182a53362092"}
+         {:file
+          "library/snatch/grim-cuts-the-cascade-and-never-widens-it.flexiarg",
+          :git-blob "047a11c23a70253e6bac0174394ed33f34abe791",
+          :sha256
+          "1526f002ced1c4b93c59513272afa0e56cf9b38d8e9984efa9398f5c3c2e67c0"}
+         {:file "library/snatch/have-a-temperament.flexiarg",
+          :git-blob "4e411f3d49c26df6664642de6fc00a5c73594b4d",
+          :sha256
+          "c78442dc9d8fd7cda018034f7ed639d5936efc586db6002d2f9e14e3ffbfdb10"}
+         {:file
+          "library/snatch/institutions-vary-by-position-and-force.flexiarg",
+          :git-blob "d3e57d665f6be3870e16c7186ad2593d1051d92f",
+          :sha256
+          "92fbccc8c41757fab2a087c993270bbd9b6f96fa0489e3dcd72fa1317d85c41a"}
+         {:file "library/snatch/lead-with-the-exchange-rule.flexiarg",
+          :git-blob "d8bd4a8fb752985d1a5a3e687162b20cd5db375d",
+          :sha256
+          "341fa7e31cce51da7efa0463e7335982ca71df19a76b5b6c51cc2412e416bcee"}
+         {:file "library/snatch/mark-without-force.flexiarg",
+          :git-blob "75b1976022782d95c00c45bc4298aba9b1ff43c3",
+          :sha256
+          "2bf4e20151c425bc49dd48f25b8fd90a67f95d8e63638d08f7f6f668345f125c"}
+         {:file
+          "library/snatch/non-binding-talk-still-moves-play.flexiarg",
+          :git-blob "cf9b2c1abc7e143f6ba8310ba8ba80495fa81671",
+          :sha256
+          "6790bfd9259ce7098e713826b1e7999e708d072583cf23d17b2f926fda40117f"}
+         {:file
+          "library/snatch/play-the-authored-order-first.flexiarg",
+          :git-blob "6bb19659d25b52c0b6a14345406d56b1b9be4959",
+          :sha256
+          "b21b7dd993ee1ad54cd66b4330b1ef6a2e111a682edd849f96bd384de1db1419"}
+         {:file
+          "library/snatch/preserve-the-right-to-abstain.flexiarg",
+          :git-blob "0f68d4df95e0b5875899f7ac27a54637e3e26043",
+          :sha256
+          "95de16a04f4b9b23d3e63eac614008337c0943fec86a4d65e8363c872f4ff862"}
+         {:file
+          "library/snatch/price-the-final-round-as-final.flexiarg",
+          :git-blob "e51c1b5bcbd5e88f1b0703c4b0656baf5236c7a6",
+          :sha256
+          "8ef954d197172721c081bb43cd1b8fdb2396589ddec9d91b50921a90328e3892"}
+         {:file "library/snatch/probe-before-committing.flexiarg",
+          :git-blob "93747b0b114f96f65599ebfe48623307d3873686",
+          :sha256
+          "2e12af8463e82db8333157f79448b911ead1bcc71b5ca25e8510d8463757bdc9"}
+         {:file
+          "library/snatch/promote-the-remedy-before-the-exit.flexiarg",
+          :git-blob "72274f40973663768a0047ab2eb2dd5841e63b6a",
+          :sha256
+          "cad1c935a1e3fe753febd9b13d04359c040660186539ac3bb3336a2f3a4ccf6c"}
+         {:file "library/snatch/protect-the-unprotected-move.flexiarg",
+          :git-blob "5e7a70a39eb9b2f8a7754679a88136f10cb3b76e",
+          :sha256
+          "b75cc3b81ed7b6955d39e91e89f5bcb9ed29d6393202a9ef01c23456a655bfb4"}
+         {:file
+          "library/snatch/re-enter-after-observed-repair.flexiarg",
+          :git-blob "1cba24a28107a89e3845a7b210e3791fd8dbe89b",
+          :sha256
+          "4293feb4d644d7d6661a622839b156ecc8a89e56a3bc3c66858a351a6feb30f6"}
+         {:file "library/snatch/revert-then-invert.flexiarg",
+          :git-blob "97a6eb51efce9725c7df0f2339f61a6072cafb31",
+          :sha256
+          "f7c579980a27c61738290951bde788ab0ecd75808d9fdeaa03ce69d154ad6f1d"}
+         {:file
+          "library/snatch/use-talk-to-make-a-testable-offer.flexiarg",
+          :git-blob "8421c53a1a40c517993a56e461a267d2a4789f09",
+          :sha256
+          "b48a3edc5d9986c22fdd1672ecfd7c32130e3b04b772296923779b32574edc14"}
+         {:file
+          "library/snatch/widen-the-cascade-only-on-evidence.flexiarg",
+          :git-blob "a3b3b21b8b82957bf0ed491874954cabdfe05e8d",
+          :sha256
+          "2e879dd5b43db450d97fed2c0dfff0f8710196cb60b76e238e4516b6c15f8fd6"}
+         {:file "checks/playout_snatch.clj",
+          :git-blob "90e9f65ae3d548842d7ea4df288eabac79c7e66d",
+          :sha256
+          "82770b78b422d5355c6abcf4fba0f757e7eefdbe48d84591236ab123f663dc59"}
+         {:file "checks/find_snatch.clj",
+          :git-blob "0a43712bb8d2f8a378c14e09053239c4dab6b5ed",
+          :sha256
+          "35cde326e9cfcb03abeb4ec5401cbd7dbcc124bcc93e1e3a953d5dbe1d8da9ee"}
+         {:file "checks/find_snatch_evidence.clj",
+          :git-blob "ca7ab9ea7eee38c13b637b29c8b2a967a14f0760",
+          :sha256
+          "b6b3d2547e47f862f35e9b12a934e679a54f24e2e9f343c3f4ef374c4b64a415"}
+         {:file "checks/find_organise.clj",
+          :git-blob "c6ea2dd60f226bbf76d82e9bee4df9c0ad67fbef",
+          :sha256
+          "64c3abb4a5a8655736ffc6391cbf7cbae17a76cdc3e026cfc3e6adcf0da1d9ce"}
+         {:file "checks/snatch-cascade.edn",
+          :git-blob "68a7c56597587440c21b90be49ad947dba9dc2dc",
+          :sha256
+          "00397dbe6fea4b58f63a13594bd9e4f53dbfa17a2a2cf0e07844c726e2e69069"}
+         {:file
+          "library/process-coherence/refusal-becomes-pattern.flexiarg",
+          :git-blob "141c4a741bee5485733bc2f62acb0a869d20b1ef",
+          :sha256
+          "34832402cab254934b22f00ce073fc1cdb3e1a4df3257c587b7f5676e3eb0223"}],
+        :manifest-digest
+        "3e65d6d50157255a119b16e0c8641b43f4f1720190a5d1001fe1ca97423670ca"},
+       :clauses
+       [{:kind :if,
+         :clause :unknown-prior-response,
+         :evaluation
+         {:raw true, :boolean true, :evaluation :antecedent},
+         :citation
+         {:constructor :patternText,
+          :pattern :snatch/price-the-final-round-as-final,
+          :kind :if,
+          :file
+          "library/snatch/price-the-final-round-as-final.flexiarg",
+          :lines [16 17],
+          :text
+          "    No later round remains in which reputation, a shame mark, or promised future\n    exchange can change this counterpart's action.",
+          :git-blob "e51c1b5bcbd5e88f1b0703c4b0656baf5236c7a6",
+          :sha256
+          "8ef954d197172721c081bb43cd1b8fdb2396589ddec9d91b50921a90328e3892"}}
+        {:kind :however,
+         :clause :resources-above-floor,
+         :evaluation
+         {:raw true, :boolean true, :evaluation :antecedent},
+         :citation
+         {:constructor :patternText,
+          :pattern :snatch/probe-before-committing,
+          :kind :however,
+          :file "library/snatch/probe-before-committing.flexiarg",
+          :lines [21 22],
+          :text
+          "    A large first offer is unrecoverable if they snatch, and a zero offer buys\n    nothing — you end the round knowing exactly what you knew at its start.",
+          :git-blob "93747b0b114f96f65599ebfe48623307d3873686",
+          :sha256
+          "2e12af8463e82db8333157f79448b911ead1bcc71b5ca25e8510d8463757bdc9"}}]},
+      :however true,
+      :if true,
+      :route :structured-antecedent,
+      :state-fields :not-instrumented,
+      :warrant
+      {:file "library/snatch/probe-before-committing.flexiarg",
+       :however-lines [21 22],
+       :however-text
+       "A large first offer is unrecoverable if they snatch, and a zero offer buys nothing — you end the round knowing exactly what you knew at its start.",
+       :if-lines [17 18],
+       :if-text
+       "You face a counterpart whose disposition you do not know, and an offer of any size is available to you."}}}],
+   :observed [[true true] [false true] [true false]]}
+  {:comparison :F4-A-versus-B,
+   :verdict :distinguished,
+   :genuine
+   {:A true,
+    :A-evaluated-witnesses
+    [:snatch/an-unmodelled-response-stops-the-line
+     :snatch/escalate-only-as-far-as-you-can-lose
+     :snatch/forced-play-needs-a-loss-floor
+     :snatch/price-the-final-round-as-final
+     :snatch/probe-before-committing
+     :snatch/re-enter-after-observed-repair
+     :snatch/use-talk-to-make-a-testable-offer],
+    :B true,
+    :B-member :snatch/forced-play-needs-a-loss-floor,
+    :C true,
+    :C-members
+    [:snatch/re-enter-after-observed-repair
+     :snatch/probe-before-committing],
+    :query [:g4 :snatcher 2]},
+   :control
+   {:control true,
+    :valid-primary false,
+    :scope :selection-projection-only,
+    :admitted :snatch/forced-play-needs-a-loss-floor,
+    :selection
+    [:snatch/a-free-mark-is-always-worth-assigning
+     :snatch/ask-for-surplus-not-surrender
+     :snatch/consult-the-remedy-before-exiting
+     :snatch/exchange-when-both-sides-gain
+     :snatch/forced-play-needs-a-loss-floor],
+    :F4
+    {:A true,
+     :A-evaluated-witnesses
+     [:snatch/an-unmodelled-response-stops-the-line
+      :snatch/escalate-only-as-far-as-you-can-lose
+      :snatch/price-the-final-round-as-final
+      :snatch/probe-before-committing
+      :snatch/re-enter-after-observed-repair
+      :snatch/use-talk-to-make-a-testable-offer],
+     :B false,
+     :B-member :snatch/forced-play-needs-a-loss-floor,
+     :C true,
+     :C-members
+     [:snatch/re-enter-after-observed-repair
+      :snatch/probe-before-committing],
+     :query [:g4 :snatcher 2]},
+    :B-at-scenario false}}
+  {:comparison :F4-B-versus-C,
+   :verdict :distinguished,
+   :genuine
+   {:A true,
+    :A-evaluated-witnesses
+    [:snatch/an-unmodelled-response-stops-the-line
+     :snatch/escalate-only-as-far-as-you-can-lose
+     :snatch/forced-play-needs-a-loss-floor
+     :snatch/price-the-final-round-as-final
+     :snatch/probe-before-committing
+     :snatch/re-enter-after-observed-repair
+     :snatch/use-talk-to-make-a-testable-offer],
+    :B true,
+    :B-member :snatch/forced-play-needs-a-loss-floor,
+    :C true,
+    :C-members
+    [:snatch/re-enter-after-observed-repair
+     :snatch/probe-before-committing],
+    :query [:g4 :snatcher 2]},
+   :control
+   {:control true,
+    :valid-primary false,
+    :scope :selection-projection-only,
+    :admitted :snatch/re-enter-after-observed-repair,
+    :selection
+    [:snatch/a-free-mark-is-always-worth-assigning
+     :snatch/ask-for-surplus-not-surrender
+     :snatch/consult-the-remedy-before-exiting
+     :snatch/exchange-when-both-sides-gain
+     :snatch/re-enter-after-observed-repair],
+    :F4
+    {:A true,
+     :A-evaluated-witnesses
+     [:snatch/an-unmodelled-response-stops-the-line
+      :snatch/escalate-only-as-far-as-you-can-lose
+      :snatch/forced-play-needs-a-loss-floor
+      :snatch/price-the-final-round-as-final
+      :snatch/probe-before-committing
+      :snatch/use-talk-to-make-a-testable-offer],
+     :B true,
+     :B-member :snatch/forced-play-needs-a-loss-floor,
+     :C false,
+     :C-members
+     [:snatch/re-enter-after-observed-repair
+      :snatch/probe-before-committing],
+     :query [:g4 :snatcher 2]},
+    :B-at-scenario true},
+   :empty-designation :vacuous}]}

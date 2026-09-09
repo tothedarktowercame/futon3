@@ -44,31 +44,64 @@
 (def ^:private runner-entry
   (into {} (map (juxt :id identity)) snatch/collection))
 
-(defn find
-  "Evaluate authored P1 antecedents against a structured runner state.
+(defn- evaluate-candidate [pat state]
+  (cond
+    (nil? pat) {:status :no-executable-interpretation :selected? false}
+    (= :p2 (:actor pat)) {:status :p2-out-of-domain :selected? false}
+    (not= (:grain pat) (:grain state)) {:status :other-grain :selected? false}
+    :else
+    (let [observed (atom {})
+          observe (fn [kind predicate]
+                    (fn [s]
+                      (let [raw (predicate s)]
+                        (swap! observed assoc kind
+                               {:raw raw :boolean (boolean raw) :evaluation :antecedent})
+                        raw)))
+          wrapped (cond-> (assoc pat :if (observe :if (:if pat)))
+                    (:however pat) (assoc :however (observe :however (:however pat))))
+          selected? (boolean (snatch/fires? wrapped state))]
+      ;; The finder short-circuits. A separately labelled diagnostic supplies
+      ;; the counterforce observation on IF-false candidates, once only.
+      (when (and (:however pat) (not (contains? @observed :however)))
+        (let [raw ((:however pat) state)]
+          (swap! observed assoc :however
+                 {:raw raw :boolean (boolean raw) :evaluation :diagnostic-after-if-false})))
+      (merge {:status (if selected? :selected :evaluated-excluded)
+              :selected? selected?
+              :however {:evaluation :not-implemented}}
+             @observed))))
 
-   The candidate set is the REPOSITORY, not the runner collection, so F1
-   containment is true by construction rather than checked afterwards.  A runner
-   entry whose id is not authored is now unreachable instead of caught late;
-   `representation-mismatches` below still reports it, which is the direction
-   that carries information."
+(defn find-with-evidence
+  "The existing finder, with observations from its actual antecedent call.
+   receipt-extension receives a qualified id and its evaluation. Core-key
+   ownership is still enforced by fo/find; no extension may overwrite it."
+  [state receipt-extension]
+  (let [evaluations (atom (sorted-map))
+        result (fo/find
+                {:context state :route :structured-antecedent
+                 :fires? (fn [qid s]
+                           (let [evaluation (evaluate-candidate (runner-entry (fo/local qid)) s)]
+                             (swap! evaluations assoc qid evaluation)
+                             (:selected? evaluation)))
+                 :receipt (fn [qid]
+                            (let [pat (runner-entry (fo/local qid))]
+                              (merge {:however (if (:however pat) true :none)
+                                      :state-fields :not-instrumented}
+                                     (when receipt-extension
+                                       (receipt-extension qid (get @evaluations qid))))))}
+                snatch-repository)]
+    {:find (sorted-map
+            :absence (:absence result)
+            :receipts (into (sorted-map)
+                            (map (fn [[qid receipt]] [(fo/local qid) receipt]))
+                            (:receipts result))
+            :selected (mapv fo/local (:selected result)))
+     :evaluations @evaluations}))
+
+(defn find
+  "Legacy result shape, delegated to the same observed antecedent path."
   [state]
-  (let [result (fo/find {:context state
-                         :route :structured-antecedent
-                         :fires? (fn [qid s]
-                                   (when-let [pat (runner-entry (fo/local qid))]
-                                     (snatch/fires? pat s)))
-                         :receipt (fn [qid]
-                                    (let [pat (runner-entry (fo/local qid))]
-                                      {:however (if (:however pat) true :none)
-                                       :state-fields :not-instrumented}))}
-                        snatch-repository)]
-    (sorted-map
-     :absence (:absence result)
-     :receipts (into (sorted-map)
-                     (map (fn [[qid receipt]] [(fo/local qid) receipt]))
-                     (:receipts result))
-     :selected (mapv fo/local (:selected result)))))
+  (:find (find-with-evidence state nil)))
 
 (defn- representation-mismatches
   "Reject a second maintained antecedent representation.  The authored file is

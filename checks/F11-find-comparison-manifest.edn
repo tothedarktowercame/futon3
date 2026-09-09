@@ -1021,9 +1021,13 @@
     :sha256
     "82770b78b422d5355c6abcf4fba0f757e7eefdbe48d84591236ab123f663dc59"}
    {:file "checks/find_snatch.clj",
-    :git-blob "e232e5ca3877ca0d62ea2f93fcf42c345aadfdee",
+    :git-blob "0a43712bb8d2f8a378c14e09053239c4dab6b5ed",
     :sha256
-    "5704fe29d76059cd01b5eb76bb448b84805db42a85a6a2cf7fdad4d769afb4d9"}
+    "35cde326e9cfcb03abeb4ec5401cbd7dbcc124bcc93e1e3a953d5dbe1d8da9ee"}
+   {:file "checks/find_snatch_evidence.clj",
+    :git-blob "ca7ab9ea7eee38c13b637b29c8b2a967a14f0760",
+    :sha256
+    "b6b3d2547e47f862f35e9b12a934e679a54f24e2e9f343c3f4ef374c4b64a415"}
    {:file "checks/find_organise.clj",
     :git-blob "c6ea2dd60f226bbf76d82e9bee4df9c0ad67fbef",
     :sha256
@@ -1038,6 +1042,13 @@
     "34832402cab254934b22f00ce073fc1cdb3e1a4df3257c587b7f5676e3eb0223"}],
   :refusal
   "Before a run, match the complete sorted 24-file population, blob identities and SHA256 of exact bytes (UTF-8, no newline normalization); reject missing, additional or modified sources. Check again after the run. A draft or absent independent review pin refuses execution. Implementation changes to a pinned executable require an explicit reviewed successor pin; never silently rebaseline. This manifest is itself pinned by the reviewer commit.",
+  :successor-pin-log
+  [{:by "claude-1"
+    :date "2026-09-09"
+    :thread "invoke-1788928557201-16015-89f224d0"
+    :reason "Packet 2 (futon3 af10afa) instrumented checks/find_snatch.clj (drift verified by the runner's own preflight refusal, hashes re-derived independently by the reviewer) and introduced checks/find_snatch_evidence.clj, which the runtime rightly refuses to execute unpinned. Reviewed: 13 tests / 64 assertions / 0 failures re-run by the reviewer; all five find-snatch negatives and the positive law gate PASS; instrumentation diff read (once-only observation, diagnostic-after-if-false labelled, merge precedence correct); legacy pinned artifacts untouched."
+    :updated ["checks/find_snatch.clj"]
+    :added ["checks/find_snatch_evidence.clj"]}],
   :population-count 24},
  :choice-status
  {:find-f2-receipt-carrier :observed-not-decided,

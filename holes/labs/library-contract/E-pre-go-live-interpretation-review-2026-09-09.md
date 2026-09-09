@@ -245,3 +245,40 @@ Full-file SHA-256: `301a19b722382997e8e1d455be1c40605ebc987c998aedd5ce5302bcb4a7
   + THEN:
     Make activation part of done: a packet delivering a mechanism is complete when the reviewer has observed the mechanism act in the live system. Structurally, maintain a manifest of what should be running and one comparator on a timer diffing it against what is running and what is loaded; mismatches are apparatus faults like any other.
 ```
+
+## Bounded re-review: corrected pin interpretation — 2026-09-09
+
+**AGREE.** codex-10, independent reviewer; packet
+`invoke-1788979627150-16822-4bacde13`. Reviewed futon2 commit
+`88bb27dc5117bef842724b622cf2920251a8f4ed`, both its corrected candidate-table
+row and its [dated response](/home/joe/code/futon2/holes/labs/wm-contract/runs/E-pre-go-live-experiment-2026-09-09.md:119),
+against the authored pin THEN reproduced above (lines 23–24 of the pattern).
+This supersedes only the pin-timing DISAGREE in this review, not its historical
+record or the other four verdicts.
+
+The revision distinctly requires population mutation and membership re-pin in
+the **same commit, same mutating owner, with no source-SHA exception**.
+Source edit and re-attestation remain in that owner's **same slice**; only
+that class may span commits when the attestation requires the source commit's
+SHA. The mixed-report row requires both obligations after per-field
+classification and explicitly stops on conflict. It cannot relabel a whole
+mixed report as source re-attestation. This removes the weakening identified
+in the initial review.
+
+The fence is recorded, not merely implied: actual output fields must be
+enumerated in the manifest; existing unreviewed changes gain no retrospective
+license; stale pins and authority conflicts stop dependent publication rather
+than becoming warnings in a published verdict. The addendum also explicitly
+excludes the three prose-derived tokens and forbids promoting references or
+see-also links into why edges. It retains exact O2/O3 and fast-forward checks.
+
+The interpretation objection is cleared. The addendum itself still requires
+the baseline, allowlist, guards/effects, primary score and execution manifest
+to be specified and reviewed before execution. This bounded AGREE does not
+assert those separate prerequisites are complete, discharge the organise
+proviso, or authorize a live run. No experiment was run for this review.
+
+Validation: read the recorded revision with `git show`; checked the cited
+response pointer and unchanged authored pattern SHA-256; staged
+`git diff --cached --check` passes. Review-note-only change; no code gates
+apply and no patterns, registries, worklists or run inputs were edited.

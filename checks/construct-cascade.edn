@@ -1,11 +1,11 @@
 {:as-of
- {:authored-why-edges 92,
-  :authored-why-how-edges 124,
-  :patterns 1239,
-  :patterns-touching-an-edge 104,
+ {:authored-why-edges 503,
+  :authored-why-how-edges 535,
+  :patterns 1319,
+  :patterns-touching-an-edge 520,
   :read-digest
-  "6339933719779fb98455d5c6b859f30f4362330ec5a7af30cdddb9fdcea0c049",
-  :sections 98,
+  "8b20e68b50e777765eccbe5182284e773253b513fd7e7232989fbfc3b7c97672",
+  :sections 100,
   :union-is-cyclic
   [:cycle-machine/disruption-soak
    :cycle-machine/runtime-restoration
@@ -25,7 +25,7 @@
   :why-acyclic? true},
  :cascades-differ? true,
  :controls
- {:citations 35,
+ {:citations 69,
   :citations-that-do-not-read-back [],
   :determinism-failures [],
   :grain-conjunct-mutations
@@ -44,7 +44,7 @@
     :rule :halt-on-budget,
     :source-line-is-a-then? true,
     :then-source
-    "library/snatch/widen-the-cascade-only-on-evidence.flexiarg:29-33"}
+    "library/snatch/widen-the-cascade-only-on-evidence.flexiarg:31-35"}
    {:encodes
     "the `a marginal-gain floor` disjunct of the stopping rule",
     :in-repository? true,
@@ -52,7 +52,7 @@
     :rule :halt-at-the-marginal-gain-floor,
     :source-line-is-a-then? true,
     :then-source
-    "library/snatch/widen-the-cascade-only-on-evidence.flexiarg:29-33"}
+    "library/snatch/widen-the-cascade-only-on-evidence.flexiarg:31-35"}
    {:encodes
     "the `admit patterns one at a time, ordered by what the previous admission bought` clause",
     :in-repository? true,
@@ -60,15 +60,17 @@
     :rule :widen-the-cascade-only-on-evidence,
     :source-line-is-a-then? true,
     :then-source
-    "library/snatch/widen-the-cascade-only-on-evidence.flexiarg:29-33"}],
+    "library/snatch/widen-the-cascade-only-on-evidence.flexiarg:31-35"}],
   :negative-controls
   [{:caught? true,
     :control :O2-invented-edge,
-    :detail "[:cascades/declared-skeleton :snatch/have-a-temperament]",
+    :detail
+    "[:coordination/pattern-search-protocol :coordination/pattern-search-protocol]",
     :exercised? true}
    {:caught? true,
     :control :O3-dropped-edge,
-    :detail "[:snatch/have-a-temperament :cascades/declared-skeleton]",
+    :detail
+    "[:snatch/have-a-temperament :problems/undeclared-cascades-cannot-be-audited]",
     :exercised? true}
    {:caught? true,
     :control :O1-unrecorded-node,
@@ -77,11 +79,11 @@
     :exercised? true}
    {:caught? true,
     :control :citation-cue-not-in-the-cited-span,
-    :detail "\"library/agent/student-dispatch.flexiarg\"",
+    :detail "\"library/cascades/declared-skeleton.flexiarg\"",
     :exercised? true}
    {:caught? true,
     :control :citation-span-off-the-end-of-the-file,
-    :detail "\"library/agent/student-dispatch.flexiarg\"",
+    :detail "\"library/cascades/declared-skeleton.flexiarg\"",
     :exercised? true}],
   :negative-controls-declared
   [:O2-invented-edge
@@ -90,15 +92,23 @@
    :citation-cue-not-in-the-cited-span
    :citation-span-off-the-end-of-the-file]},
  :find
- {:candidates 50,
+ {:candidates 73,
   :laws {:F1 true, :F2 true, :F3 true, :F4 true},
-  :seed-size 9,
+  :seed-size 17,
   :selected
   [:coordination/pattern-search-protocol
    :devmap-coherence/prototype-alignment-embedding
    :futon-theory/derive-exits-on-a-minted-sorry
    :or2/two-joes-one-mandate
    :plos-npt-with-small-n/venue-register-boundary
+   :problems/contract-edits-wait-for-their-exemplar
+   :problems/facade-instead-of-validated-efe-model
+   :problems/g-over-cascade-is-undefined
+   :problems/most-patterns-have-no-globally-recognised-rationale
+   :problems/pattern-genesis-from-evidence-bearing-holes
+   :problems/r13-temporal-policy-depth
+   :problems/r6-candidate-action-space-and-selection
+   :problems/undeclared-cascades-cannot-be-audited
    :sidecar/artifact-entity-mention-grounding
    :snatch/have-a-temperament
    :snatch/widen-the-cascade-only-on-evidence
@@ -107,88 +117,111 @@
  :measurement
  {:arms
   [{:admitted
-    [:agent/student-dispatch
-     :ai4ci/ai-core-function
-     :cascades/declared-skeleton
-     :cascades/on-the-fly-cascade
-     :cascades/the-slice-is-the-unit-of-use
-     :cycle-machine/single-producer
-     :process-coherence/is-this-even-a-problem
-     :snatch/lead-with-the-exchange-rule
-     :snatch/play-the-authored-order-first
-     :snatch/promote-the-remedy-before-the-exit
-     :war-machine/ambient-pattern-retrieval],
+    [:forward-model/graduate-strategy-by-outcome
+     :problems/r10-scheduled-entrypoint
+     :snatch/lead-with-the-exchange-rule],
     :admitted-uniform
-    [:agent/student-dispatch
-     :ai4ci/ai-core-function
-     :cascades/declared-skeleton
-     :cascades/on-the-fly-cascade
-     :cascades/the-slice-is-the-unit-of-use
-     :cycle-machine/single-producer
-     :data-mining/gates-as-code
-     :data-mining/saturate-the-accelerator-with-concurrency
-     :process-coherence/is-this-even-a-problem
+    [:process-coherence/is-this-even-a-problem
      :snatch/lead-with-the-exchange-rule
      :war-machine/ambient-pattern-retrieval],
     :differs? true,
-    :steps 12,
-    :steps-uniform 12,
+    :steps 4,
+    :steps-uniform 4,
     :stop [:halted [:budget 20]],
     :stop-uniform [:halted [:budget 20]],
     :temperament :widen-to-a-budget}
    {:admitted
     [:cascades/declared-skeleton
+     :devmap-coherence/ifr-f3-piti
+     :devmap-coherence/ifr-f3a-piti-audit
+     :forward-model/graduate-strategy-by-outcome
+     :problems/r10-scheduled-entrypoint
+     :problems/r12-two-layer-calibration
+     :problems/r14-commitment-temperature
+     :problems/r15-hierarchy-and-timescale
+     :problems/r16-grounded-actuation
+     :problems/r17-structure-learning
+     :problems/r2-structured-observation
+     :problems/r20-interoceptive-tripwires
+     :problems/r3-belief-update
+     :problems/r4-forward-model
+     :problems/r5-expected-free-energy-core
+     :problems/r8-present-fit-mismatch
+     :problems/r9-no-self-certification
+     :problems/snatch-play-theory-gaps
+     :process/spec-drift-by-displacement
      :snatch/lead-with-the-exchange-rule
      :snatch/play-the-authored-order-first
-     :snatch/promote-the-remedy-before-the-exit],
+     :snatch/promote-the-remedy-before-the-exit
+     :war-room/wr-0-organise-without-apparatus
+     :war-room/wr-4-inhabit-before-building],
     :admitted-uniform [],
     :differs? true,
-    :steps 5,
+    :steps 25,
     :steps-uniform 1,
     :stop [:halted [:marginal-gain-floor 1.0]],
     :stop-uniform [:halted [:marginal-gain-floor 1.0]],
     :temperament :widen-to-the-marginal-gain-floor}],
-  :candidates-scored 50,
-  :candidates-with-degree-above-zero 4,
+  :candidates-scored 73,
+  :candidates-with-degree-above-zero 24,
   :coverage-of-the-rationale-layer
   {:note
    "the library-wide figure is in :as-of -- 104 of 1239 patterns touch an authored @why edge, the 8.3% the row names",
-   :patterns 59},
-  :degree-distribution {0 46, 1 4},
+   :patterns 90},
+  :degree-distribution {0 49, 1 3, 2 5, 3 16},
   :degree-positive-candidates
-  {:cascades/declared-skeleton 1,
-   :snatch/lead-with-the-exchange-rule 1,
-   :snatch/play-the-authored-order-first 1,
-   :snatch/promote-the-remedy-before-the-exit 1},
+  {:cascades/declared-skeleton 2,
+   :devmap-coherence/ifr-f3-piti 1,
+   :devmap-coherence/ifr-f3a-piti-audit 1,
+   :forward-model/graduate-strategy-by-outcome 3,
+   :problems/r10-scheduled-entrypoint 3,
+   :problems/r12-two-layer-calibration 3,
+   :problems/r14-commitment-temperature 3,
+   :problems/r15-hierarchy-and-timescale 3,
+   :problems/r16-grounded-actuation 3,
+   :problems/r17-structure-learning 3,
+   :problems/r2-structured-observation 3,
+   :problems/r20-interoceptive-tripwires 3,
+   :problems/r3-belief-update 3,
+   :problems/r4-forward-model 1,
+   :problems/r5-expected-free-energy-core 3,
+   :problems/r8-present-fit-mismatch 3,
+   :problems/r9-no-self-certification 3,
+   :problems/snatch-play-theory-gaps 2,
+   :process/spec-drift-by-displacement 3,
+   :snatch/lead-with-the-exchange-rule 2,
+   :snatch/play-the-authored-order-first 2,
+   :snatch/promote-the-remedy-before-the-exit 2,
+   :war-room/wr-0-organise-without-apparatus 3,
+   :war-room/wr-4-inhabit-before-building 3},
   :distinguishable-from-uniform? true,
   :distinguishable-without-the-floor? true,
   :epsilon-equivalence-holds? true,
   :max-match 3,
-  :sections-supplying-the-degree-term #{:cascades :snatch},
+  :sections-supplying-the-degree-term
+  #{:cascades
+    :devmap-coherence
+    :forward-model
+    :problems
+    :process
+    :snatch
+    :war-room},
   :transplanted-epsilon-never-binds? true},
  :runs
  {:widen-to-a-budget
   {:admitted
-   [:agent/student-dispatch
-    :ai4ci/ai-core-function
-    :cascades/declared-skeleton
-    :cascades/on-the-fly-cascade
-    :cascades/the-slice-is-the-unit-of-use
-    :cycle-machine/single-producer
-    :process-coherence/is-this-even-a-problem
-    :snatch/lead-with-the-exchange-rule
-    :snatch/play-the-authored-order-first
-    :snatch/promote-the-remedy-before-the-exit
-    :war-machine/ambient-pattern-retrieval],
-   :cascade-edges 5,
+   [:forward-model/graduate-strategy-by-outcome
+    :problems/r10-scheduled-entrypoint
+    :snatch/lead-with-the-exchange-rule],
+   :cascade-edges 3,
    :cascade-nodes 20,
    :laws {:O1 true, :O2 true, :O3 true},
    :members 20,
    :o4 :not-exercised-nothing-is-played,
    :prior-separation
-   {:cascade-edges 5,
+   {:cascade-edges 3,
     :cascade-edges-are-why-only? true,
-    :edges-if-the-prior-relation-were-used 12,
+    :edges-if-the-prior-relation-were-used 42,
     :relations-differ? true},
    :record
    [{:by :widen-the-cascade-only-on-evidence,
@@ -198,76 +231,56 @@
      :step 0}
     {:by :widen-the-cascade-only-on-evidence,
      :edit :admit,
-     :pattern :cascades/declared-skeleton,
+     :pattern :forward-model/graduate-strategy-by-outcome,
      :reason nil,
      :step 1}
     {:by :widen-the-cascade-only-on-evidence,
      :edit :admit,
-     :pattern :snatch/play-the-authored-order-first,
+     :pattern :problems/r10-scheduled-entrypoint,
      :reason nil,
      :step 2}
-    {:by :widen-the-cascade-only-on-evidence,
-     :edit :admit,
-     :pattern :snatch/promote-the-remedy-before-the-exit,
-     :reason nil,
-     :step 3}
-    {:by :widen-the-cascade-only-on-evidence,
-     :edit :admit,
-     :pattern :process-coherence/is-this-even-a-problem,
-     :reason nil,
-     :step 4}
-    {:by :widen-the-cascade-only-on-evidence,
-     :edit :admit,
-     :pattern :war-machine/ambient-pattern-retrieval,
-     :reason nil,
-     :step 5}
-    {:by :widen-the-cascade-only-on-evidence,
-     :edit :admit,
-     :pattern :agent/student-dispatch,
-     :reason nil,
-     :step 6}
-    {:by :widen-the-cascade-only-on-evidence,
-     :edit :admit,
-     :pattern :ai4ci/ai-core-function,
-     :reason nil,
-     :step 7}
-    {:by :widen-the-cascade-only-on-evidence,
-     :edit :admit,
-     :pattern :cascades/on-the-fly-cascade,
-     :reason nil,
-     :step 8}
-    {:by :widen-the-cascade-only-on-evidence,
-     :edit :admit,
-     :pattern :cascades/the-slice-is-the-unit-of-use,
-     :reason nil,
-     :step 9}
-    {:by :widen-the-cascade-only-on-evidence,
-     :edit :admit,
-     :pattern :cycle-machine/single-producer,
-     :reason nil,
-     :step 10}
     {:by :halt-on-budget,
      :edit :halt,
      :pattern nil,
      :reason [:budget 20],
-     :step 11}],
-   :steps 12,
+     :step 3}],
+   :steps 4,
    :stop [:halted [:budget 20]]},
   :widen-to-the-marginal-gain-floor
   {:admitted
    [:cascades/declared-skeleton
+    :devmap-coherence/ifr-f3-piti
+    :devmap-coherence/ifr-f3a-piti-audit
+    :forward-model/graduate-strategy-by-outcome
+    :problems/r10-scheduled-entrypoint
+    :problems/r12-two-layer-calibration
+    :problems/r14-commitment-temperature
+    :problems/r15-hierarchy-and-timescale
+    :problems/r16-grounded-actuation
+    :problems/r17-structure-learning
+    :problems/r2-structured-observation
+    :problems/r20-interoceptive-tripwires
+    :problems/r3-belief-update
+    :problems/r4-forward-model
+    :problems/r5-expected-free-energy-core
+    :problems/r8-present-fit-mismatch
+    :problems/r9-no-self-certification
+    :problems/snatch-play-theory-gaps
+    :process/spec-drift-by-displacement
     :snatch/lead-with-the-exchange-rule
     :snatch/play-the-authored-order-first
-    :snatch/promote-the-remedy-before-the-exit],
-   :cascade-edges 5,
-   :cascade-nodes 13,
+    :snatch/promote-the-remedy-before-the-exit
+    :war-room/wr-0-organise-without-apparatus
+    :war-room/wr-4-inhabit-before-building],
+   :cascade-edges 14,
+   :cascade-nodes 41,
    :laws {:O1 true, :O2 true, :O3 true},
-   :members 13,
+   :members 41,
    :o4 :not-exercised-nothing-is-played,
    :prior-separation
-   {:cascade-edges 5,
+   {:cascade-edges 14,
     :cascade-edges-are-why-only? true,
-    :edges-if-the-prior-relation-were-used 11,
+    :edges-if-the-prior-relation-were-used 337,
     :relations-differ? true},
    :record
    [{:by :widen-the-cascade-only-on-evidence,
@@ -277,39 +290,139 @@
      :step 0}
     {:by :widen-the-cascade-only-on-evidence,
      :edit :admit,
-     :pattern :cascades/declared-skeleton,
+     :pattern :forward-model/graduate-strategy-by-outcome,
      :reason nil,
      :step 1}
     {:by :widen-the-cascade-only-on-evidence,
      :edit :admit,
-     :pattern :snatch/play-the-authored-order-first,
+     :pattern :problems/r10-scheduled-entrypoint,
      :reason nil,
      :step 2}
     {:by :widen-the-cascade-only-on-evidence,
      :edit :admit,
-     :pattern :snatch/promote-the-remedy-before-the-exit,
+     :pattern :problems/r12-two-layer-calibration,
      :reason nil,
      :step 3}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :problems/r14-commitment-temperature,
+     :reason nil,
+     :step 4}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :problems/r15-hierarchy-and-timescale,
+     :reason nil,
+     :step 5}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :problems/r16-grounded-actuation,
+     :reason nil,
+     :step 6}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :problems/r17-structure-learning,
+     :reason nil,
+     :step 7}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :problems/r2-structured-observation,
+     :reason nil,
+     :step 8}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :problems/r20-interoceptive-tripwires,
+     :reason nil,
+     :step 9}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :problems/r3-belief-update,
+     :reason nil,
+     :step 10}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :problems/r5-expected-free-energy-core,
+     :reason nil,
+     :step 11}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :problems/r8-present-fit-mismatch,
+     :reason nil,
+     :step 12}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :problems/r9-no-self-certification,
+     :reason nil,
+     :step 13}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :process/spec-drift-by-displacement,
+     :reason nil,
+     :step 14}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :war-room/wr-0-organise-without-apparatus,
+     :reason nil,
+     :step 15}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :war-room/wr-4-inhabit-before-building,
+     :reason nil,
+     :step 16}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :problems/snatch-play-theory-gaps,
+     :reason nil,
+     :step 17}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :cascades/declared-skeleton,
+     :reason nil,
+     :step 18}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :snatch/play-the-authored-order-first,
+     :reason nil,
+     :step 19}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :snatch/promote-the-remedy-before-the-exit,
+     :reason nil,
+     :step 20}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :devmap-coherence/ifr-f3-piti,
+     :reason nil,
+     :step 21}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :devmap-coherence/ifr-f3a-piti-audit,
+     :reason nil,
+     :step 22}
+    {:by :widen-the-cascade-only-on-evidence,
+     :edit :admit,
+     :pattern :problems/r4-forward-model,
+     :reason nil,
+     :step 23}
     {:by :halt-at-the-marginal-gain-floor,
      :edit :halt,
      :pattern nil,
      :reason [:marginal-gain-floor 1.0],
-     :step 4}],
-   :steps 5,
+     :step 24}],
+   :steps 25,
    :stop [:halted [:marginal-gain-floor 1.0]]}},
  :scores-at-step-0
- [[:snatch/lead-with-the-exchange-rule 2.6 2 1]
-  [:cascades/declared-skeleton 1.3 1 1]
-  [:snatch/play-the-authored-order-first 1.3 1 1]
-  [:snatch/promote-the-remedy-before-the-exit 1.3 1 1]
-  [:process-coherence/is-this-even-a-problem 0.6 2 0]
-  [:war-machine/ambient-pattern-retrieval 0.6 2 0]
-  [:agent/student-dispatch 0.3 1 0]
-  [:ai4ci/ai-core-function 0.3 1 0]
-  [:cascades/on-the-fly-cascade 0.3 1 0]
-  [:cascades/the-slice-is-the-unit-of-use 0.3 1 0]
-  [:cycle-machine/single-producer 0.3 1 0]
-  [:data-mining/gates-as-code 0.3 1 0]],
+ [[:snatch/lead-with-the-exchange-rule 4.6 2 2]
+  [:forward-model/graduate-strategy-by-outcome 3.3 1 3]
+  [:problems/r10-scheduled-entrypoint 3.3 1 3]
+  [:problems/r12-two-layer-calibration 3.3 1 3]
+  [:problems/r14-commitment-temperature 3.3 1 3]
+  [:problems/r15-hierarchy-and-timescale 3.3 1 3]
+  [:problems/r16-grounded-actuation 3.3 1 3]
+  [:problems/r17-structure-learning 3.3 1 3]
+  [:problems/r2-structured-observation 3.3 1 3]
+  [:problems/r20-interoceptive-tripwires 3.3 1 3]
+  [:problems/r3-belief-update 3.3 1 3]
+  [:problems/r5-expected-free-energy-core 3.3 1 3]],
  :temperaments
  {:holds? true,
   :same-shared-nodes? true,
@@ -320,10 +433,10 @@
   :stops-differ? true},
  :tension
  {:clause-hits
-  {:a-cascade-can-only-be-hand-authored 16,
-   :an-inferred-edge-is-a-facade 25,
-   :find-has-no-search-space 11,
-   :nothing-states-what-a-pattern-stands-on 13},
+  {:a-cascade-can-only-be-hand-authored 25,
+   :an-inferred-edge-is-a-facade 27,
+   :find-has-no-search-space 13,
+   :nothing-states-what-a-pattern-stands-on 37},
   :id :organise-the-library,
-  :match-distribution {1 54, 2 4, 3 1},
+  :match-distribution {1 79, 2 10, 3 1},
   :source "futon2/holes/problems/P-organise-the-library.md:33-36"}}

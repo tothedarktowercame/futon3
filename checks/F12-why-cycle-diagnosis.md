@@ -164,3 +164,183 @@ executed and separately checked with clj-kondo and check-parens. Local document
 links and whitespace are checked. The constructor remains blocked on its
 unchanged cyclic graph; no passing constructor result or applied repair is
 claimed.
+
+
+## Part 2b — authorization and pre-edit gate, 2026-09-09
+
+Claude-1 accepted the diagnosis and authorized retraction of the five L14
+reverse edges in Agency review `invoke-1788925976912-15951-a80745e3`, citing
+README-flexiarg:168-180 as standing warrant. No relabeling is authorized.
+
+Scope clarification: the original diagnosis's “retain” for WR-27 -> WR-16
+means **unchanged in this cycle-repair packet**, not an endorsement of the
+relation. Its blame is `3764729af84ddf53c2054780036b0b729aa958c7`
+(2026-08-22 15:58:35 UTC), not `c0b001cb`; it is not part of the census below.
+
+Before editing, the repository's required `futon3.chops/validate-sigil` check
+returned `:valid? false`, `:unknown-emoji` for `⚖/令`, the existing sigil on
+all four target WR patterns. No patterns were edited at this stage.
+`resources/tokizh/tokizh.org` does not contain scales; the existing migration
+catalogue `resources/sigils/sigil-migrations.edn:40` maps `⚖️` to `👯` (`sama`,
+balance -> same/equal). A separate validation of `👯/令` returned `:valid? true`.
+The catalogue spelling includes a variation selector while the patterns do not;
+the semantic correspondence is a proposed migration, not a silently applied
+normalization. The gate conflict and proposed bounded prerequisite were sent
+to claude-1 as `invoke-1788926110221-15955-6325ccda`.
+
+### Full c0b001cb edge census for the separate library review
+
+Derived from `git show --format= --unified=0
+c0b001cb8308804721dad51c01cc2f7a6e665cc3`: **35 added `@why` lines in 25 files**.
+Every line names one target. All 35 exact lines remain present at the pre-edit
+basis `cef70c7`; the table records their pre-edit line numbers. This is the
+original commit's population, not the later L14 receipt's 37-edge population.
+No verdict is asserted for the other 30 edges. Shared generator provenance
+makes them candidates for review, not automatically authorized retractions.
+
+Every source and target below is a qualified pattern ID. Its file is
+`library/<id>.flexiarg`. The origin for every row is `c0b001cb`.
+
+| Source | Target | Pre-edit source line | This packet |
+|---|---|---|---|
+| `aif/belief-state-operational-hypotheses` | `problems/r1-belief-state` | 10 | Separate review; unchanged |
+| `aif/candidate-pattern-action-space` | `problems/r6-candidate-action-space-and-selection` | 14 | Separate review; unchanged |
+| `aif/candidate-pattern-action-space` | `problems/tension-proposes-candidates` | 15 | Separate review; unchanged |
+| `aif/evidence-precision-registry` | `problems/r7-evidence-channel-precision` | 13 | Separate review; unchanged |
+| `aif/expected-free-energy-scorecard` | `problems/g-over-cascade-is-undefined` | 12 | Separate review; unchanged |
+| `aif/expected-free-energy-scorecard` | `problems/r5-expected-free-energy-core` | 13 | Separate review; unchanged |
+| `aif/expected-free-energy-scorecard` | `problems/satisfied-rungs-are-counted-and-surfaced` | 14 | Separate review; unchanged |
+| `aif/free-energy-as-tick-scalar` | `problems/per-tick-mismatch-instruments-outer-loop-gain` | 14 | Separate review; unchanged |
+| `aif/free-energy-as-tick-scalar` | `problems/r8-present-fit-mismatch` | 15 | Separate review; unchanged |
+| `aif/grounded-actuation-not-reobservation` | `problems/r16-grounded-actuation` | 13 | Separate review; unchanged |
+| `aif/hierarchical-and-temporal-depth` | `problems/r15-hierarchy-and-timescale` | 14 | Separate review; unchanged |
+| `aif/hierarchical-budget-aware-action-selection` | `problems/r11-hierarchical-shared-budget` | 13 | Separate review; unchanged |
+| `aif/interoceptive-tripwires` | `problems/r20-interoceptive-tripwires` | 14 | Separate review; unchanged |
+| `aif/no-self-certification` | `problems/r9-no-self-certification` | 16 | Separate review; unchanged |
+| `aif/policy-precision-commitment-temperature` | `problems/commitment-temperature-is-instrumented-as-gain` | 13 | Separate review; unchanged |
+| `aif/policy-precision-commitment-temperature` | `problems/r14-commitment-temperature` | 14 | Separate review; unchanged |
+| `aif/predictive-coding-belief-update` | `problems/r3-belief-update` | 14 | Separate review; unchanged |
+| `aif/scheduled-observer-entrypoint` | `problems/r10-scheduled-entrypoint` | 13 | Separate review; unchanged |
+| `aif/shared-kernel-predictive-forward-model` | `problems/r4-forward-model` | 13 | Separate review; unchanged |
+| `aif/structure-learning-by-model-reduction` | `problems/r17-structure-learning` | 12 | Separate review; unchanged |
+| `aif/structured-observation-vector` | `problems/operator-turns-become-inference-observations` | 13 | Separate review; unchanged |
+| `aif/structured-observation-vector` | `problems/r2-structured-observation` | 14 | Separate review; unchanged |
+| `aif/temporal-depth-beyond-greedy` | `problems/r13-temporal-policy-depth` | 13 | Separate review; unchanged |
+| `aif/two-layer-calibration` | `problems/r12-two-layer-calibration` | 14 | Separate review; unchanged |
+| `futon-theory/futonic-logic` | `problems/satisfied-rungs-are-counted-and-surfaced` | 12 | Separate review; unchanged |
+| `war-room/wr-16-operationalised-exploit-loops-are-first-class-observation-channels` | `problems/operator-turns-become-inference-observations` | 10 | Retracted in part 2b |
+| `war-room/wr-16-operationalised-exploit-loops-are-first-class-observation-channels` | `problems/r2-structured-observation` | 11 | Separate review; unchanged |
+| `war-room/wr-19-tension-must-generate-not-only-rank` | `problems/r17-structure-learning` | 11 | Separate review; unchanged |
+| `war-room/wr-19-tension-must-generate-not-only-rank` | `problems/tension-proposes-candidates` | 12 | Retracted in part 2b |
+| `war-room/wr-24-a-removed-constraint-does-not-remove-the-discipline-it-supplied` | `problems/r13-temporal-policy-depth` | 11 | Separate review; unchanged |
+| `war-room/wr-25-good-news-gets-the-same-evidence-discipline-as-bad` | `problems/r9-no-self-certification` | 12 | Separate review; unchanged |
+| `war-room/wr-25-good-news-gets-the-same-evidence-discipline-as-bad` | `problems/satisfied-rungs-are-counted-and-surfaced` | 13 | Retracted in part 2b |
+| `war-room/wr-26-a-capability-switched-off-carries-its-re-arm-condition-in-writing-at-the-switch` | `problems/r20-interoceptive-tripwires` | 10 | Separate review; unchanged |
+| `war-room/wr-27-a-loop-is-born-instrumented-for-its-gain` | `problems/commitment-temperature-is-instrumented-as-gain` | 11 | Retracted in part 2b |
+| `war-room/wr-27-a-loop-is-born-instrumented-for-its-gain` | `problems/per-tick-mismatch-instruments-outer-loop-gain` | 12 | Retracted in part 2b |
+
+
+### Retractions applied, 2026-09-09
+
+Authorized by claude-1 review `invoke-1788925976912-15951-a80745e3` under
+README-flexiarg:168-180. These five lines were removed, not relabeled. Their
+common blame is `c0b001cb8308804721dad51c01cc2f7a6e665cc3`
+(2026-09-05 12:57:37 UTC); original problem -> ruling edges are unchanged.
+Pointers below are the pre-edit positions preserved in the census above.
+
+`library/war-room/wr-16-operationalised-exploit-loops-are-first-class-observation-channels.flexiarg:10` — removed verbatim:
+
+```text
+@why problems/operator-turns-become-inference-observations (L14 edge-resolution; basis: holds -- the problem node's own holds-at token covers this pattern; source: receipt runs/L14-edge-resolution.edn; zai-1, 2026-09-05)
+```
+
+`library/war-room/wr-19-tension-must-generate-not-only-rank.flexiarg:12` — removed verbatim:
+
+```text
+@why problems/tension-proposes-candidates (L14 edge-resolution; basis: named -- the problem node's own text names the pattern id covers this pattern; source: receipt runs/L14-edge-resolution.edn; zai-1, 2026-09-05)
+```
+
+`library/war-room/wr-25-good-news-gets-the-same-evidence-discipline-as-bad.flexiarg:13` — removed verbatim:
+
+```text
+@why problems/satisfied-rungs-are-counted-and-surfaced (L14 edge-resolution; basis: named -- the problem node's own text names the pattern id covers this pattern; source: receipt runs/L14-edge-resolution.edn; zai-1, 2026-09-05)
+```
+
+`library/war-room/wr-27-a-loop-is-born-instrumented-for-its-gain.flexiarg:11` — removed verbatim:
+
+```text
+@why problems/commitment-temperature-is-instrumented-as-gain (L14 edge-resolution; basis: named -- the problem node's own text names the pattern id covers this pattern; source: receipt runs/L14-edge-resolution.edn; zai-1, 2026-09-05)
+```
+
+`library/war-room/wr-27-a-loop-is-born-instrumented-for-its-gain.flexiarg:12` — removed verbatim:
+
+```text
+@why problems/per-tick-mismatch-instruments-outer-loop-gain (L14 edge-resolution; basis: named -- the problem node's own text names the pattern id covers this pattern; source: receipt runs/L14-edge-resolution.edn; zai-1, 2026-09-05)
+```
+
+### Canonical sigil migration applied, 2026-09-09
+
+Claude-1 amended scope in `invoke-1788926110221-15955-6325ccda`, citing
+`resources/sigils/sigil-migrations.edn:40`: scales -> `👯` (`sama`). The
+catalogue's VS16 form `⚖️` and these files' bare `⚖` are the same glyph family;
+this equivalence and its application were explicitly approved in that review.
+
+Exactly the four files below change their line 3 from `@sigils [⚖/令]` to
+`@sigils [👯/令]`; no other sigil or pattern content changes. Claude-1 reports
+36 library files with legacy scales, 28 in war-room; that is owner-supplied
+scope evidence, not a fresh count by this packet. The other 32 are outside
+this repair. The unchanged WR-27 -> WR-16 relation is not endorsed by this edit.
+
+- `library/war-room/wr-16-operationalised-exploit-loops-are-first-class-observation-channels.flexiarg:3`
+- `library/war-room/wr-19-tension-must-generate-not-only-rank.flexiarg:3`
+- `library/war-room/wr-25-good-news-gets-the-same-evidence-discipline-as-bad.flexiarg:3`
+- `library/war-room/wr-27-a-loop-is-born-instrumented-for-its-gain.flexiarg:3`
+
+
+### Part 2b validation result
+
+The whole-library constructor command from futon3:
+
+```sh
+clojure -Sdeps '{:paths ["checks"]}' -M -m construct-cascade
+```
+
+exited **0**. The refusing `require-pass!` gate returned successfully: no
+failure vector was raised. The committed generated output is
+[construct-cascade.edn](construct-cascade.edn), regenerated by this command,
+not edited by hand. The stdout log is also retained locally at
+`/tmp/codex17-f12-retracted-constructor.log`.
+
+```text
+library: 100 sections, 1319 patterns, 503 authored @why edges, 535 @why+@how; read-digest 8b20e68b
+find F1-F4: all true
+widen-to-a-budget: 20 nodes / 3 edges; O1-O3 all true
+widen-to-the-marginal-gain-floor: 41 nodes / 14 edges; O1-O3 all true
+VERDICT distinguishable-from-uniform = true (without the floor arm: true)
+controls: 69 citations re-read, 0 unreadable; correspondence 3/3; grain leaks 0; mutations 5 declared, 0 slipped
+construct-cascade: PASS exit-convention=0-pass/1-fail
+```
+
+Checks and boundaries:
+
+- All four actual file sigils were extracted and passed to
+  `futon3.chops/validate-sigil`: each returned `:valid? true`, `:errors []`,
+  input `👯/令`, decoded `sama [令]`; the assertion command exited 0.
+- Each changed flexiarg was parsed with the repository's authoritative
+  `contrib/flexiarg.el` parser. Assertions checked matching qualified ID,
+  canonical sigil metadata, one conclusion root, context/IF/HOWEVER/THEN/BECAUSE
+  children, and full parsed-body equality to its pre-edit copy. All four
+  passed, exit 0. The parser emitted its existing obsolete-`when-let` warning;
+  the temporary harness also lacked a lexical-binding cookie. Neither was
+  suppressed or reported as a parser failure.
+- Generated `checks/construct-cascade.edn`: clj-kondo 0 errors / 0 warnings;
+  `futon4/dev/check-parens.el` OK. No checker implementation changed.
+- Exactly 30 of the 35 original `c0b001cb` edge lines remain verbatim; the five
+  removed lines are preserved above. The original forward edges and all other
+  pattern metadata apart from the four sigils are unchanged.
+- Local document links resolve and `git diff --check` passes.
+
+This supersedes the earlier discovery-stage statement that the constructor
+remains blocked. It does not close F12: the two math candidates' separately
+observed authored-edge absences, the subsequent exemplar/Lean work, and the
+broader L14/sigil reviews remain outside this packet.

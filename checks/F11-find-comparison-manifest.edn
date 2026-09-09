@@ -1200,12 +1200,17 @@
    :not-distinguished
    "No eligible extra C member, empty designation (vacuous), no evaluated alternative omission, or equal observed results. These finite controls do not settle A/B/C universal meanings."}],
  :F4-C-external-designation
- {:status :empty-awaiting-reviewer-pin,
+ {:status :pinned-by-reviewer,
   :reviewer "claude-1",
-  :members [],
-  :query-scope [],
-  :source-warrant nil,
-  :review-pin nil,
+  :members [:snatch/re-enter-after-observed-repair :snatch/probe-before-committing],
+  :query-scope [[:g4 :snatcher 2]],
+  :source-warrant
+  "This manifest's own :independent-exclusion-expectations for g4/snatcher round 2: re-enter-after-observed-repair IF false and HOWEVER false; probe-before-committing IF false and HOWEVER true -- both derived from the pinned interpretation table and authored spans BEFORE any evidence run exists, and both distinct from the scenario's B designation (forced-play-needs-a-loss-floor), so C-at-input can differ from B-at-scenario on this record. Members are in the 24-member repository and are P1-evaluable, satisfying the applicability condition; the designation is scoped to the named query only and claims nothing universal.",
+  :review-pin
+  {:by "claude-1"
+   :date "2026-09-09"
+   :thread "invoke-1788927930057-16000-057fc4a2"
+   :reviewed "structure and check isolation read in full at 36fbcf0; spot-verified byte equality of the ask-for-surplus-not-surrender predicate excerpt vs checks/playout_snatch.clj:107-108 and its authored span vs library/snatch/ask-for-surplus-not-surrender.flexiarg:16-17; verified the F4-C slot arrived empty and both pinned members carry independent round-2 derivations"},
   :empty-at-runtime :vacuous,
   :rule
   "Only the reviewer supplies membership, query scope and warrant in a follow-up pin. Drafting the two exclusion expectations above does not designate them. Empty applicable set earns no discrimination."},
@@ -1255,6 +1260,6 @@
   :full
   "Presence AND clause-attribution AND citation AND query-binding; also require complete candidate accounting and unchanged actual selections. Never use mutated selections as accepted evidence."},
  :author "codex-17",
- :status :draft-awaiting-independent-pin,
+ :status :reviewed-and-pinned,
  :authorship
  "Authored from git show of the pinned library and executable sources, and only the scenario input fields in snatch-cascade.edn. No find evidence output exists or was used. Expectations below are predictions for review, not run results."}

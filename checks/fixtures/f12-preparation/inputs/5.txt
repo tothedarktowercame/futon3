@@ -1,0 +1,33 @@
+@flexiarg apparatus/evidence-to-disposition-once
+@title Evidence To Disposition Once; Disposition To Answer Per Consumer
+@keywords disposition, closed-enum, join, attribution, blame, provenance, envelope
+@audience apparatus builders, protocol designers, futon developers
+@tone technical
+@style pattern
+@status promoted (field trial 2026-09-08, APM repair program S1-S10; absorbs the earlier separate "carry the mechanism, judge blame once" principle; evidence: futon3c/holes/technotes/TN-apm-principle-scoring-ledger.md @ b0c36489; Joe's ruling 2026-09-08)
+@references [apparatus/success-must-not-resemble-failure apparatus/default-to-the-cheap-error]
+@see-also apparatus/new-failure-class-is-a-design-defect
+@why futon3c/holes/T-apm-recurring-failure-end-to-end.md (790c0491): five code sites joined the Agency invoke ledger and the typed-submission store differently, four patched separately after their own incident; the ~40 singleton park classes are the signature of the missing constructor. codex-17 correctly refused to consolidate the ANSWERS — the sites ask genuinely different questions; what consolidates is the construction.
+@how own mechanism: join raw authorities once, at collection time, into a closed-enum disposition record; every consumer pattern-matches totally on that record and loses the right to touch raw evidence; an exhaustiveness lint holds the enum closed.
+@violation-signature N consumers joining the same raw authorities differently; a blame verdict computed from surface form (transport status codes as classifier input); singleton failure-class growth; a new evidence shape requiring edits at more than one site.
+! conclusion: Where multiple authorities bear on one event, join their evidence ONCE into a closed-enum disposition constructed at collection time; consumers ask their different questions of that record by total pattern-match, never of the raw evidence.
+
+  + context: Two authorities legitimately record different aspects of one event — did the process finish, did the role deliver its contract — and many consumers each need a slightly different judgment about it.
+
+  + IF:
+    More than one consumer must judge the same event from the same underlying evidence.
+
+  + HOWEVER:
+    Each consumer joins the raw authorities itself, ad hoc, in the shape of whatever incident prompted it — and a "single canonical answer" is genuinely impossible, because the consumers' questions differ. (The wrong fix is unifying the answers; the missing thing is unifying the construction.)
+
+  + THEN:
+    Reify the join: one constructor builds a disposition value — a small closed enumeration of the authorities' product space (delivered-clean, delivered-then-wrapper-cancelled, process-died-no-submission, submission-without-process-record, …) — at collection time. Consumers pattern-match totally; a lint checks every consumer covers the enum, so a new evidence surface changes one constructor and every consumer either handles the new case or fails loudly. For blame in particular: the fault ORIGIN records what physically happened as a typed, namespaced envelope passed through opaquely (intermediaries may wrap, never translate); blame is one pure, versioned function of the mechanism; transport status codes are never an input to blame.
+
+  + BECAUSE:
+    Surface form is unstable — fixing an unbounded substrate wait turned a client timeout (:apparatus) into an HTTP 504 (:agent) with no change to the fault — and per-consumer joins convert every surface shift into a new singleton failure class.
+
+    + evidence: APM: the five join sites; ~40 singleton park classes, most seen once or twice; the 504 blame-flip (ec97a42b). 13/126 parks from one un-reified success shape (see apparatus/success-must-not-resemble-failure).
+
+  + NEXT-STEPS:
+    - Find the event in your apparatus with the most downstream judges; count its distinct joins. More than one means this pattern applies.
+    - Without compiler exhaustiveness (Clojure), write the lint that walks consumers' case dispatches against the enum — the closed enum quietly reopens otherwise.

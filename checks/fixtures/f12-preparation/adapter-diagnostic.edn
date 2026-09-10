@@ -1,0 +1,341 @@
+{:kind :build-diagnostic,
+ :primary? false,
+ :primary-score nil,
+ :baseline
+ {:cascade
+  {:added-by-organise #{},
+   :selected
+   #{["apparatus/one-authority-per-question" "find-source-pin"]
+     ["apparatus/replayable-not-precious" "supporting"]
+     ["apparatus/one-authority-per-question" "risk-binding-pin"]
+     ["apparatus/pin-moves-with-the-population" "supporting"]
+     ["apparatus/done-is-observed-running" "supporting"]
+     ["apparatus/evidence-to-disposition-once"
+      "preparation-integrity"]},
+   :admitted-by #{},
+   :stands-on {},
+   :nodes
+   #{["apparatus/one-authority-per-question" "find-source-pin"]
+     ["apparatus/replayable-not-precious" "supporting"]
+     ["apparatus/one-authority-per-question" "risk-binding-pin"]
+     ["apparatus/pin-moves-with-the-population" "supporting"]
+     ["apparatus/done-is-observed-running" "supporting"]
+     ["apparatus/evidence-to-disposition-once"
+      "preparation-integrity"]},
+   :temperament :preparation,
+   :precedence [1 2 3 4 5 6],
+   :edges #{},
+   :acyclic? true},
+  :state
+  {:F
+   {:stdin
+    "64c3abb4a5a8655736ffc6391cbf7cbae17a76cdc3e026cfc3e6adcf0da1d9ce  /tmp/f12-byte-check-7b7r6977/target\n",
+    :input_sha256
+    "64c3abb4a5a8655736ffc6391cbf7cbae17a76cdc3e026cfc3e6adcf0da1d9ce",
+    :exit 0,
+    :stdout_sha256
+    "eacbca3131f487220848e7ccb5d710ad1e27d50941f68c1b684b5fa4d106c6c3",
+    :logical_stdin
+    "64c3abb4a5a8655736ffc6391cbf7cbae17a76cdc3e026cfc3e6adcf0da1d9ce  /home/joe/code/futon3/checks/find_organise.clj\n",
+    :stderr_sha256
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    :mapping
+    #:{:home/joe/code/futon3/checks/find_organise.clj
+       "/tmp/f12-byte-check-7b7r6977/target"},
+    :cwd "/tmp/f12-byte-check-7b7r6977",
+    :stdin_sha256
+    "f8a78c1ad476cd96bea3b611f8d0bfd03398fef9129dfe3704d4bfad7613f128",
+    :argv ["/usr/bin/sha256sum" "--check" "--strict" "-"],
+    :result "match",
+    :kind "checksum-command-observation",
+    :action "F",
+    :environment
+    {:LC_ALL "C", :LANG "C", :TZ "UTC", :OPENSSL_CONF "/dev/null"},
+    :basis_stable true,
+    :stderr "",
+    :manifest_sha256
+    "ff3d9873b76ea406b0df0096e43472eb92148a64ccd1f6a07d58acc0209770b5",
+    :elapsed_ns 1628879,
+    :stdout "/tmp/f12-byte-check-7b7r6977/target: OK\n"},
+   :S
+   {:stdin
+    "305222dea73f92c92bf89166be7423e12d1eae04eb3b40e5067b338911fc6659  /tmp/f12-byte-check-ig5kobgk/target\n",
+    :input_sha256
+    "305222dea73f92c92bf89166be7423e12d1eae04eb3b40e5067b338911fc6659",
+    :exit 0,
+    :stdout_sha256
+    "b7d75d438fb907c0b6ffe95c032373745033cf401aa83ccc60006e843a55ee04",
+    :logical_stdin
+    "305222dea73f92c92bf89166be7423e12d1eae04eb3b40e5067b338911fc6659  /home/joe/code/futon2/holes/labs/wm-contract/runs/separated-risk-certificate/runtime-mass-binding.lean\n",
+    :stderr_sha256
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    :mapping
+    #:{:home/joe/code/futon2/holes/labs/wm-contract/runs/separated-risk-certificate/runtime-mass-binding.lean
+       "/tmp/f12-byte-check-ig5kobgk/target"},
+    :cwd "/tmp/f12-byte-check-ig5kobgk",
+    :stdin_sha256
+    "e6dd0500db2cfecab7c665fd3180396b368d7225a1de061a0505dbb9160c1976",
+    :argv ["/usr/bin/sha256sum" "--check" "--strict" "-"],
+    :result "match",
+    :kind "checksum-command-observation",
+    :action "S",
+    :environment
+    {:LC_ALL "C", :LANG "C", :TZ "UTC", :OPENSSL_CONF "/dev/null"},
+    :basis_stable true,
+    :stderr "",
+    :manifest_sha256
+    "ff3d9873b76ea406b0df0096e43472eb92148a64ccd1f6a07d58acc0209770b5",
+    :elapsed_ns 2825357,
+    :stdout "/tmp/f12-byte-check-ig5kobgk/target: OK\n"},
+   :disposition :both-match},
+  :parent-order
+  ["apparatus/one-authority-per-question"
+   "apparatus/one-authority-per-question"
+   "apparatus/evidence-to-disposition-once"],
+  :summary "Both byte identities match; broader readiness unknown.",
+  :kind :diagnostic,
+  :transcript
+  [{:rule ["apparatus/one-authority-per-question" "find-source-pin"],
+    :emission
+    {:key :F,
+     :receipt
+     {:stdin
+      "64c3abb4a5a8655736ffc6391cbf7cbae17a76cdc3e026cfc3e6adcf0da1d9ce  /tmp/f12-byte-check-7b7r6977/target\n",
+      :input_sha256
+      "64c3abb4a5a8655736ffc6391cbf7cbae17a76cdc3e026cfc3e6adcf0da1d9ce",
+      :exit 0,
+      :stdout_sha256
+      "eacbca3131f487220848e7ccb5d710ad1e27d50941f68c1b684b5fa4d106c6c3",
+      :logical_stdin
+      "64c3abb4a5a8655736ffc6391cbf7cbae17a76cdc3e026cfc3e6adcf0da1d9ce  /home/joe/code/futon3/checks/find_organise.clj\n",
+      :stderr_sha256
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      :mapping
+      #:{:home/joe/code/futon3/checks/find_organise.clj
+         "/tmp/f12-byte-check-7b7r6977/target"},
+      :cwd "/tmp/f12-byte-check-7b7r6977",
+      :stdin_sha256
+      "f8a78c1ad476cd96bea3b611f8d0bfd03398fef9129dfe3704d4bfad7613f128",
+      :argv ["/usr/bin/sha256sum" "--check" "--strict" "-"],
+      :result "match",
+      :kind "checksum-command-observation",
+      :action "F",
+      :environment
+      {:LC_ALL "C", :LANG "C", :TZ "UTC", :OPENSSL_CONF "/dev/null"},
+      :basis_stable true,
+      :stderr "",
+      :manifest_sha256
+      "ff3d9873b76ea406b0df0096e43472eb92148a64ccd1f6a07d58acc0209770b5",
+      :elapsed_ns 1628879,
+      :stdout "/tmp/f12-byte-check-7b7r6977/target: OK\n"}}}
+   {:rule ["apparatus/one-authority-per-question" "risk-binding-pin"],
+    :emission
+    {:key :S,
+     :receipt
+     {:stdin
+      "305222dea73f92c92bf89166be7423e12d1eae04eb3b40e5067b338911fc6659  /tmp/f12-byte-check-ig5kobgk/target\n",
+      :input_sha256
+      "305222dea73f92c92bf89166be7423e12d1eae04eb3b40e5067b338911fc6659",
+      :exit 0,
+      :stdout_sha256
+      "b7d75d438fb907c0b6ffe95c032373745033cf401aa83ccc60006e843a55ee04",
+      :logical_stdin
+      "305222dea73f92c92bf89166be7423e12d1eae04eb3b40e5067b338911fc6659  /home/joe/code/futon2/holes/labs/wm-contract/runs/separated-risk-certificate/runtime-mass-binding.lean\n",
+      :stderr_sha256
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      :mapping
+      #:{:home/joe/code/futon2/holes/labs/wm-contract/runs/separated-risk-certificate/runtime-mass-binding.lean
+         "/tmp/f12-byte-check-ig5kobgk/target"},
+      :cwd "/tmp/f12-byte-check-ig5kobgk",
+      :stdin_sha256
+      "e6dd0500db2cfecab7c665fd3180396b368d7225a1de061a0505dbb9160c1976",
+      :argv ["/usr/bin/sha256sum" "--check" "--strict" "-"],
+      :result "match",
+      :kind "checksum-command-observation",
+      :action "S",
+      :environment
+      {:LC_ALL "C", :LANG "C", :TZ "UTC", :OPENSSL_CONF "/dev/null"},
+      :basis_stable true,
+      :stderr "",
+      :manifest_sha256
+      "ff3d9873b76ea406b0df0096e43472eb92148a64ccd1f6a07d58acc0209770b5",
+      :elapsed_ns 2825357,
+      :stdout "/tmp/f12-byte-check-ig5kobgk/target: OK\n"}}}
+   {:rule
+    ["apparatus/evidence-to-disposition-once" "preparation-integrity"],
+    :emission {:key :disposition, :receipt :both-match}}],
+  :acting-order
+  [["apparatus/one-authority-per-question" "find-source-pin"]
+   ["apparatus/one-authority-per-question" "risk-binding-pin"]
+   ["apparatus/evidence-to-disposition-once" "preparation-integrity"]],
+  :primary? false,
+  :primary-score nil},
+ :intervention
+ {:cascade
+  {:added-by-organise #{},
+   :selected
+   #{["apparatus/one-authority-per-question" "find-source-pin"]
+     ["apparatus/replayable-not-precious" "supporting"]
+     ["apparatus/one-authority-per-question" "risk-binding-pin"]
+     ["apparatus/pin-moves-with-the-population" "supporting"]
+     ["apparatus/done-is-observed-running" "supporting"]
+     ["apparatus/evidence-to-disposition-once"
+      "preparation-integrity"]},
+   :admitted-by #{},
+   :stands-on {},
+   :nodes
+   #{["apparatus/one-authority-per-question" "find-source-pin"]
+     ["apparatus/replayable-not-precious" "supporting"]
+     ["apparatus/one-authority-per-question" "risk-binding-pin"]
+     ["apparatus/pin-moves-with-the-population" "supporting"]
+     ["apparatus/done-is-observed-running" "supporting"]
+     ["apparatus/evidence-to-disposition-once"
+      "preparation-integrity"]},
+   :temperament :preparation,
+   :precedence [2 1 3 4 5 6],
+   :edges #{},
+   :acyclic? true},
+  :state
+  {:S
+   {:stdin
+    "305222dea73f92c92bf89166be7423e12d1eae04eb3b40e5067b338911fc6659  /tmp/f12-byte-check-adcrw9sq/target\n",
+    :input_sha256
+    "305222dea73f92c92bf89166be7423e12d1eae04eb3b40e5067b338911fc6659",
+    :exit 0,
+    :stdout_sha256
+    "e159b0e86ec8bd1de055a48b7c88808bab43344e426ef06ce0cf98127beb3b7e",
+    :logical_stdin
+    "305222dea73f92c92bf89166be7423e12d1eae04eb3b40e5067b338911fc6659  /home/joe/code/futon2/holes/labs/wm-contract/runs/separated-risk-certificate/runtime-mass-binding.lean\n",
+    :stderr_sha256
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    :mapping
+    #:{:home/joe/code/futon2/holes/labs/wm-contract/runs/separated-risk-certificate/runtime-mass-binding.lean
+       "/tmp/f12-byte-check-adcrw9sq/target"},
+    :cwd "/tmp/f12-byte-check-adcrw9sq",
+    :stdin_sha256
+    "7f59d14760275c1c85ba1434f02c1733e7452220f96b88d12b38fa2b4b1c040f",
+    :argv ["/usr/bin/sha256sum" "--check" "--strict" "-"],
+    :result "match",
+    :kind "checksum-command-observation",
+    :action "S",
+    :environment
+    {:LC_ALL "C", :LANG "C", :TZ "UTC", :OPENSSL_CONF "/dev/null"},
+    :basis_stable true,
+    :stderr "",
+    :manifest_sha256
+    "ff3d9873b76ea406b0df0096e43472eb92148a64ccd1f6a07d58acc0209770b5",
+    :elapsed_ns 2597782,
+    :stdout "/tmp/f12-byte-check-adcrw9sq/target: OK\n"},
+   :F
+   {:stdin
+    "64c3abb4a5a8655736ffc6391cbf7cbae17a76cdc3e026cfc3e6adcf0da1d9ce  /tmp/f12-byte-check-9nxepgg2/target\n",
+    :input_sha256
+    "64c3abb4a5a8655736ffc6391cbf7cbae17a76cdc3e026cfc3e6adcf0da1d9ce",
+    :exit 0,
+    :stdout_sha256
+    "d5f5efd097178e71c43de5a1b2a249430da523ccbb61d9140230a8ccdc027ed7",
+    :logical_stdin
+    "64c3abb4a5a8655736ffc6391cbf7cbae17a76cdc3e026cfc3e6adcf0da1d9ce  /home/joe/code/futon3/checks/find_organise.clj\n",
+    :stderr_sha256
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    :mapping
+    #:{:home/joe/code/futon3/checks/find_organise.clj
+       "/tmp/f12-byte-check-9nxepgg2/target"},
+    :cwd "/tmp/f12-byte-check-9nxepgg2",
+    :stdin_sha256
+    "57ee433969636fd9dd0b7dba999363d4ea9a16aabb1b8455ca1f92a41b4a687e",
+    :argv ["/usr/bin/sha256sum" "--check" "--strict" "-"],
+    :result "match",
+    :kind "checksum-command-observation",
+    :action "F",
+    :environment
+    {:LC_ALL "C", :LANG "C", :TZ "UTC", :OPENSSL_CONF "/dev/null"},
+    :basis_stable true,
+    :stderr "",
+    :manifest_sha256
+    "ff3d9873b76ea406b0df0096e43472eb92148a64ccd1f6a07d58acc0209770b5",
+    :elapsed_ns 2993733,
+    :stdout "/tmp/f12-byte-check-9nxepgg2/target: OK\n"},
+   :disposition :both-match},
+  :parent-order
+  ["apparatus/one-authority-per-question"
+   "apparatus/one-authority-per-question"
+   "apparatus/evidence-to-disposition-once"],
+  :summary "Both byte identities match; broader readiness unknown.",
+  :kind :diagnostic,
+  :transcript
+  [{:rule ["apparatus/one-authority-per-question" "risk-binding-pin"],
+    :emission
+    {:key :S,
+     :receipt
+     {:stdin
+      "305222dea73f92c92bf89166be7423e12d1eae04eb3b40e5067b338911fc6659  /tmp/f12-byte-check-adcrw9sq/target\n",
+      :input_sha256
+      "305222dea73f92c92bf89166be7423e12d1eae04eb3b40e5067b338911fc6659",
+      :exit 0,
+      :stdout_sha256
+      "e159b0e86ec8bd1de055a48b7c88808bab43344e426ef06ce0cf98127beb3b7e",
+      :logical_stdin
+      "305222dea73f92c92bf89166be7423e12d1eae04eb3b40e5067b338911fc6659  /home/joe/code/futon2/holes/labs/wm-contract/runs/separated-risk-certificate/runtime-mass-binding.lean\n",
+      :stderr_sha256
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      :mapping
+      #:{:home/joe/code/futon2/holes/labs/wm-contract/runs/separated-risk-certificate/runtime-mass-binding.lean
+         "/tmp/f12-byte-check-adcrw9sq/target"},
+      :cwd "/tmp/f12-byte-check-adcrw9sq",
+      :stdin_sha256
+      "7f59d14760275c1c85ba1434f02c1733e7452220f96b88d12b38fa2b4b1c040f",
+      :argv ["/usr/bin/sha256sum" "--check" "--strict" "-"],
+      :result "match",
+      :kind "checksum-command-observation",
+      :action "S",
+      :environment
+      {:LC_ALL "C", :LANG "C", :TZ "UTC", :OPENSSL_CONF "/dev/null"},
+      :basis_stable true,
+      :stderr "",
+      :manifest_sha256
+      "ff3d9873b76ea406b0df0096e43472eb92148a64ccd1f6a07d58acc0209770b5",
+      :elapsed_ns 2597782,
+      :stdout "/tmp/f12-byte-check-adcrw9sq/target: OK\n"}}}
+   {:rule ["apparatus/one-authority-per-question" "find-source-pin"],
+    :emission
+    {:key :F,
+     :receipt
+     {:stdin
+      "64c3abb4a5a8655736ffc6391cbf7cbae17a76cdc3e026cfc3e6adcf0da1d9ce  /tmp/f12-byte-check-9nxepgg2/target\n",
+      :input_sha256
+      "64c3abb4a5a8655736ffc6391cbf7cbae17a76cdc3e026cfc3e6adcf0da1d9ce",
+      :exit 0,
+      :stdout_sha256
+      "d5f5efd097178e71c43de5a1b2a249430da523ccbb61d9140230a8ccdc027ed7",
+      :logical_stdin
+      "64c3abb4a5a8655736ffc6391cbf7cbae17a76cdc3e026cfc3e6adcf0da1d9ce  /home/joe/code/futon3/checks/find_organise.clj\n",
+      :stderr_sha256
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      :mapping
+      #:{:home/joe/code/futon3/checks/find_organise.clj
+         "/tmp/f12-byte-check-9nxepgg2/target"},
+      :cwd "/tmp/f12-byte-check-9nxepgg2",
+      :stdin_sha256
+      "57ee433969636fd9dd0b7dba999363d4ea9a16aabb1b8455ca1f92a41b4a687e",
+      :argv ["/usr/bin/sha256sum" "--check" "--strict" "-"],
+      :result "match",
+      :kind "checksum-command-observation",
+      :action "F",
+      :environment
+      {:LC_ALL "C", :LANG "C", :TZ "UTC", :OPENSSL_CONF "/dev/null"},
+      :basis_stable true,
+      :stderr "",
+      :manifest_sha256
+      "ff3d9873b76ea406b0df0096e43472eb92148a64ccd1f6a07d58acc0209770b5",
+      :elapsed_ns 2993733,
+      :stdout "/tmp/f12-byte-check-9nxepgg2/target: OK\n"}}}
+   {:rule
+    ["apparatus/evidence-to-disposition-once" "preparation-integrity"],
+    :emission {:key :disposition, :receipt :both-match}}],
+  :acting-order
+  [["apparatus/one-authority-per-question" "risk-binding-pin"]
+   ["apparatus/one-authority-per-question" "find-source-pin"]
+   ["apparatus/evidence-to-disposition-once" "preparation-integrity"]],
+  :primary? false,
+  :primary-score nil}}

@@ -1,0 +1,33 @@
+@flexiarg apparatus/pin-moves-with-the-population
+@title The Pin Moves With The Population, By The Hand That Moved It
+@keywords pin, re-pin, attestation, staleness, maintenance-debt, same-change
+@audience apparatus builders, lane owners, futon developers
+@tone technical
+@style pattern
+@status promoted (proposed by claude-1 in the 2026-09-08 redline; field trial 2026-09-08, APM repair program S1-S10; evidence: futon3c/holes/technotes/TN-apm-principle-scoring-ledger.md @ b0c36489; Joe's ruling 2026-09-08)
+@references [apparatus/one-authority-per-question apparatus/new-failure-class-is-a-design-defect]
+@see-also apparatus/loudness-is-conserved
+@why WM, 2026-09-07/08, the proposer as delinquent party twice: three worklist rows minted in a gap commit turned negative-control 10j red at the very next publish; an F10 slice minted a receipt and the glossary-assurance summary went red the same way. Both controls' comment history shows three consecutive lanes inheriting reds they did not cause — the violation's signature. The 37 strict-stale positive-proof receipts with no recapture path are the accumulated form of the same debt.
+@how own mechanism: every deliberate change to a pinned population carries the re-pin in the same change; every edit to an attested source re-emits the attestation in the same slice.
+@violation-signature A lane inherits a red it did not cause; the re-pin arrives in a different change (different commit, different slice, different hand) than the move that invalidated it; stale attestations accumulate into a backlog awaiting a steward.
+! conclusion: Whoever deliberately moves a pinned population carries the re-pin in the same change, and whoever edits an attested source re-emits the attestation in the same slice — maintenance travels with the mutation, not to a queue.
+
+  + context: Pins and attestations (see apparatus/one-authority-per-question) deliberately freeze a copy of a moving population so a comparator can alarm on drift. The alarm cannot distinguish "the world changed illegitimately" from "the world changed on purpose and nobody re-pinned".
+
+  + IF:
+    You are making a change that legitimately moves a pinned population or edits an attested source.
+
+  + HOWEVER:
+    The re-pin feels like separate bookkeeping, so it is deferred — and the red then lands on the NEXT lane to publish, who did not cause it, must diagnose it, and learns to distrust the control. Deferred at scale, the debt becomes a stale-attestation backlog whose obvious remedy is a steward role — which is a catch layer for a failure shape (see apparatus/new-failure-class-is-a-design-defect); at-source re-attestation is the one-layer-down fix.
+
+  + THEN:
+    The mutation and its maintenance are one change: move the population and re-pin in the same commit; edit the source and re-emit the attestation in the same slice. A gate may enforce it — refuse a change that moves a pinned population without touching its pin.
+
+  + BECAUSE:
+    A pin's value is that red means something; every inherited red spends that meaning, and three lanes of inherited reds later the control is noise. This is distinct from loudness-is-conserved: that principle says the red must be loud; this one says WHOSE change carries the maintenance, and WHEN.
+
+    + evidence: WM comment history on controls 10j and glossary-assurance, 2026-09-07/08 (three consecutive lanes inheriting reds); 37 strict-stale receipts currently heading toward a steward instead of at-source recapture — the pending design decision recorded in RED-COMPONENTS item 1.
+
+  + NEXT-STEPS:
+    - List your pins and attested sources; for each, name the gate that could refuse a move arriving without its re-pin.
+    - Decide the standing backlog by this principle: recapture at source, then retire the steward plan.

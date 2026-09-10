@@ -1,0 +1,33 @@
+@flexiarg apparatus/one-authority-per-question
+@title One Authority Per Question
+@keywords authority, source-of-truth, pin, comparator, write-gate, roster, drift
+@audience apparatus builders, campaign designers, futon developers
+@tone technical
+@style pattern
+@status promoted (field trial 2026-09-08, APM repair program S1-S10; evidence: futon3c/holes/technotes/TN-apm-principle-scoring-ledger.md @ b0c36489; Joe's ruling 2026-09-08)
+@references [apparatus/pin-moves-with-the-population apparatus/evidence-to-disposition-once]
+@see-also apparatus/done-is-observed-running
+@why APM defect register S1/S2 (futon3c TN-apm-defect-register.md): the roster contradicted frame_seats seat-specs silently, was read as authoritative, and an agent corrected a CORRECT cast declaration into a wrong one, stopping the campaign. A11/M7: loaded JVM diverged from committed source with no comparator, presenting as intermittent failure. T-apm-recurring-failure-end-to-end.md (790c0491): five sites joined the invoke ledger and typed-submission store differently.
+@how own mechanism: designate one owning reader per fact; route every mutation through the fact's owning gate; permit second copies only as pins whose sole reader is a comparator and whose disagreement is a loud fault.
+@violation-signature Two readers of the same fact disagree in production; a consumer is found reading a copy that is not a pin's comparator; a mutation path writes shared state without passing the owning gate.
+! conclusion: Every fact has exactly one authoritative reader; any second copy is either a pin — readable only by a comparator, disagreement a loud fault — or a defect, even while it agrees.
+
+  + context: A distributed apparatus accumulates stores that each hold a view of the same fact: a roster and a spec, a ledger and a submission store, source on disk and namespaces in a JVM.
+
+  + IF:
+    Two or more places can answer the same question.
+
+  + HOWEVER:
+    The second copy agrees most of the time, so it is read as authoritative by whoever finds it first — a seat type is not the sort of thing a reader expects to cross-check. When it finally disagrees, the disagreement propagates as a correction of the correct value.
+
+  + THEN:
+    Designate one owner per fact. Route all mutations through the owner's gate (never hand-edit a merged registry; a board writes only through its gated transcription). Keep second copies only as deliberate pins: stale by design, read only by a comparator, disagreement surfacing as an alarm that stops the dependent publish.
+
+  + BECAUSE:
+    A second source of truth is not a view; it will be believed, and its errors propagate with the full authority of the fact.
+
+    + evidence: APM S2 (2026-08-28): the roster's wrong seat type led an agent to change a correct cast to `glm-5.3`; the provider rejected the model and retry exhaustion stopped the campaign. Corroboration from the wm side, through the pin carve-out: negative-control 10j and the glossary-assurance summary each went red within minutes of their populations moving (2026-09-07/08) and stopped the publish until reconciled — the principle working *through* an apparent violation of its letter.
+
+  + NEXT-STEPS:
+    - Inventory the facts your apparatus answers from two places; for each, name the owner or convert the copy to a pin with a comparator.
+    - Add the write-side audit: list every mutation path to shared state and check it passes the owning gate.

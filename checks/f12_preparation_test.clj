@@ -1,8 +1,10 @@
 (ns f12-preparation-test
   (:require [f12-preparation :as a]
             [find-organise :as fo]
+            [clojure.edn :as edn]
+            [cheshire.core :as json]
             [clojure.test :refer [deftest is run-tests]]))
-(def manifest "checks/fixtures/f12-preparation/manifest.json")
+(def manifest "checks/fixtures/f12-preparation/manifest-serialization-successor-proposed.json")
 (deftest organiser-and-real-diagnostic-actions
   (let [b (a/diagnostic-arm manifest :baseline a/command!)
         i (a/diagnostic-arm manifest :intervention a/command!)
@@ -10,6 +12,12 @@
              :acting-order-before (:acting-order b) :acting-order-after (:acting-order i)
              ;; Explicit synthetic law-control numbers, not primary observations.
              :score-before 1 :score-after 1}]
+    (doseq [episode [b i]]
+      (is (= episode (edn/read-string (a/deposit-text episode))))
+      (doseq [receipt (map #(get-in episode [:state %]) [:F :S])]
+        (is (every? string? (keys (:mapping receipt))))
+        (is (= receipt (edn/read-string (a/deposit-text receipt))))
+        (is (= receipt (a/parse-receipt (json/generate-string receipt))))))
     (is (= (mapv a/ids [0 1 2]) (:acting-order b)))
     (is (= (mapv a/ids [1 0 2]) (:acting-order i)))
     (is (= (:parent-order b) (:parent-order i)))
@@ -21,6 +29,12 @@
     (is (false? (fo/o4-precedence-governance
                  (assoc row :acting-order-before (:parent-order b)
                             :acting-order-after (:parent-order i)))))))
+(deftest path-keys-remain-data
+  (let [raw "{\"mapping\":{\"/home/joe/a\":\"/tmp/x\",\"relative/a\":\"/tmp/y\"},\"environment\":{\"LC_ALL\":\"C\"}}"
+        r (a/parse-receipt raw)]
+    (is (= #{"/home/joe/a" "relative/a"} (set (keys (:mapping r)))))
+    (is (= {"LC_ALL" "C"} (:environment r)))
+    (is (= r (edn/read-string (a/deposit-text r))))))
 (deftest total-consumers-and-failures
   (is (thrown? AssertionError (a/exhaustive! (conj a/enum :new) [a/summaries a/scores])))
   (is (= :find-mismatch (a/disposition {:result "mismatch"} {:result "match"})))

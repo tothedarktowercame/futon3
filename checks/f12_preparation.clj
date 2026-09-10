@@ -3,7 +3,8 @@
   (:require [find-organise :as fo]
             [babashka.process :as p]
             [cheshire.core :as json]
-            [clojure.edn :as edn]))
+            [clojure.edn :as edn]
+            [clojure.pprint :as pp]))
 
 (def ids
   [["apparatus/one-authority-per-question" "find-source-pin"]
@@ -52,11 +53,22 @@
     (assert (every? #(% row) [fo/o1-nodes-recorded fo/o2-authored-reachability fo/o3-fast-forward]))
     row))
 
+(defn parse-receipt [text]
+  ;; Only schema fields are keywords. Nested mapping/environment keys are data.
+  (into {} (map (fn [[k v]] [(keyword k) v])) (json/parse-string text false)))
+
+(defn deposit-text [value]
+  (let [text (with-out-str (pp/pprint value))
+        reader (java.io.PushbackReader. (java.io.StringReader. text))]
+    (assert (= value (edn/read reader)) "deposit round trip changed value")
+    (assert (= ::eof (edn/read {:eof ::eof} reader)) "extra deposit form")
+    text))
+
 (defn command! [manifest name]
   (let [r (p/shell {:out :string :err :string :continue true}
                    "/usr/bin/python3" "-I" "-S" "-B" "checks/f12_preparation_io.py" "diagnostic" manifest name)]
     (when-not (zero? (:exit r)) (throw (ex-info "actuator refused" {:process r})))
-    (let [receipt (json/parse-string (:out r) true)]
+    (let [receipt (parse-receipt (:out r))]
       (when-not (:basis_stable receipt)
         (throw (ex-info "basis drift after command" {:receipt receipt})))
       receipt)))
@@ -124,10 +136,12 @@
         row {:precedence-before (get-in b [:cascade :precedence])
              :precedence-after (get-in i [:cascade :precedence])
              :acting-order-before (:acting-order b) :acting-order-after (:acting-order i)
-             :score-before (:primary-score before) :score-after (:primary-score after)}]
-    {:review review :before before :after after :row row
+             :score-before (:primary-score before) :score-after (:primary-score after)}
+        record {:review review :before before :after after :row row
      :instance-o4 (fo/o4-precedence-governance row)
      :parent-o4 (fo/o4-precedence-governance
                   (assoc row :acting-order-before (:parent-order b)
                              :acting-order-after (:parent-order i)))
-     :closure-claimed? false}))
+     :closure-claimed? false}]
+      (deposit-text record)
+      record))

@@ -28,7 +28,7 @@ class Checks(unittest.TestCase):
                 io.verified(link, io.digest(b'changed'))
 
     def test_manifest_identity(self):
-        m = json.loads((io.HERE / 'fixtures/f12-preparation/manifest.json').read_text())
+        m = json.loads((io.HERE / 'fixtures/f12-preparation/manifest-serialization-successor-proposed.json').read_text())
         io.basis(m)
         changed = copy.deepcopy(m)
         changed['runtime'][0]['sha256'] = '0' * 64

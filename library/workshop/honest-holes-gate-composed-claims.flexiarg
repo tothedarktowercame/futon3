@@ -1,0 +1,53 @@
+@flexiarg workshop/honest-holes-gate-composed-claims
+@title Honest Holes Gate Composed Claims
+@keywords honesty, holes, gaps, composition, standards, publication, gate
+@audience cascade builders, page authors, task managers
+@tone normative
+@style pattern
+@grade principle
+@provenance The cascade-live standards s1-s5 (cascade_real_live.clj:242), where s4-honest-holes = boolean(seq o5) is TODAY FALSE (O5 has zero rows) while s5-composed is true — the composition publishes with no honest-hole record. Restated as a workshop flexiarg by zai-7 with Joe, 2026-09-12 (pattern-interpretations experiment).
+@review pending — Joe's 2026-09-12 experiment.
+@class process
+@domain process
+@family-note workshop/ family, second member; out of the math pool by construction.
+@status workshop experiment 2026-09-12; NOT assayed; the s4 counterexample is FIXED at source (d0741b04: typed evidence + in-band :s4-evidence); live flip pending JVM reload — until then the live page still shows s4=false, which is now a stale rendering, not an untyped absence.
+
+! conclusion:
+  A composed claim (a cascade, a page, a report) may not present itself
+  as complete while its honest holes are unrecorded: every composition
+  step that could have holes must either carry them or carry a typed
+  statement that none were found.
+
+  + context:
+    The cascade-live map composes O1xO4=73 missions and reports
+    s5-composed=true; the honest-holes dimension is empty, so s4 reads
+    false. Empty-or-unread is exactly the ambiguity the two-wire
+    discipline exists to kill: an absent hole list is not evidence of no
+    holes.
+
+  + IF:
+    A composition (overlap, join, cascade, rendered summary) is about to
+    be published or scored.
+
+  + HOWEVER:
+    Enumerating holes has cost and some dimensions genuinely have none;
+    demanding a hole census everywhere would price composition out.
+    Scope: the composition's OWN dimensions, not the whole register.
+
+  + THEN:
+    Before publish: for each composed dimension, emit either the hole
+    list or a typed none {:checked-dimensions [...] :holes-found 0};
+    s4 becomes true only on typed evidence. Publishing with s4=false is
+    permitted only with the falsity rendered in-band (the page already
+    does this — the standard is honest; the substrate is not yet).
+
+  + BECAUSE:
+    A composition that hides its holes teaches its readers a map with no
+    fog on it — and fogless maps are how three agents believed a dirty
+    tree (the README-inbox-zero lesson) and how monitors degrade toward
+    "fine" (2026-08-19). Honesty about gaps is a precondition for the
+    apex thesis: work steers itself only if it can see where it isn't.
+
+  + NEXT-STEPS:
+    next[Emit the typed none-or-holes record for O5 and flip s4 honestly.]
+    next[Add s4-style gates to the other published compositions (issue board's no-carrying-packet count is the same shape).]

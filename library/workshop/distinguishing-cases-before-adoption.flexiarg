@@ -1,0 +1,57 @@
+@flexiarg workshop/distinguishing-cases-before-adoption
+@title Distinguishing Cases Before Adoption
+@keywords scope, counterexample, review, commissioning, cascade
+@audience pattern authors, affected participants, reviewers, Layer 4 workshop authority
+@tone normative
+@style pattern
+@grade technique
+@provenance Joe requested a Layer 4 process for managing pattern-language extensions, 2026-09-12; codex-25 operationalization of the discussion of Corneli (2016), An institutional approach to computational social creativity, https://metameso.org/~joe/papers/corneli2016institutional.pdf. Proposed local procedure, not a quotation from the paper.
+@review Joe authorized adding this process layer; Joe alone currently adopts workshop-family institutional rules and sanctions. Affected participants advise and challenge; they do not thereby acquire adoption authority.
+@class process
+@domain process
+@family-note workshop/ Layer 4 extension and maintenance process; see LAYER4-PROCESS.md for the linked sequence.
+@status authored 2026-09-12; not assayed; no runtime enforcement claimed.
+
+! conclusion:
+  Before adopting a pattern change, preserve its motivating case and a
+  nearby case where applying it would be wrong; review the distinction and
+  the effect on patterns that depend on it.
+
+  + context:
+    A justified local refusal can become a universal prohibition. A green
+    check can answer a narrower question than the claim made for it. A
+    pattern added to a cascade can silently widen the cascade's scope.
+
+  + IF:
+    A candidate is proposed for adoption, or an existing pattern's scope,
+    enforcement, or placement in a cascade is proposed to change.
+
+  + HOWEVER:
+    Some responses are exploratory and lack an executable detector.
+    Examples support a bounded claim, not universal validity. Absence of a
+    mechanical test must remain explicit rather than being filled by prose.
+
+  + THEN:
+    The owner supplies the originating observation, proposed response,
+    expected outcome, and a nearby contrasting case where that response
+    should not be required. A reviewer other than the author examines both,
+    including whether they differ on the property the proposal claims.
+    Record affected pattern versions and cascade edges, what each edge
+    means, and any downstream scope that needs review. A missing contrast
+    or unresolved dependency remains an explicit adoption gap.
+    If mechanical enforcement is claimed, link the detector and actual gate,
+    pin their versions, and retain both an induced-breach refusal and an
+    admissible-case acceptance. A bookkeeping check warrants bookkeeping
+    only. Record social review as social review. The adoption authority
+    decides whether evidence supports the proposed scope; unsupported
+    enforcement claims must be withheld or narrowed.
+
+  + BECAUSE:
+    Contrasting cases expose both failure to detect a breach and refusal
+    where no breach exists. Reviewing cascade relationships prevents a
+    locally supported change from acquiring unsupported downstream authority.
+
+  + NEXT-STEPS:
+    next[Use workshop/open-proposals-named-adoption for the recorded adoption decision.]
+    next[Use workshop/revise-patterns-from-observed-use after a bounded application.]
+    next[Keep detector existence, gate wiring, and commissioning as separate evidence obligations.]

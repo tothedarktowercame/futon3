@@ -1,0 +1,51 @@
+@flexiarg workshop/records-carry-warrant
+@title Records Carry Warrant
+@keywords warrant, provenance, derivation, recovery, audit, evidence, claim
+@audience pipeline authors, board designers, witness authors
+@tone normative
+@style pattern
+@grade principle
+@provenance apex-thesis cluster A ("Records carry warrant": "an assertion severed from its derivation cannot be checked, learned from, or recovered"), restated as a workshop flexiarg by zai-7 with Joe, 2026-09-12 — the pattern-interpretations experiment (NOTE-pattern-interpretations.md). Not mined from transcripts; derived from the stated design requirement. Admission basis is the apex thesis's in-force status, not mark counts.
+@review pending — Joe's 2026-09-12 experiment; workshop family admission standard is itself an open question this experiment feeds.
+@class process
+@domain process
+@family-note First member of the workshop/ family (originally staged under futon3c; admitted to futon3/library/workshop by Joe on 2026-09-12). A PROCESS pattern about how the crew's own artifacts must be built; must NOT enter the mathematics experiment's retrieval pool (same pool-composition rationale as pattern-mining/, futon3c/docs/pattern-retrieval-architecture.md section 9).
+@status workshop experiment 2026-09-12; NOT assayed; out of the math pool by construction.
+
+! conclusion:
+  Every claim a crew member emits must travel with the derivation that
+  warrants it — the query, the input digest, the witness — such that any
+  other participant can re-derive or refute it from the record alone.
+
+  + context:
+    Boards, certificates, verify-requests, and issue-board rows all make
+    claims about state. The apex thesis's cluster A names the failure:
+    trimmed returns, unqueryable trails, undeclared cascades, silent
+    transport loss. The chip-board runtime's certificates (board digest,
+    verbs digest, replay) are this pattern already instantiated.
+
+  + IF:
+    An artifact asserts something about the record (a freshness verdict,
+    a commit proposal, an association, a forecast).
+
+  + HOWEVER:
+    Warrant has cost: full-input recording grows the store, and some
+    derivations (embedding rank) are not replayable across corpus
+    versions. In those cases the warrant is a STATED assumption with a
+    version stamp, never silence (the witness-status precedent).
+
+  + THEN:
+    Attach the derivation: the named query or pure replay, the inputs
+    digest, the corpus/registry version, and the assumption field when
+    replay is impossible. Claims without warrant are typed absences, not
+    errors — but a warrantless CLAIM is a finding.
+
+  + BECAUSE:
+    An assertion severed from its derivation cannot be checked, learned
+    from, or recovered (cluster A's ground, verbatim) — and a crew whose
+    members cannot check each other's claims has no separation of
+    powers, only manners.
+
+  + NEXT-STEPS:
+    next[Audit one emitted artifact type for warrant-completeness (suggestion: association records once minted).]
+    next[Name any claim class whose warrant cannot currently travel; publish as the pattern's own gap list.]

@@ -1,0 +1,55 @@
+@flexiarg workshop/violation-signature-before-work
+@title Violation Signature Before Work
+@keywords signature, violation, detection, lint, check, fake-implementation, gating, preconditions
+@audience row authors, spec writers, lane runners, witnesses
+@tone normative
+@style pattern
+@grade technique
+@provenance The second of the two apex patterns distilled from Joe's WORK-REMAINING diagnosis (2026-09-12); the enforcement twin of progress-is-a-witnessed-state-change. R1 of the handoff algebra redline (claude-15) stated it for laws; this generalizes it to all work.
+@review pending Joe's read.
+@class process
+@domain process
+@family-note workshop/ family, fourth member; the technique pattern paired with the apex principle. Out of the math pool by construction.
+@status workshop declaration 2026-09-12; NOT assayed; the handoff lint's self-gate and the certificate entry's four-exit reconciliation are working instances.
+
+! conclusion:
+  No unit of work starts until the check that detects its violation
+  exists and runs. The signature comes before the work, not after —
+  a rule written after the implementation is a description of what
+  happened, not a constraint on it.
+
+  + context:
+    Fake implementations behind design patterns, mystified accounting
+    in place of validation, ticket blizzards: all share one enabling
+    condition — the rule existed as prose with no detector. Work
+    proceeded under the rule's name while nothing could observe its
+    breach.
+
+  + IF:
+    A row, law, standard, or requirement is about to govern work.
+
+  + HOWEVER:
+    Some checks are expensive to run continuously; signatures may be
+    sampled or event-triggered (on artifact change, on head move), but
+    never optional. And some signatures are initially unknown — then
+    the row itself carries a typed :signature-pending state and blocks
+    execution, rather than executing unguarded.
+
+  + THEN:
+    Before work starts: name the observable a monitor or lint SEES
+    when the rule is broken; wire it into a gate that can refuse;
+    commission it with an induced violation (feed it a known breach
+    and require the refusal) before trusting it. Preconditions ride in
+    the acceptance path so skipping is unrepresentable, not merely
+    forbidden.
+
+  + BECAUSE:
+    Detection is the only thing that converts an incentive gradient.
+    Agents are rewarded by mechanical completion signals; if the only
+    mechanical signal in the room is the one that fires on violation,
+    the theater stops paying. This is the apparatus-patterns lesson
+    repaired: apparatus that cannot refuse is decoration.
+
+  + NEXT-STEPS:
+    next[Audit WORK-REMAINING rows for signatures; :signature-pending rows block.]
+    next[Extend the handoff-lint self-gate pattern to every frontier deposit.]

@@ -1,0 +1,72 @@
+{
+  "source-buffer": "*zai-repl:zai-7*",
+  "snapshot-sha256": "e149620788290a3d145a4fe7feb270cae6e3c0115cd2fe318615588d693a0abf",
+  "scope": "Selected operator statements anchoring the idea inventory; source line numbers refer to this snapshot, not the changing live buffer. Assistant claims in that buffer are not execution evidence.",
+  "excerpts": [
+    {
+      "line": 98,
+      "speaker": "joe",
+      "text": "Right, and I think the custom harness issues are kind of related to the IBOL language, right? So that... Those very much are the harnesses for the individual agents. And what I'm liking about this metaphor... Is that we don't need to just have one harness. We can choose a selective harness per stakeholder role or indeed per task. And design that on the fly."
+    },
+    {
+      "line": 158,
+      "speaker": "joe",
+      "text": "So, by the way, you mentioned above the concept of never rewriting the harness as it runs, but that's one of the things that I thought we could add on top of the old Chipwitz formalism, because... To me, that's what, AIF. Claude Codex would allow us to do is to rewrite the harness as we go. Which isn't to say we need to start there. I'm just saying let's not necessarily block off that path. A hundred percent. Cause like, for example, with the, um, With the experiments that we're doing with APM and memory. We're rewriting the memory store, and we're looking at different ways to transfer mathematical memories. Into problem solving. And that's effectively giving the agent three runs at the same maze with different chips. But the agent can also store memories as it runs. So I don't think we necessarily need to screen off that capability to change the harness."
+    },
+    {
+      "line": 192,
+      "speaker": "joe",
+      "text": "Yeah, and I think that the other key issue here that makes this interesting is the hierarchical AIF, which is something that we haven't really properly got sorted out for the war machine, but I'm kind of depending on this aspect working, so that bridge between a gentle... Harness. and the overall system that moderates behavior across the crew. Needs to be considered. As. A key criterion for this project."
+    },
+    {
+      "line": 786,
+      "speaker": "joe",
+      "text": "Yeah, and you know, then we need to ask kind of what is the cadence of this? Because just like the embedding itself is going in the background off of every turn, I'm not saying that each and every operator turn needs to get scanned into its forward direction. Potential. Although possibly using a really cheap model like. We could do that. So... I don't know that that's what we should do. End my view of thee. Zaif harness is that this... Is a task a little bit like the Inbox Zero task, in the sense that we build up some pressure of operator turns. Say, you know, we build up 10 operator turns. Across various sessions. The Zaif agent could. Look at those as a constellation. Of patterns. Not necessarily a cascade of patterns. And try to think about how... They could be organized or what level of the existing cascade they'd be organized into. So we could understand... What effective work is in fact going on, or is trying to go on, or is blocked? And those little diagrams maybe could become little wiring diagrams or chips because I think what we haven't... Talked about yet? We've talked about chips. But we haven't talked about the wiring of those chips. So it could also be that the cartographer has a paired role or yet another functionality. Of actually building wiring diagrams. I don't know that that's any different from a cascade, really. The cascade and the wiring diagram are the same, and the chip and the wiring diagram may also be the same at some level. But the, say, 10 or 15 operator turns then becomes kind of reusable little... Module. Which is exactly going towards the Make This Automatable in the Future."
+    },
+    {
+      "line": 804,
+      "speaker": "joe",
+      "text": "Yeah, that's right. And then just like how the chip widths, you could have an expansion board. That's exactly right. So each chip basically can be an expansion board. Which is it's own wiring diagram. And so it's fully recursive."
+    },
+    {
+      "line": 824,
+      "speaker": "joe",
+      "text": "But I am now thinking that really this author of the wiring diagrams is really another role, because it's somehow, it may work together with the cartographer, but I think it's an awful lot to ask the cartographer to do all of these different things. Tasks without... Sort of... Uhm. Yeah, I mean, it just feels like these are somewhat different tasks that need to be. Broken down. At least across tools and R number nodes, if not across different agents. Because… Otherwise it gets a little bit overwhelming, I think."
+    },
+    {
+      "line": 844,
+      "speaker": "joe",
+      "text": "Yeah, that's good, and I think that it helps with the breakdown that we were already hinting at, because we were hinting at multiple different interpretations of patterns and cascades, because sometimes the patterns are just... Alexander Style Design Patterns. That's the typical case. But they're flexible. So... One of the things we've been looking at with the war machine is how they can be interpreted as production rules. And when there are production rules, those production rules can be chained together to make. Wiring diagrams. So it's the ability to interpret them from... Informally stated design patterns into production rules. That's really needed for this workshop capability. But another way of looking at it that we were developing recently was to look at them as proto-institutions, and the proto-institutions combine them with preferences. And with Deontic. Aspects. And so in the Cascade live map. We've stated some... Design requirements. And those design requirements could be no doubt rewritten as design patterns. But the goal is not to have. Just more design patterns, but to think, under which circumstances do these requirements apply? Because the design requirements aren't going to apply to every single built artifact, not all of them. In fact, the institutions might be a little bit like what goes on in the workshop, because what was happening in the workshop is where we're taking. Existing wiring components and then we're wiring them together so the institution may provide. A specification for how to do that. And that specification has to come from somewhere. So that specification itself effectively has to be a wiring diagram of some kind. But I don't think it's just a production system. It's a production system with this normative aspect."
+    },
+    {
+      "line": 1017,
+      "speaker": "joe",
+      "text": "So this gets back to another Zaif task, though, which is part three of the paper is about solving problems that have a business implication. And that's where modeling the operator is important. But again, the operator is kind of standing in as a voice for all these potential clients and potential users and companies and all their dynamics. So the direction of travel here is towards a kind of AIF model of... Like the brain of the firm. And in fact. Beer's work is probably very easy to read as a kind of proto-AIF. You've got the boundary of the firm, which is like a Markov blanket. You've got all the internal apparatus inside of the firm, which are probably like our R nodes. So, just like we were doing an AIF rework of Inbox Zero, maybe we should start to do an AIF rework of Beer. So, just like we were doing an AIF rework of Beer. As a direction of travel."
+    },
+    {
+      "line": 1039,
+      "speaker": "joe",
+      "text": "So the way I see this... Part 3 working. It's kind of a nice example of the, we could call them topographic layers, or maybe they're a little bit more like. Sedimentary layers, but, you know, where you have the current. Capabilities. The current clients. The current delivery pipelines. But then you look at all those other companies that are mentioned in the... Part 3, and you could consider that those other companies Bar like. Again, sort of stand-ins for Other possible. Delivery vectors and other possible benefits. So you could have a kind of Andela agent, or you could have a kind of... Juxte agent. Or a... Whatever other agent representing one of those companies or some other company, and you'd look at what are their requirements, what are their demand surfaces, what are their needs, what are their satisfaction criteria. And give them a chance to kind of march around on this landscape and say, well, I'd like this capability. I'd like that capability. And all of that could be simulated with Zaif agents standing in for those entities."
+    },
+    {
+      "line": 1074,
+      "speaker": "joe",
+      "text": "So I'm thinking all of this is good, and this is basically enough closure at a design level for that whole paper to now have had a kind of refresh. But what I see as missing is the technical layer that's going to allow it to work. And as I was saying to Claude 15, if we can't do it, Can't even get it working for what's effectively a while loop with different agents inside of the APM or another simple while loop with the WM. I don't know how we're going to get this working for the complex, multi-agent, highly orchestrated, highly non-linear handoffs, that this design... That we've just described implies. So... I'd like you to bell Claude 15 with an overview of what we've discussed and an explanation of how this creates additional requirements for formalizing. The Workflow. An organization dimensions of our... Design tetrahedron. And Claude 15 will know what I'm talking about with a design tetrahedron. But they won't yet have had the full picture of how complicated the handoff mechanisms are going to have to be. And we're going to have to sort that out."
+    },
+    {
+      "line": 1428,
+      "speaker": "joe",
+      "text": "So Codex 25 and I have added a little emoji based process language that I can use in turns to get. A clear signal from what I think the intent of that session is relative to some of these workflow. So for example, I can say 🕒 CLOCK IN. But I can also say 🏁 CLOCK OUT. And they'll produce little keywords that come across in my... Operator turn. Which is something we've talked about doing for a while. But what isn't clear is how those process indicators... Relate to the- Core patterns that we were talking about from an institutional workflow perspective. So... I would say that when an agent receives one of those messages, they should do something. And it does serve as a little prompt for them, but I wonder if there's a way to... Engage this institution layer a little bit like we have with the inbox zero case. So that when we see these signals appearing in an operator turn, we know that an agent should then do something so that we're getting a little bit of regulation of behavior going on between the operator voice and the agent action that they actually have to take on that basis of that voiced command."
+    },
+    {
+      "line": 1458,
+      "speaker": "joe",
+      "text": "Well, and the other thing to mention is that these little Qs could be issued exactly by agents as well. And so this is where I think that the ZIF harness that we were talking about could. Work where the agent in itself talk could say, 🎒 PATTERN CARD. And then go get a 🎒 PATTERN CARD."
+    },
+    {
+      "line": 1480,
+      "speaker": "joe",
+      "text": "Well, I think we should update the... Document we were working on with Codex 25 to include this layer."
+    }
+  ]
+}

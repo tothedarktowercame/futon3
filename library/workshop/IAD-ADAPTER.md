@@ -177,3 +177,56 @@ acceptance through the real path. Pending apex choices about execution versus
 acceptance/credit remain explicit and do not weaken any current gate. Costs,
 observed coverage and limits are outputs of the experiment. This document neither
 launches the experiment nor adopts a general sanctions regime.
+
+## Cue protocol from the Joe/zai-7 discussion
+
+Recorded 2026-09-12 after joint coverage review; see
+[the idea inventory](DISCUSSION-2026-09-12.md) and
+[the cue institution note](../../../futon2/holes/labs/wm-contract/NOTE-voxterm-cue-institution.md).
+Joe proposed the same cue language for operator turns and agent self-talk.
+The following protocol details are design requirements, not deployed handlers.
+
+A cue occurrence is first interpreted as a request, self-commitment, discussion,
+negation, or unresolved intent. Rendering a glyph is not that determination.
+Keep the source turn/event and occurrence ID, emitter identity and kind,
+addressee, intent verdict and its provenance, requested action, institution/
+version/role/scope, and the authority or delegation being exercised. Glyphs and
+untrusted text fields cannot authenticate the emitter. If intent or target is
+unclear, record a clarification request before creating an execution obligation.
+
+An authorized operator request binds the addressed agent within the applicable
+rules. An agent's own cue can create a self-commitment within its existing
+permissions, or a proposal to enter when eligibility/authority is missing. It
+cannot authorize itself merely by emitting the glyph. Asking the operator is a
+request for a decision, not an obligation imposed on Joe by the agent. Receiving
+an operator request also does not dispense with missing scope or current gates.
+
+Suggested obligation states are pending, acknowledged, clarification-needed,
+discharged, refused, cancelled and overdue. Acknowledgement is not discharge.
+Correlation uses the cue occurrence and obligation IDs, not just a session ID:
+one receipt cannot satisfy several unrelated cues. Record the completion
+condition, deadline or triggering review event, cancellation/supersession policy,
+and receipt lineage. Those policies need adoption; no timeout is invented here.
+A watcher can cheaply check structured correlation once intent is established;
+a regex cannot establish conversational intent, substantive compliance or cost.
+
+The two proposed checks have different meanings:
+
+- **Cue to disposition/receipt:** did an actual request or accepted self-commitment
+  get the required response, evidence or explicit blocker by its due event?
+- **Pattern selection to use outcome:** did departure report a clause actually
+  consulted, or explicitly report unused, superseded, abandoned or unknown?
+  Selecting a card creates no obligation to fake its use. A citation alone is not
+  proof of good application, and neither is induced-violation commissioning.
+
+The proposed zaif controller can interpret its own explicit externalized cues
+between turns: retrieve selects a card; act attempts an authorized action; ask
+requests missing information or authority; yield returns control. These are arm
+bindings to design and test, not literal equivalences: clock-in is not the work,
+and yielding without active participation cannot mint an institutional departure.
+Private reasoning need not be exposed; commitments must use a recorded event.
+
+Departure outcomes feed the Layer 4 maintenance intake, retaining links to source
+clauses and observed tensions. This return path needs an implemented consumer and
+receipt before it can be called an automatic queue. EX-1's proposed wiring is
+recorded in [its experiment file](EX-1-pattern-card-entry.md).

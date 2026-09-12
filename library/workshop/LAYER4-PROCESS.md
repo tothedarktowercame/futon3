@@ -82,3 +82,7 @@ bypass existing gates: any proposed additional gate can be observed without
 being enabled, while current enforcement remains in force. Clocking in does
 not itself earn completion credit. Runtime integration and the exact trial
 record schema remain proposals for review.
+
+The full [EX-1 proposal](EX-1-pattern-card-entry.md) and
+[discussion coverage index](DISCUSSION-2026-09-12.md) preserve the broader
+operator/agent cue protocol and related crew-design ideas.

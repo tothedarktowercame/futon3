@@ -9,6 +9,8 @@ are now in the regular library.
 
 - [Layer 4 extension and maintenance process](LAYER4-PROCESS.md)
 - [IAD adapter design and worked institution candidate](IAD-ADAPTER.md)
+- [Joe / zai-7 idea inventory and coverage](DISCUSSION-2026-09-12.md)
+- [EX-1 pattern-card entry experiment proposal](EX-1-pattern-card-entry.md)
 - [Migration paths and source hashes](migration-2026-09-12.json)
 
 The seven communication-sigil source pins are maintained in

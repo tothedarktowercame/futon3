@@ -1,0 +1,57 @@
+@flexiarg workshop/compensate-when-exclusion-is-unobtainable
+@title Compensate When Exclusion Is Unobtainable
+@keywords atomicity, exclusion, race, compensation, revert, detection, safety, liveness, tension
+@audience consumer builders, witness authors, protocol designers
+@tone corrective
+@style pattern
+@grade technique
+@provenance The inbox-zero atomicity finding (2026-09-14): T2 requires atomic FEEL/commit; the runtime cannot provide it (editors do not share the consumer's lock; no cross-process mutual exclusion exists on the shared filesystem); codex-27 refused honestly (:atomic-feel-commit-unavailable) rather than shipping a timing window. Joe ruled compensating safety (2026-09-14): commit optimistically, detect races post-commit, revert and record. The TENSION is the pattern: safety demands exclusion; the world declines to provide it.
+@review pending Joe's read (ruling on the approach given; the pattern text itself open).
+@class process
+@domain process
+@family-note workshop/ family; the safety-valve twin of preserve-the-right-to-abstain — that pattern handles "cannot proceed"; this one handles "cannot exclude". Out of the math pool by construction.
+@status workshop declaration 2026-09-14; NOT assayed; first instance pending (the inbox-zero compensating commit path).
+
+! conclusion:
+  When a safety property requires mutual exclusion the environment
+  cannot provide, do not weaken the property silently and do not
+  deadlock: restate the property in compensating form — act, detect
+  violations immediately, undo, and record — then prove the restated
+  property, not the original.
+
+  + context:
+    Atomic FEEL/commit was required to prevent committing under a live
+    edit (U59's class). No lock spans human editors, agents, and the
+    consumer on a shared filesystem. Refusing forever preserves safety
+    but strands liveness: the work never flows.
+
+  + IF:
+    A rule demands exclusion ("never X while Y") and Y's actors cannot
+    be made to hold the lock.
+
+  + HOWEVER:
+    Compensation has a detection window: a violation can occur and do
+    brief harm before detection undoes it. The window must be BOUNDED
+    (the detector's latency), STATED (as part of the claim), and priced
+    (what transient harm costs inside the window). Compensation is not
+    a license for unbounded optimism.
+
+  + THEN:
+    Restate the property in survivable form ("no X SURVIVES Y"): act
+    after the best available check; re-verify immediately after the
+    act; on detection, revert and emit a typed raced-finding; prove
+    the restated property against the same negative controls that
+    commissioned the original; and keep the honest refusal available
+    for callers who need the stronger form.
+
+  + BECAUSE:
+    A property the environment cannot support is either abandoned
+    silently (the facade), enforced into deadlock (the bureaucracy),
+    or restated and re-proved (the honest engineering). The tension
+    between safety and liveness is not resolved — it is PRICED: the
+    detection window is the price, paid in the open.
+
+  + NEXT-STEPS:
+    next[Implement the compensating commit path with post-commit re-verify and revert.]
+    next[Restate and prove T2's survivable form; the edit-after-snapshot negative control commissions the detector.]
+    next[Record the detection-window bound in the certificate alongside the assumption fields.]

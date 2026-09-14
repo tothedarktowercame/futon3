@@ -230,3 +230,88 @@ Departure outcomes feed the Layer 4 maintenance intake, retaining links to sourc
 clauses and observed tensions. This return path needs an implemented consumer and
 receipt before it can be called an automatic queue. EX-1's proposed wiring is
 recorded in [its experiment file](EX-1-pattern-card-entry.md).
+
+## Dispatch-economy bindings (advisory 2026-09-14; zai-7 pass, design+spec only)
+
+Source: futon2/holes/NOTE-zai7-institution-advisory-2026-09-14.md
+(claude-15, commissioned by Joe). The adapter's outputs — institution
+candidates, participation records, maintenance episodes — are
+themselves deliverables in the dispatch economy, so the four find-snatch
+F-laws and the advisory's five mechanism gaps bind the adapter
+contract, not just the WM lanes. Per binding: its snatch ancestor, its
+enforcement point in THIS adapter, and its F4 falsifier.
+
+**B1 — Containment (F1).** A candidate interprets only its source
+pattern; "no institution warranted" is a typed, creditable outcome
+(advisory gap 5: not-building is scoreable). Enforcement: the
+candidate's :source-links must cover every source-supported field;
+a field without a passage is PROPOSED, never source-supported.
+Falsifier: a candidate whose source-supported fields cite passages the
+pattern does not contain (over-interpretation dressed as reading).
+
+**B2 — Receipted congruence (F2 + gap 1).** The adapter's dual failure
+pair mirrors the dispatch pair: under-interpretation (gaps silently
+filled with workshop assumptions) and over-interpretation (inventing
+rules the pattern never grounded — scope drift at interpretation
+grain). Enforcement: every delivery (candidate, episode, departure)
+QUOTES ITS ASK back — the episode's acceptance bar, the pattern's
+actual clauses — and everything beyond the asks is listed and priced
+as :beyond-asks, never silently credited. Falsifier: a delivered
+institution rule that neither cites a clause nor appears in
+:beyond-asks (unlisted drift — the review's scope-fidelity item).
+
+**B3 — Non-self-certifying interpretation (F3).** The interpreting
+agent's own assessment never certifies that a proposed interpretation
+follows from its source (the adapter already says this); the binding
+adds: the CONGRUENCE call — is this the institution the pattern
+grounds? — belongs to the independent reviewer position, never the
+adapter or its author. Enforcement: adoption-status and
+interpretation-follows are separate review claims with separate
+receipts. Falsifier: an adopted candidate whose "follows from source"
+receipt is authored by the candidate's own producing part.
+
+**B4 — Falsifiable adoption (F4 + gap 2).** Every candidate declares
+its zero-mass member: the tempting-but-unsupported provision the
+pattern does NOT ground, whose appearance in the adopted institution
+is a detectable violation. (Worked example: the apex-institutions v1
+tables' "Ostrom would say…" — an attractive attribution with no
+supporting passage; the F4 declaration would have named it at
+adoption time.) Enforcement: adoption without a declared falsifier is
+incomplete. Falsifier: the declared tempting provision appears in the
+institution with no new source having been added.
+
+**B5 — Consumer-naming (gap 3, the R8 lift).** Every interpretation
+names its intended consumer at creation time: which institution
+instance, which position reads this rule. No consumer materialized →
+the candidate retires, not explains — making "was this needed?"
+decidable in advance rather than undecidable after. Enforcement:
+:consumer is a required candidate field; unnamed consumers surface in
+the gap list. Falsifier: a candidate whose named consumer never
+materializes and which is nonetheless maintained (kept alive by
+explanation instead of retired).
+
+**B6 — Refusal pricing, second-order (gap 4).** Adapter refusals and
+clarifications (invalid source, ambiguity, missing provision) cost a
+pinned, falsifiable blocker note — codex-22's 95-line sha-pinned
+blocker is the exemplar. The dual distortion (over-refusal as
+effort-avoidance) is priced by the loss-floor analog: a refusal must
+name what it forecloses, so cheap abstention is distinguishable from
+priced abstention. Enforcement: refusal receipts carry :forecloses.
+Falsifier: a run of refusals whose :forecloses entries repeatedly name
+work that later proves trivially unblocked.
+
+**B7 — Budget as institution variable (gap 5).** Candidates and
+episodes carry token-price estimates against their named consumers;
+deferred candidates are typed absences WITH credit. With scarcity live
+(~11% at advisory time), not-interpreting a pattern no institution
+will consume is a scored saving, not a failure. Enforcement:
+:price-estimate on candidates; deferred-with-credit as a legal
+disposition. Falsifier: deferred-with-credit granted to candidates
+whose consumers then materialize (deferral was evasion, priced wrong).
+
+These are rules-in-form for adoption packet-by-packet; no machinery is
+built by this section, and each binding's enforcement point names
+existing adapter surfaces (source-links, status triples, review
+positions, gap lists) rather than new ones. The snatch ancestors are
+cited in the advisory; the game corpus (futon3:checks/find-snatch.edn,
+Holes.lean:914-955) is the pinned precedent for all four F-laws.

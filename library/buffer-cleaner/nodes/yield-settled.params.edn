@@ -1,5 +1,7 @@
 ;; parameter map for node yield-settled — the diagram made executable.
-;; Read by adapter/classify.clj and the G computation; see
-;; params/categories.edn for the value table and :source labels.
-{:report-meters [:remaining :kills-proposed :expected-recovery :fuel-charged]}
 ;; live evaluation: futon2/holes/labs/wm-contract/buffer-cleaner-adapter/
+{:report-meters [:remaining :kills-proposed :expected-recovery :fuel-charged]
+ :clean-enough-threshold 16
+ :threshold-source :declared-for-worked-example-not-measured
+ :revisit-truth :unavailable
+ :note "no retained buffer-identity/kill/reopen history exists; revisit truth is UNAVAILABLE, not false — never silently defaulted (codex-26); the historical constructed 16 must not be used silently as a real verdict"}

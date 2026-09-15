@@ -1,0 +1,33 @@
+@flexiarg buffer-cleaner/receipt-then-gate
+@title Proposals Have Receipts; Acts Have Gates
+@keywords proposal, act, receipt, gate, refusal, disposition, execution
+@audience hygiene-policy authors, adapter builders, consumer designers
+@tone technical
+@style pattern
+@status staged in the buffer-cleaner generation (fuel instantiation: per-scan 0.01, per-kill 0.1, one unit = one nat, worked-example convention futon2 74c298f0; live evaluation: futon2/holes/labs/wm-contract/buffer-cleaner-adapter — execute! is a typed refusal until a gated consumer exists); SHARED pattern of the three hygiene generations — evidence below
+@references [buffer-cleaner/classify-staleness buffer-cleaner/exempt-the-in-use buffer-cleaner/yield-settled]
+@see-also apparatus/every-wait-has-a-deadline
+@why every hygiene policy in this stack separates proposing a disposition from executing it, because they are different objects with different obligations: a proposal needs a record (what, why, on what classification), an act needs a gate (who may execute, under what verified conditions). Collapsing them turns every classification bug into an incident — the buffer cleaner would delete a wrong buffer, inbox zero would commit under a live edit, the registry would trust a fabricated warrant.
+@how the buffer-cleaner instantiation: emit a typed kill receipt {buffer, kind, decisiveness, prior, revisit-cost, expected-recovery, fuel charge at the declared rates}; execution is a typed refusal (:execute-not-gated) naming the required gate. The general structure: proposals carry their full classification and cost in the receipt; the gate re-verifies eligibility AND the exempt-the-in-use class at execution time (receipts are evidence of a past state, not authority over the present); fuel/energy pricing stays generation-specific (each policy prices its own actions — the cleaner nats, inbox zero fuel budgets, the registry execution milliseconds).
+@violation-signature An act executed by anything other than the gated consumer; a receipt without the classification it was based on; a gate that trusts the receipt's exemptions without re-checking; proposal and act sharing one code path so nothing between them can refuse.
+! conclusion: A proposal is recorded with a receipt; an act passes a gate that re-verifies at execution time — collapsing the two turns every classification bug into an incident.
+
+  + context: Three generations of the hygiene neuron act unattended: the buffer cleaner proposes buffer kills, inbox zero proposes repository discharges, the test registry registers run warrants. Each proposal is only as good as the classification behind it, and each classification has already been wrong at least once.
+
+  + IF:
+    A policy has classified items and is ready to act on them.
+
+  + HOWEVER:
+    The classification may be stale by execution time (the state moved), wrong in a way review has not yet caught, or built on signals wider than expected (Emacs truthiness, a swapped registry fingerprint). An ungated act forgives none of these.
+
+  + THEN:
+    Emit the proposal as a receipt carrying its full basis; route execution through a gate that independently re-verifies eligibility, exemptions, and liveness at act time; refuse typedly when the gate does not exist — the refusal is the honest state, not an inconvenience.
+
+  + BECAUSE:
+    Proposal and act differ in what can repair them: a wrong receipt is corrected by a better record, cheaply, before anything happens; a wrong act requires compensation (revert, refetch, re-derive) after damage. The gate is where the asymmetry is enforced.
+
+  + evidence: Cleaner: the :autosaved leak put a modified buffer in the kill set (codex-26 finding, futon2 a87d27e6) — caught at the receipt, costing nothing, precisely because execution was ungated-by-refusal; the gated consumer (atomic liveness re-verify) remains prerequisite work. Inbox zero: the consumer's commit path re-verifies in-flight status at execution time and compensates post-commit (revert + typed raced-finding) when the window is raced — the codex-17 T2' witness priced exactly this asymmetry. Test registry: the author's run is registered as a warrant (the receipt); the reviewer's record-check + adequacy + spot-check is the gate through which the warrant is trusted — never the author's own label (R9 mechanical: reviewer != author).
+
+  + NEXT-STEPS:
+    - The cleaner's gated consumer, when designed, instantiates the gate half (atomic with exempt-the-in-use re-check).
+    - Inbox-zero and test-registry entries, when minted, cite this pattern; promotion on the third citation, consistent with exempt-the-in-use.

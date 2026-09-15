@@ -5,7 +5,7 @@
 @tone technical
 @style pattern
 @status staged (values :constructed from the worked example futon2 a508aa24/74c298f0; live evaluation: futon2 buffer-cleaner-adapter/src/buffer_cleaner/classify.clj; the real cleaner cannot measure revisit rates — no retained identity/reopen history exists)
-@references [buffer-cleaner/observe-categories buffer-cleaner/kill buffer-cleaner/exempt-the-in-use]
+@references [buffer-cleaner/observe-categories buffer-cleaner/receipt-then-gate buffer-cleaner/exempt-the-in-use]
 @see-also apparatus/evidence-to-disposition-once
 @why a stale-age threshold is not a fact about buffers; it is an encoding of a prior over needed-later. Treating it as a configuration constant hides the model's actual uncertainty: process-gone makes the kill mechanism safe, not the future — the needed-later outcome stays Bernoulli-uncertain, and that uncertainty (H(0.05) > 0) belongs in the score, not under a label of decisiveness.
 @how per category: {stream decisive, p=0 fixture-premise-not-attested, cost 1.0} {http decisive, p=0 fixture-premise, cost 1.0} {temp uncertain, p=0.05, cost 1.0} {dired uncertain, p=0.25, cost 0.5} {render uncertain, p=0.10, cost 1.0} {invoke uncertain, p=0.20, cost 2.0} {file-stale uncertain, cost 5.0, prior by age: 21600s->0.40, 86400s->0.05, default 0.05 — declared-not-fitted}. The adapter resolves :file-stale from age plus the wiring's threshold argument; unknown kinds are never killed.

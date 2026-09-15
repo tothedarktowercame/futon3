@@ -1,0 +1,25 @@
+@flexiarg coordination/bind-promotion-to-post-repair-replay
+@title Bind Promotion to Post-Repair Replay
+@sigils [🐜/予]
+@keywords repair, replay, promotion, certificate, revision, independent, pending
+@audience harness maintainers and independent reviewers
+@tone operational
+@why A repaired implementation does not inherit the witness that rejected its predecessor.
+@how Request an independent replay bound to repaired source and retain pending status until its receipt qualifies.
+
+! conclusion: Bind certificate promotion to an independent replay of the repaired revision, not to the repair author's passing tests.
+
+  + context: A witness has rejected an implementation; fixes and regression tests have since landed.
+  + IF:
+    Fixes for the witnessed defects have landed, but no qualifying independent replay receipt for the repaired revision has been recorded.
+  + HOWEVER:
+    Passing regression tests establishes the repairs' local checks, not the previously refused certificate. A request is not a completed replay, and a receipt for another revision cannot discharge this obligation.
+  + THEN:
+    Keep the certificate pending and record an independent replay request naming the repaired revision and the rejected controls. Reuse an already recorded matching request rather than claiming a new replay. Promote only after a successful independent receipt matches that revision and those controls; otherwise retain a typed pending or failed finding.
+  + BECAUSE:
+    Repair and independent verification are different events, and source-bound receipts prevent evidence for one implementation from being transferred silently to another.
+  + EVIDENCE:
+    Documented from futon2/holes/missions/M-zaif-harness-v1.md:208-215,226-229: three defects fixed, rerun requested, certificate still pending.
+    Retrieval gap: coordination/cross-validation-protocol requires replayable independent validation but does not state post-repair revision matching or the request/completion distinction.
+  + NEXT-STEPS:
+    next[Test mismatched-revision and request-only negative controls before wiring promotion.]

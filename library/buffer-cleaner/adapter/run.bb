@@ -11,7 +11,7 @@
                                      :kind (get b "kind")
                                      :file (str (get b "file"))
                                      :modified (str (get b "modified"))
-                                     :process-gone (get b "process-gone")
+                                     :has-process (get b "has-process")
                                      :visible (get b "visible")
                                      :display-age-seconds (get b "display-age-seconds")})
                            (get raw "buffers"))})

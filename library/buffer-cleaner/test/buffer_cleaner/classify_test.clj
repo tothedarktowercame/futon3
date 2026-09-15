@@ -21,20 +21,20 @@
 
 (def packet
   {:buffers
-   [{:name "*stream:1*" :kind "stream" :file "false" :modified "false"
-     :process-gone true :visible "false" :display-age-seconds 9999}
-    {:name "*HTTP:1*" :kind "http" :file "false" :modified "false"
-     :process-gone true :visible "false" :display-age-seconds 9999}
-    {:name "notes.org" :kind "file-stale" :file "true" :modified "false"
-     :process-gone true :visible "false" :display-age-seconds 108000}
-    {:name "fresh.org" :kind "file-stale" :file "true" :modified "false"
-     :process-gone true :visible "false" :display-age-seconds 7200}
-    {:name "*dired-nav*" :kind "dired" :file "false" :modified "false"
-     :process-gone true :visible "false" :display-age-seconds 9999}
-    {:name "*visible-dired*" :kind "dired" :file "false" :modified "false"
-     :process-gone true :visible true :display-age-seconds 9999}
+   [{:name "*stream:1*"  :kind "stream" :file "false" :modified "false"
+     :has-process "false" :visible "false" :display-age-seconds 9999}
+    {:name "*HTTP:1*"  :kind "http" :file "false" :modified "false"
+     :has-process "false" :visible "false" :display-age-seconds 9999}
+    {:name "notes.org"  :kind "file" :file "true" :modified "false"
+     :has-process "false" :visible "false" :display-age-seconds 108000}
+    {:name "fresh.org"  :kind "file" :file "true" :modified "false"
+     :has-process "false" :visible "false" :display-age-seconds 7200}
+    {:name "*dired-nav*"  :kind "dired" :file "false" :modified "false"
+     :has-process "false" :visible "false" :display-age-seconds 9999}
+    {:name "*visible-dired*"  :kind "dired" :file "false" :modified "false"
+     :has-process "false" :visible true :display-age-seconds 9999}
     {:name "*mystery*" :kind "unknown" :file "false" :modified "false"
-     :process-gone true :visible "false" :display-age-seconds 9999}]})
+     :has-process "false" :visible "false" :display-age-seconds 9999}]})
 
 (deftest decisiveness-respected
   (let [r (c/classify-packet packet aggressive categories)

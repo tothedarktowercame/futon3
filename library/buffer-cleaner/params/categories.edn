@@ -5,11 +5,11 @@
 ;; example (no real measurement exists yet); the real cleaner cannot
 ;; measure revisit rates (no identity/reopen history — v3 §5.5).
 {:stream  {:decisiveness :decisive :prior-needed-later 0.0 :revisit-cost 1.0
-           :source :constructed :note "disposable stream; kill certain-safe"}
+           :source :constructed :note "disposable stream; p=0 is a FIXTURE PREMISE (worked example), not an attestation — a separately attested disposable subset could earn p=0; do not force it"}
  :http    {:decisiveness :decisive :prior-needed-later 0.0 :revisit-cost 1.0
-           :source :constructed :note "completed HTTP output"}
- :temp    {:decisiveness :decisive :prior-needed-later 0.05 :revisit-cost 1.0
-           :source :constructed :note "unmodified temp mode; process-gone gate makes most decisive"}
+           :source :constructed :note "completed HTTP output; p=0 is a FIXTURE PREMISE, same caveat as stream"}
+ :temp    {:decisiveness :uncertain :prior-needed-later 0.05 :revisit-cost 1.0
+           :source :constructed :note "codex-26 blocker 1: process-gone makes the KILL mechanism safe, not the future — the needed-later outcome is Bernoulli-uncertain at .05 (H(.05)>0); labeled uncertain, p preserved"}
  :dired   {:decisiveness :uncertain :prior-needed-later 0.25 :revisit-cost 0.5
            :source :constructed :note "navigation state; cheap to revisit but real"}
  :render  {:decisiveness :uncertain :prior-needed-later 0.10 :revisit-cost 1.0

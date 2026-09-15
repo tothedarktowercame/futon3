@@ -28,19 +28,21 @@
 
 (defn classify-buffer
   "One buffer row -> classification map. Pure."
-  [{:keys [name kind file modified process-gone visible display-age-seconds] :as row}
+  [{:keys [name kind file modified has-process visible display-age-seconds] :as row}
    wiring categories]
-  (let [kind-k (keyword kind)
+  (let [kind-k (if (and (= "file" kind)
+                         (truthy? file)
+                         (not (truthy? modified))
+                         (number? display-age-seconds)
+                         (>= display-age-seconds (:file-stale-age-seconds wiring 0)))
+                   :file-stale (keyword kind))
         params (or (get categories kind-k) {:decisiveness :unknown})
         preserved (cond
                     (truthy? visible) :visible
-                    (not (truthy? process-gone)) :has-process
+                    (truthy? has-process) :has-process
                     (truthy? modified) :modified
-                    (and file (truthy? file)) (if (and (number? display-age-seconds)
-                                                       (< display-age-seconds
-                                                          (:file-stale-age-seconds wiring)))
-                                                :below-threshold
-                                                nil)
+                    (and (truthy? file) (not (contains? (:eligible-kinds wiring #{}) :file)))
+                    :kind-not-eligible
                     :else nil)
         eligible (and (nil? preserved)
                       (contains? (:eligible-kinds wiring #{}) kind-k)

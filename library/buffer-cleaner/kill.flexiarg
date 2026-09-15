@@ -5,7 +5,7 @@
 @tone technical
 @style pattern
 @status staged (live evaluation: futon2 buffer-cleaner-adapter; execute! is a typed refusal — live kill ungated; fuel declaration: per-scan 0.01, per-kill 0.1, one unit = one nat, worked-example convention 74c298f0)
-@references [buffer-cleaner/classify-staleness buffer-cleaner/yield-settled]
+@references [buffer-cleaner/classify-staleness buffer-cleaner/yield-settled buffer-cleaner/exempt-the-in-use]
 @see-also apparatus/every-wait-has-a-deadline
 @why the adapter produces kill proposals in a live operator session (Joe's Emacs); an ungated kill path there is the U59 class (acting on a target whose liveness you have not verified) with no compensating mechanism yet. Receipts make every proposal auditable before any gate exists.
 @how emit a typed receipt per proposed kill {buffer, kind, decisiveness, prior, revisit-cost, expected-recovery, fuel charge}; charge fuel from the declared rates; refuse execution with a typed refusal naming the missing gate until a reviewed consumer wires receipts to real kills.

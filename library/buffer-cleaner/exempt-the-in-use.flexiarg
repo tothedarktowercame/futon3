@@ -1,0 +1,33 @@
+@flexiarg buffer-cleaner/exempt-the-in-use
+@title Exempt The In-Use, Before And Independent Of Scoring
+@keywords exemption, protection, in-use, structural-fact, hard-rule, disposition
+@audience hygiene-policy authors, adapter builders, reviewer-gate designers
+@tone technical
+@style pattern
+@status staged in the buffer-cleaner generation (live evaluation: futon2/holes/labs/wm-contract/buffer-cleaner-adapter; protections enforced and tested 2026-09-15); SHARED pattern of the three hygiene generations — buffer cleaner, inbox zero, test registry — evidence below
+@references [buffer-cleaner/classify-staleness buffer-cleaner/kill]
+@see-also apparatus/loudness-is-conserved
+@why every hygiene policy in this stack divides its world by a structural fact, not a score: items demonstrably in use are exempt from the policy's action regardless of how the scoring lands. The buffer cleaner's visible/modified/named buffers, inbox zero's work-in-flight and operator-owned items, and the test registry's witnessed warrants are the same disposition at three grains — and in each, the exemption must PRECEDE scoring, because the score prices uncertainty the exempt class does not have: a buffer being edited is not "probably unneeded", and a run carrying a warrant is not "probably executed".
+@how define the protected class by structural or witnessed facts only (never preferences, never parameters): the cleaner names *scratch*, minibuffers, *Arxana Browser* and checks visible, has-process, modified (any Emacs-truthy value), active-agent, server-clients; inbox zero exempts in-flight work (watched activity) and operator-owned dirt; the registry exempts witnessed warrants (replay, not rerun). Enforce ahead of wiring eligibility so every consumer inherits the exemptions; record the reason on every exemption; re-check at execution time — a receipt's exemption is evidence, not authority.
+@violation-signature An exempt-class item appearing in an action receipt; protections enforced only in one collector so a second consumer misses them; an exemption parameterized (a preference weight on a structural fact); a kept item with no recorded reason, making deliberate-preserved indistinguishable from bug-missed; an execution trusting the receipt's exemption without re-checking.
+! conclusion: Items demonstrably in use are exempt from a hygiene policy's action by structural or witnessed fact, before and independent of scoring — the exemption is recorded with its reason and re-checked at execution.
+
+  + context: Three generations of the same hygiene neuron run in this stack: the buffer cleaner (generation one, Emacs), inbox zero (generation two, repositories), the test registry (generation three, evidence). Each acts unattended on items that are usually, but not always, disposable.
+
+  + IF:
+    A policy will act on items (kill buffers, commit dirt, trust test runs) and some items are demonstrably in use.
+
+  + HOWEVER:
+    Scoring the exemption invites boundary erosion: an in-use item with a low prior looks almost disposable, and the policy's threshold drifts toward eating it. And structural facts are wider than booleans — the cleaner learned that buffer-modified-p can return symbols (:autosaved), which naive truthiness reads as false.
+
+  + THEN:
+    Define the exempt class by structural or witnessed facts, non-parameterized; enforce it before eligibility so every wiring inherits it; record the reason per exemption (auditable: deliberate vs bug); re-check at execution time (receipts are evidence of a past state, not authority over the present).
+
+  + BECAUSE:
+    The score prices uncertainty; the in-use class has none. Folding certainty into a prior wastes the information and risks the one error each generation's history actually recorded — acting on an item someone was using.
+
+  + evidence: Cleaner: the 2026-06-11 *Arxana Essay* near-miss (modified buffer = unsaved operator edits, never killable) named the class before the pattern existed; codex-26's control found active-agent and server-clients declared-but-unchecked until enforced (futon2 f27da45b), and the :autosaved leak (a87d27e6) showed truthiness width is part of the structural fact. Inbox zero: the in-flight discipline — a repo with watcher activity inside the window is never committed under (U59: the sweeper-committed-under-a-live-edit incident) and the compensating commit path re-verifies at execution time rather than trusting the proposal's stamp. Test registry: the witnessed warrant IS the exemption — a registered, sha-matched run is exempt from rerun (replay-not-rerun), and the reviewer's record-check plus spot-check re-verify the warrant rather than trusting the author's label.
+
+  + NEXT-STEPS:
+    - When inbox-zero and test-registry gain their own library entries, they cite this pattern (it is their shared spine); promotion out of buffer-cleaner/ follows the three-citations rule — see placement note below.
+    - The gated kill consumer, when designed, must re-check every exemption at execution time: protections are not receipts.

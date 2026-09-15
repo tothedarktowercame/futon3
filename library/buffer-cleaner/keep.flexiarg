@@ -1,0 +1,32 @@
+@flexiarg buffer-cleaner/keep
+@title Keep Is A Recorded Decision, Not An Absence
+@keywords preserve, eligibility, hard-preservation, named-buffers, reasons
+@audience buffer-cleaner adapter
+@tone technical
+@style pattern
+@status staged (live evaluation: futon2 buffer-cleaner-adapter/src/buffer_cleaner/classify.clj; protections enforced and tested)
+@references [buffer-cleaner/classify-staleness]
+@see-also apparatus/loudness-is-conserved
+@why hard preservation rules exist because the cleaner's own history named them: *Arxana Essay* modified buffers hold unsaved operator edits (2026-06-11 near-miss); visible buffers are in use; active-agent lanes and server-clients have waiting consumers; *scratch*, minibuffers and *Arxana Browser* are live session state, never garbage. These are facts about the session, not parameters.
+@how enforce by name (*scratch*, *Minibuf-*, *Arxana Browser*) and by raw flags (visible, has-process, modified with Emacs truthiness, active-agent, server-clients); record the reason on every kept buffer; keep costs nothing in G — carrying cost is fuel-side.
+@violation-signature A kept buffer with no reason recorded; a named protection enforced only in the collector so a second consumer can miss it; a modified buffer reaching a kill receipt.
+! conclusion: Every kept buffer carries its reason — preservation is a recorded decision with named, non-parameterized rules, never a silent default.
+
+  + context: Of 138 real buffers, 57 are protected/other and most of the rest are kept by one rule or another; the interesting ones are the handful the wirings differ on.
+
+  + IF:
+    A buffer is not eligible under the wiring, or matches a hard preservation rule.
+
+  + HOWEVER:
+    Keep-without-reason makes the record unauditable: a reviewer cannot distinguish "deliberately preserved" from "bug missed it", and the difference matters when tuning thresholds.
+
+  + THEN:
+    Emit the reason (the specific rule or :kind-not-eligible); keep hard protections ahead of and independent from wiring eligibility so every consumer inherits them; never parameterize the named protections.
+
+  + BECAUSE:
+    What the score does not see, the record still must — and the failure mode this guards against (killing an edited buffer) has already happened once in this stack's history.
+
+  + evidence: codex-26's control found active-agent and server-clients declared-but-unchecked in the first classifier; both now enforced with tests, and the named-buffer protections were added when structural typing let *scratch* masquerade as temp (futon2 f27da45b).
+
+  + NEXT-STEPS:
+    - When the gated consumer exists, its kill path must re-check the same protections at execution time — protections are not receipts.

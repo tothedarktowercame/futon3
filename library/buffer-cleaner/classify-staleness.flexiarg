@@ -1,0 +1,32 @@
+@flexiarg buffer-cleaner/classify-staleness
+@title Declare The Staleness Prior, Do Not Hide It In A Threshold
+@keywords classify, prior, needed-later, uncertainty, age, file-stale, revisit
+@audience buffer-cleaner adapter, G-over-cascades consumers
+@tone technical
+@style pattern
+@status staged (values :constructed from the worked example futon2 a508aa24/74c298f0; live evaluation: futon2 buffer-cleaner-adapter/src/buffer_cleaner/classify.clj; the real cleaner cannot measure revisit rates — no retained identity/reopen history exists)
+@references [buffer-cleaner/observe-categories buffer-cleaner/kill]
+@see-also apparatus/evidence-to-disposition-once
+@why a stale-age threshold is not a fact about buffers; it is an encoding of a prior over needed-later. Treating it as a configuration constant hides the model's actual uncertainty: process-gone makes the kill mechanism safe, not the future — the needed-later outcome stays Bernoulli-uncertain, and that uncertainty (H(0.05) > 0) belongs in the score, not under a label of decisiveness.
+@how per category: {stream decisive, p=0 fixture-premise-not-attested, cost 1.0} {http decisive, p=0 fixture-premise, cost 1.0} {temp uncertain, p=0.05, cost 1.0} {dired uncertain, p=0.25, cost 0.5} {render uncertain, p=0.10, cost 1.0} {invoke uncertain, p=0.20, cost 2.0} {file-stale uncertain, cost 5.0, prior by age: 21600s->0.40, 86400s->0.05, default 0.05 — declared-not-fitted}. The adapter resolves :file-stale from age plus the wiring's threshold argument; unknown kinds are never killed.
+@violation-signature A channel labeled decisive carrying a nonzero needed-later prior (the contradiction codex-26 caught in the first table); a threshold whose value quietly implies a prior nobody declared; revisit rates "measured" from an age histogram.
+! conclusion: Staleness classification carries a declared prior over needed-later per category, with the age-to-prior map stated as data — the threshold is the prior made visible, never a hidden constant.
+
+  + context: File buffers stale by age are the genuinely uncertain channel: "stale" is a guess about whether you will need the buffer again.
+
+  + IF:
+    A candidate wiring must decide which buffers are eligible to kill.
+
+  + HOWEVER:
+    Every probability here is a constructed assumption — the real cleaner retains no buffer-identity/kill/reopen history, so revisit rates are unmeasurable today; and an age histogram cannot infer them even with history (selection effects).
+
+  + THEN:
+    Classify each candidate {decisiveness, prior-needed-later, revisit-cost} from the declared table; resolve file-staleness from age and the wiring's threshold; label every value :constructed and carry the label into G; never force a prior to zero to satisfy a wanted shape — p=0 is earned by attestation or stays a labeled fixture premise.
+
+  + BECAUSE:
+    The score is only as honest as its inputs are labeled: an uncertainty relabeled as decisiveness is free risk, and a threshold hiding a prior is an unexamined model claim.
+
+  + evidence: The first table labeled temp decisive with p=.05 — codex-26's control showed the false-kill outcome is Bernoulli-uncertain (0.199 nats), and the label was corrected with the prior preserved (futon2 aa158c6); the scoring run then found no decisive disposable kill in the actual union — every real candidate sits in the uncertain channel.
+
+  + NEXT-STEPS:
+    - Earning real revisit rates requires the cleaner to retain identity/kill/reopen history first (the observability gap the worked example surfaced).

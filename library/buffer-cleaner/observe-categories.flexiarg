@@ -1,0 +1,32 @@
+@flexiarg buffer-cleaner/observe-categories
+@title Observe Categories Before Acting
+@keywords observation, channel, category, decisiveness, read-only, structural-kind
+@audience buffer-cleaner adapter, G-over-cascades consumers
+@tone technical
+@style pattern
+@status staged (field source: futon-buffer-cleaner.el candidate-kind predicates; live evaluation: futon2/holes/labs/wm-contract/buffer-cleaner-adapter/adapter/dump-state.el, read-only; first real packet 2026-09-15, 138 buffers)
+@references [buffer-cleaner/classify-staleness]
+@see-also apparatus/done-is-observed-running
+@why the cleaner's own predicates already distinguish seven structural kinds (file, stream, http, invoke, dired, temp, render) plus preservation signals; the original adapter conflated preserved buffers with unknown ones because kind was decided by the loaded threshold. Structural kind at observation is what lets each candidate wiring re-decide staleness from the same packet instead of the collector pre-deciding.
+@how emit per buffer the structural kind plus raw safety signals — name, kind, file, modified (normalized: any Emacs-truthy value including :autosaved is true), has-process, visible, active-agent, server-clients, display-age-seconds (buffer-local read, -1 if never displayed) — and nothing else: no threshold logic, no kill decisions, read-only.
+@violation-signature A packet whose file rows all share one age (the eval buffer's display-time leaked through); preserved buffers invisible because kind absorbed the threshold's verdict; a modified file whose modified flag reads false.
+! conclusion: Observation tags each buffer with its structural category and raw signals; every decision is left to the wiring that consumes the packet.
+
+  + context: A live Emacs holds 100+ buffers across hidden HTTP outputs, invoke lanes, temp modes, Dired sessions and file visits; the cleaner runs unattended on a timer.
+
+  + IF:
+    Any consumer needs to know what is in the session before deciding what to clean.
+
+  + HOWEVER:
+    Deciding staleness at collection time bakes one wiring's threshold into every downstream consumer; and Emacs truthiness is wider than booleans — buffer-modified-p can return symbols (:autosaved) that JSON-encode as strings and read false to naive checkers.
+
+  + THEN:
+    Collect structural kind only (no threshold), normalize truthiness at the source, read display age per-buffer via buffer-local-value, guard each row against buffers dying mid-iteration (live sessions mutate during capture), and write the packet to file from Emacs to avoid shell escaping.
+
+  + BECAUSE:
+    Per-channel honesty begins at observation: a decisive channel must be declared decisive where it is observed, and an uncertain one must reach the score with its uncertainty intact — the collector that pre-decides has already chosen a policy.
+
+  + evidence: The relocation history: the first collector read display-time from the eval buffer (every age identical — a real measurement bug caught by consumer review); the second conflated preserved with unknown until the structural split; the third leaked :autosaved as "autosaved" and a modified file died in the kill set (codex-26 finding, fixed with a regression test at futon2 a87d27e6).
+
+  + NEXT-STEPS:
+    - Keep the collector dumber than every consumer: any new signal is emitted raw, never interpreted.

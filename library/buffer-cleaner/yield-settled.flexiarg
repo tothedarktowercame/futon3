@@ -1,0 +1,32 @@
+@flexiarg buffer-cleaner/yield-settled
+@title Settle With Meters, Never With Claims
+@keywords terminal, report, meters, threshold, revisit-truth, unavailable
+@audience buffer-cleaner adapter, G-over-cascades consumers
+@tone technical
+@style pattern
+@status staged (live evaluation: futon2 buffer-cleaner-adapter receipts; threshold and truth-availability emitted on every receipt)
+@references [buffer-cleaner/kill]
+@see-also apparatus/done-is-observed-running
+@why the worked example's most practical finding: the real cleaner cannot know its own false-kill rate (no identity/reopen history), so any "settled" report that implies measured cleanliness overclaims. The honest terminal states what was done, what threshold was declared, and what truth is unavailable.
+@how report meters only — remaining, kills-proposed, expected-recovery, fuel-charged — plus :clean-enough-threshold 16 (:declared-for-worked-example-not-measured; the historical constructed 16 is never silently used as a real verdict) and :revisit-truth :unavailable (not false; never defaulted).
+@violation-signature A terminal report containing prose success claims; a threshold presented as measured; revisit truth defaulted to false or zero where it is merely unknown.
+! conclusion: The cycle ends with typed meters and an explicit statement of what is not known: unavailable is a legal value, false is not a substitute for it.
+
+  + context: Both wirings missed the declared threshold in the real scoring run (135 and 138 remaining vs 16) — no admissible choice existed, and the report said so rather than picking a loser quietly.
+
+  + IF:
+    A cycle completes under a wiring.
+
+  + HOWEVER:
+    Meters invite narrative ("cleaned up", "healthy"); narratives invite the describe-not-correct failure; and the threshold itself is a constructed constant that must not masquerade as a requirement.
+
+  + THEN:
+    Emit the meters, the declared threshold with its source label, and revisit-truth :unavailable; let the consumer decide admissibility against the declared rule — the terminal never asserts success.
+
+  + BECAUSE:
+    A report that claims more than its meters supports corrupts every downstream decision tuned on it; the apex discipline (progress is a witnessed state change) starts with the witness knowing what it did not witness.
+
+  + evidence: The scoring run's no-admissible-choice output is the worked instance: G values computed, both wirings failing threshold, truth unavailable — reported exactly so (codex-26 scoring receipt, futon2 buffer-cleaner-adapter/scoring/).
+
+  + NEXT-STEPS:
+    - Earning revisit-truth :measured is the observability work (identity/kill/reopen retention); until then every report carries unavailable.

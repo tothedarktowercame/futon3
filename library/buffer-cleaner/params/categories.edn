@@ -1,0 +1,29 @@
+;; Per-category parameter table — the v3 diagram's noise attribution,
+;; as data the G computation reads. Sources: values from the worked
+;; example (futon2 74c298f0, preregistered a508aa24) where possible;
+;; every :source is labeled — :constructed means invented for the
+;; example (no real measurement exists yet); the real cleaner cannot
+;; measure revisit rates (no identity/reopen history — v3 §5.5).
+{:stream  {:decisiveness :decisive :prior-needed-later 0.0 :revisit-cost 1.0
+           :source :constructed :note "disposable stream; kill certain-safe"}
+ :http    {:decisiveness :decisive :prior-needed-later 0.0 :revisit-cost 1.0
+           :source :constructed :note "completed HTTP output"}
+ :temp    {:decisiveness :decisive :prior-needed-later 0.05 :revisit-cost 1.0
+           :source :constructed :note "unmodified temp mode; process-gone gate makes most decisive"}
+ :dired   {:decisiveness :uncertain :prior-needed-later 0.25 :revisit-cost 0.5
+           :source :constructed :note "navigation state; cheap to revisit but real"}
+ :render  {:decisiveness :uncertain :prior-needed-later 0.10 :revisit-cost 1.0
+           :source :constructed :note "regenerable, but *Arxana Essay* modified is NEVER killable (near-miss 2026-06-11)"}
+ :invoke  {:decisiveness :uncertain :prior-needed-later 0.20 :revisit-cost 2.0
+           :source :constructed :note "inactive invoke output"}
+ :file-stale {:decisiveness :uncertain :revisit-cost 5.0
+              :source :constructed
+              :prior-needed-later {:by-age-seconds
+                                   {;; age -> prior; the stale-age threshold encodes a prior over needed-later (codex-26 finding)
+                                    21600 0.40   ; 6h
+                                    86400 0.05   ; 24h
+                                    108000 0.05  ; 30h
+                                    :default 0.05}}
+              :note "the genuinely uncertain channel: stale-by-age is a guess about the future"}
+ :unknown {:decisiveness :unknown :prior-needed-later nil :revisit-cost nil
+           :source :constructed :note "package predicates unavailable; classified but never killed"}}

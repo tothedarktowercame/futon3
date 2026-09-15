@@ -1,0 +1,23 @@
+@flexiarg buffer-cleaner/observe-categories
+@title Observe Categories
+@keywords observe, channel, category, decisiveness
+@audience adapter, G computation
+@tone normative
+@style pattern
+@grade technique
+@provenance v3 diagram chip 1 (cascade-policy-example.html); category set = futon-buffer-cleaner.el candidate-kind predicates (:130-179). Node semantics: read the real buffer state and tag each buffer with its observation channel.
+@class process
+@domain process
+@status adapter node, 2026-09-15; params in nodes/observe-categories.params.edn
+
+! conclusion:
+  Each buffer arrives tagged with its category (the cleaner's own
+  predicates) and the channel's decisiveness class; nothing is killed
+  or judged here.
+
+  + THEN: emit {:name :kind :file :modified :process-gone
+    :visible :display-age-seconds} per buffer, read-only.
+
+  + BECAUSE: the observation model's per-channel honesty begins here —
+    a decisive channel must be declared decisive at observation, not
+    discounted later in the score.

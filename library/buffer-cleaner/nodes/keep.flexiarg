@@ -1,0 +1,18 @@
+@flexiarg buffer-cleaner/keep
+@title Keep
+@keywords preserve, eligibility
+@audience adapter
+@tone normative
+@style pattern
+@grade technique
+@provenance v3 diagram chip 4 (conservative wiring's dominant action); preservation rules from candidate-kind (visible, process, modified, server-clients, protected names) are hard, not parameterized.
+@class process
+@domain process
+@status adapter node; params in nodes/keep.params.edn
+
+! conclusion:
+  Kept buffers are recorded with their reason (category, age below
+  threshold, or hard-preservation rule). Keep costs nothing in G; the
+  carrying cost is fuel-side.
+
+  + BECAUSE: what the score does not see, the record still must.

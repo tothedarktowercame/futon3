@@ -1,0 +1,6 @@
+;; parameter map for node classify-staleness — the diagram made executable.
+;; Read by adapter/classify.clj and the G computation; see
+;; params/categories.edn for the value table and :source labels.
+{:value-table :params/categories.edn
+ :uncertain-channel :file-stale
+ :prior-by-age :declared-not-fitted}

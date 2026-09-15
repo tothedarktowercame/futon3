@@ -1,0 +1,26 @@
+{:wiring :aggressive,
+ :receipts
+ {:kills
+  [{:name " *server*",
+    :kind :temp,
+    :decisiveness :decisive,
+    :prior-needed-later 0.05,
+    :revisit-cost 1.0,
+    :source :constructed,
+    :expected-recovery 0.05}
+   {:name " *temp file*",
+    :kind :temp,
+    :decisiveness :decisive,
+    :prior-needed-later 0.05,
+    :revisit-cost 1.0,
+    :source :constructed,
+    :expected-recovery 0.05}],
+  :dry-run :dry-run,
+  :execute :refused-until-gated},
+ :meters
+ {:scanned 136,
+  :kills-proposed 2,
+  :remaining 134,
+  :expected-recovery 0.1,
+  :fuel-charged 1.56},
+ :sources [:constructed]}

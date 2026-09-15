@@ -1,0 +1,17 @@
+@flexiarg buffer-cleaner/wiring-aggressive
+@title Wiring: Aggressive
+@keywords wiring, args, threshold, eligibility
+@audience adapter, G computation
+@tone normative
+@style pattern
+@grade technique
+@provenance v3 wiring 1 (the real log line's behavior); wiring = ARG CHOICES over the same node library, not different code. Values from the worked example (futon2 a508aa24).
+@class process
+@domain process
+@status adapter wiring; args in wirings/aggressive.edn
+
+! conclusion:
+  Eligibility: every cleaner category; file stale-age 6h (21600s).
+
+  + BECAUSE: the wiring difference is a data difference — that is the
+    authored-panel thesis demonstrated: same chips, different args.

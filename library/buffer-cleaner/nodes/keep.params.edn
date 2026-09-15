@@ -1,0 +1,6 @@
+;; parameter map for node keep — the diagram made executable.
+;; Read by adapter/classify.clj and the G computation; see
+;; params/categories.edn for the value table and :source labels.
+{:hard-preservation [:visible :has-process :modified :server-clients
+                     :active-agent :minibuf :scratch :arxana-browser]
+ :cost-in-g 0.0}

@@ -1,0 +1,29 @@
+@flexiarg test-registry/meter-the-saving
+@title Meter What Was Saved, Including When Nothing Was
+@keywords meters, cost, wall-time, overhead, honest-report, re-pricing
+@audience registry operators, lane-policy authors
+@tone technical
+@style pattern
+@status draft 2026-09-16 (claude-7; test_registry.clj cost fields distinguish execution from record-check and fingerprint/registration overhead)
+@references [test-registry/spot-check-at-the-declared-rate]
+@see-also buffer-cleaner/yield-settled
+@why the registry exists to save repeated execution; whether it does is an empirical claim. The only measured round trip shows no wall-time saving: JVM startup, fingerprinting and evidence API costs dominated a three-test namespace (author wrapper 3378 ms; reviewer total 4599 ms for one test).
+@how every review record carries meters: tests executed by the reviewer, tests the author's warrant covered, execution time, record-check time, fingerprint and registration overhead, and the lane per namespace. Report saving as a measured difference against the author's recorded full-namespace execution, never against an assumed rerun; report "no saving" plainly. Declared rates (spot-check count, lanes) are re-priced from these meters.
+@violation-signature a saving claimed without meters; overhead omitted; a small-namespace demo generalised to large suites; rates never revisited.
+! conclusion: Each review reports measured execution and overhead against the author's recorded run, and states when there was no saving.
+
+  + context: Registry-mediated reviews accumulate.
+
+  + IF:
+    Anyone wants to know whether the registry pays for itself.
+
+  + HOWEVER:
+    Overhead is fixed per review while execution scales with suite size, so small namespaces lose and large ones win; averages hide both.
+
+  + THEN:
+    Meter per namespace and per lane, and re-price declared rates from the meters.
+
+  + BECAUSE:
+    A saving asserted without meters is the same unreliable narrator the registry was built to replace.
+
+  + evidence: TN-test-registry-2026-09-14 cost table (no total saving on 3 tests); 2026-09-16 reviewer reruns of 5 to 86 tests per WM delivery, with a P10 part 2 run of 9011 assertions, where fixed overhead would be small relative to execution.

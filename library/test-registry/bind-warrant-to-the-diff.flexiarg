@@ -1,0 +1,29 @@
+@flexiarg test-registry/bind-warrant-to-the-diff
+@title Check The Warrant Against The Diff Under Review
+@keywords record-check, manifest, diff-scope, environment, refusal, mismatch-fields
+@audience reviewers, registry check implementers
+@tone technical
+@style pattern
+@status draft 2026-09-16 (claude-7; implementation futon3c test_registry.clj `check`; independent refusal and correction 2026-09-14 on LC_ALL)
+@references [test-registry/warrant-rides-the-handoff test-registry/rerun-when-the-warrant-fails]
+@see-also inbox-zero/measure-against-the-remote
+@why a warrant is only evidence about the code it names. The first independent review refused because the author shell set LC_ALL=C.UTF-8 and the reviewer's did not; the refusal was right, and its empty mismatch details were a real defect.
+@how the reviewer declares the diff scope (changed paths) and runs the record check: complete chain, intent-result binding, timestamps, exact current code and test manifests against the recorded ones, diff coverage (every changed path is inside the warrant's manifests), resolved environment against the fingerprint, log hash, parsed result envelope. A mismatch refuses with :warrant? false, the expected and observed differing fields, and a next action. Declared test-environment values (locale, timezone) are inputs, never waived comparisons.
+@violation-signature a check that passes on HEAD when the working tree differs; a changed path outside the warrant accepted; an environment mismatch refused without saying which field; a locale difference waived to make a check pass.
+! conclusion: The reviewer verifies the warrant covers exactly the reviewed diff and environment, and any mismatch refuses with the differing fields named.
+
+  + context: A reviewer holds a warrant id and a diff.
+
+  + IF:
+    The reviewer wants to rely on the author's run instead of repeating it.
+
+  + HOWEVER:
+    Code may have moved since the run, the diff may touch paths the run did not cover, and environments differ in ways (locale, JVM, dependency jars) that change results.
+
+  + THEN:
+    Check chain, manifests, diff coverage and environment; accept only a complete match; refuse typedly otherwise.
+
+  + BECAUSE:
+    A record check costs a sha comparison; trusting a warrant for different code costs a wrong review.
+
+  + evidence: TN-test-registry-2026-09-14 "Independent refusal and correction" (LC_ALL); record check measured at 795 ms against 1008 ms for the author's full namespace run.

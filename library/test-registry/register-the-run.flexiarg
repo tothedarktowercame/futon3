@@ -1,0 +1,29 @@
+@flexiarg test-registry/register-the-run
+@title The Author Runs Tests Once, Through The Registry
+@keywords warrant, author, intent, result, fingerprint, evidence-chain, run-once
+@audience code authors in agent pairs, handoff designers
+@tone technical
+@style pattern
+@status draft 2026-09-16 (claude-7; from futon2/holes/labs/wm-contract/NOTE-test-registry.md with Joe's rulings 2026-09-14; implementation futon3c src/futon3c/test_registry.clj `run`, commits 076746d6, 6930dfb2; one round trip 2026-09-14, no use since)
+@references [test-registry/warrant-rides-the-handoff test-registry/bind-warrant-to-the-diff]
+@see-also buffer-cleaner/receipt-then-gate
+@why under author-is-not-reviewer the reviewer reruns the author's tests, paying full execution again and buying none of the judgement that justifies a second agent. An unrecorded run cannot be relied on, so it is rerun; a run recorded as a warrant can be checked instead.
+@how the author runs the declared test command through the registry: capture code and test manifests (path-to-file sha, so uncommitted bytes are identified, HEAD kept separately), the environment fingerprint (resolved classpath bytes, CLI config, JVM, declared locale/timezone values), append an intent, run with a fresh captured log, re-check inputs and environment, append the result with parsed counts. Records are canonical EDN in the evidence store, sha-chained. An interrupted run leaves an intent without a result; a failed append yields no warrant; unparseable results are typed-absent, never zeros.
+@violation-signature "gates green" in a handoff message with no record; a result appended without its intent; counts invented for a crashed run; a fingerprint that silently skips a directory to fit its budget.
+! conclusion: The author's test run is registered as a sha-chained warrant with its inputs, environment, log and parsed results; an unregistered run is only a claim.
+
+  + context: Agent pairs split authoring (e.g. Codex or a Zai owner) from review (e.g. Claude); each review today reruns the author's gates.
+
+  + IF:
+    An author has changed code or tests and runs the tests before handing off.
+
+  + HOWEVER:
+    A run reported in prose is unverifiable (owner-reported builds have been false), and a fingerprint of the full stack classpath can exceed any budget (the futon3c :test classpath reaches an 87 GB sibling checkout).
+
+  + THEN:
+    Run through the registry with an explicit, bounded classpath and declared test environment; register intent and result; refuse typedly when inputs or environment cannot be fingerprinted.
+
+  + BECAUSE:
+    Verification can only replace re-execution when the execution left a record binding exactly what ran, where, and with what outcome.
+
+  + evidence: futon3c TN-test-registry-2026-09-14 (first commissioning refused :symlink-scope-unsupported on the broad classpath; author entry test-registry-bc9d2129…); 2026-09-16 WM deliveries each carried "gates rerun by me" from the reviewer with no author warrant (e.g. futon2 cb5f8b1288: 86 tests / 9011 assertions rerun).

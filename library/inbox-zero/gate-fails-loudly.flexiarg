@@ -1,0 +1,33 @@
+@flexiarg inbox-zero/gate-fails-loudly
+@title Make The Check A Facility That Fails Loudly On Change
+@keywords facility, schedule, failure, delta, consumer, red-lamp, citation-resolution
+@audience inbox-zero gate operators, monitor designers
+@tone technical
+@style pattern
+@status draft 2026-09-16 (claude-7; from futon0/README-inbox-zero.md checkpoints 2026-08-31 and 2026-09-12; implementation: futon-sync-check-clean.timer hourly, futon0 scripts/inbox-zero-delta.bb via OnSuccess/OnFailure, data/inbox-zero-delta.log)
+@references [inbox-zero/measure-against-the-remote inbox-zero/escalate-by-who-can-act]
+@see-also buffer-cleaner/yield-settled
+@why a sweep is an event, not a facility: nothing notices when it stops, and three days after a nineteen-item sweep futon2 had fifteen dirty paths and nobody was told (2026-08-31). The scheduled gate then became the inverse failure: 248 consecutive hourly failures into journald with OnFailure empty — a permanently red lamp nobody watched (2026-09-12). A monitor that is always red carries no more information than one that never runs.
+@how run the check on a schedule without anyone choosing to; wire a consumer that reports only changes (new failure, recovery, changed signature) so steady-state red is silent and a change is visible; route changes per inbox-zero/escalate-by-who-can-act rather than to a log alone; and extend the check to citations — every `path:line` in a committed record must resolve to a committed file.
+@violation-signature a gate with no consumer; a consumer that repeats steady red until it is ignored; a change logged but routed to no one; a clean gate while committed records cite untracked files.
+! conclusion: The cleanliness check runs itself, reports changes rather than states, routes each change to someone who can act, and checks citations as well as trees.
+
+  + context: The gate has run hourly since 2026-09-01 across eighteen repos on this box.
+
+  + IF:
+    Inbox zero is meant to hold, not merely be reached once.
+
+  + HOWEVER:
+    Unscheduled sweeps stop silently; scheduled checks that are always red are ignored; and a change written to a log is still a queue that waits.
+
+  + THEN:
+    Schedule the check, consume its changes, route them to a tier that can act, and add citation resolution.
+
+  + BECAUSE:
+    A clean tree and an unswept tree look identical from inside, and a check that never fails loudly reports nothing rather than failure.
+
+  + evidence: 2026-08-31 checkpoint; 2026-09-12 repair (inbox-zero-delta.bb, 74 dead worktrees removed); data/inbox-zero-delta.log records 16 changes to 2026-09-16 14:02; the 21:01 run on 2026-09-16 failed with six repos red (futon2, futon3, futon3c, apm-lean, p4ng, voxterm) and thirteen passing.
+
+  + NEXT-STEPS:
+    - Citation resolution on a schedule (still not built, per the 2026-09-12 checkpoint).
+    - Route delta changes to tier 1 instead of notify-send and a log.

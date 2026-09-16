@@ -1,0 +1,29 @@
+@flexiarg inbox-zero/escalate-by-who-can-act
+@title Escalate To Whoever Can Act, And Never Build A Queue That Waits
+@keywords escalation, tier-ladder, outlier, responsible-seat, operator, deferral, decay
+@audience inbox-zero policy authors, followup-queue consumers
+@tone technical
+@style pattern
+@status draft 2026-09-16 (claude-7; from futon0/README-inbox-zero.md "The anomaly is the thing worth a human", Joe's refinement 2026-08-24, and "The Street Sweeper already solved this"; implementation: futon3 inbox-zero-lib escalation.clj route)
+@references [inbox-zero/push-the-declared inbox-zero/promote-at-turn-end buffer-cleaner/receipt-then-gate]
+@see-also inbox-zero/gate-fails-loudly
+@why the Street Sweeper produced 2,551 correct patches on 2026-05-25 into an operator review queue and stopped; three months later 0 of 60 sampled still applied and the work had been redone by hand. A mechanism whose output is a human queue is a deferral, and deferred work decays. Yet outliers (110 commits diverged for two days on Zone) deserve attention — just not by default from Joe ("nothing should be routed to me unless absolutely necessary").
+@how route by who can act, trying each tier before the next: tier 0 nobody (ordinary accumulation, auto-push); tier 1 the responsible seats found by session–commit links and claims (outlier over the declared ahead threshold, held plan, stale base), delivered exact-seat through the followup queue; tier 2 the street-sweeper peripheral when the tier-1 seat cannot be found; tier 3 Joe, only as a hold with a question for judgement only a human can make (sensitive content, an agent declaring it cannot decide). Volume is never by itself a tier-3 signal. Every escalation has a deadline after which it acts or is re-routed, never waits indefinitely.
+@violation-signature operator queues that grow; escalations to Joe by volume; an outlier that reaches no one because its seat rotated; a proposal that needs a yes and has no deadline.
+! conclusion: Outliers go to the nearest party able to act, down a tier ladder ending at Joe only for human judgement; nothing is routed to a queue that waits.
+
+  + context: Hygiene findings arrive continuously; the operator's attention is the scarcest resource in the stack.
+
+  + IF:
+    A finding is not ordinary (an outlier, a held plan, a stale base, a sensitive hit).
+
+  + HOWEVER:
+    Routing it to the operator builds the queue that silts up; routing it nowhere lets 110 commits sit on one disk; and the seat that made the commits may already be gone.
+
+  + THEN:
+    Resolve the responsible seat, deliver exact-seat with a deadline, fall back to the sweeper, and hold with a question for Joe only when judgement requires a human.
+
+  + BECAUSE:
+    Does its output act, or does it wait? If it waits, it silts up at exactly the rate the work arrives, and the silt is worthless by the time anyone looks.
+
+  + evidence: Street Sweeper 2026-05-25 → 2026-08-19 (2,551 patches, 0/60 applicable); Zone 110 diverged commits 2026-08-19; Joe 2026-08-24 tier refinement; the 2026-09-16 21:01 gate run shows p4ng at 291 unpushed commits (oldest 151h), far above the default threshold of 10, with no tier-1 delivery observed.

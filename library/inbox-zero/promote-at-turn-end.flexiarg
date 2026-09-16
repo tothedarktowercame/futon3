@@ -1,0 +1,32 @@
+@flexiarg inbox-zero/promote-at-turn-end
+@title Promote A Turn's Work While Its Author Still Knows What Done Meant
+@keywords turn-end, promotion, real-work, attribution, in-flight, exemption, held-loud
+@audience agent harnesses, inbox-zero promotion planners
+@tone technical
+@style pattern
+@status draft 2026-09-16 (claude-7; from futon0/README-inbox-zero.md mechanism #1 and "What stays manual"; implementation: futon0 holes/excursions/E-inbox-zero-implementation.md slices 1–11, futon3c src/futon3c/inbox_zero/turn_promotion.clj; the hook is agent-chat's on-turn-end, which does not cover Codex or Claude Code sessions)
+@references [inbox-zero/classify-the-dirt buffer-cleaner/exempt-the-in-use buffer-cleaner/receipt-then-gate inbox-zero/escalate-by-who-can-act]
+@see-also inbox-zero/push-the-declared
+@why real uncommitted work is the only class needing judgement, and the judgement is cheapest at the end of the turn that produced it. Afterwards it decays: fourteen finished files sat unstaged up to 42 days in futon3c; a committed finding about invoke-activity ages was re-derived over a morning because its test was never committed (cost #2, paid three times); eight committed records cited untracked files by line number (2026-08-31).
+@how at turn end: scope to the files the turn touched (session–file claims, attributed by the watcher), exempt files with another seat's in-flight activity inside the window (buffer-cleaner/exempt-the-in-use: structural, recorded with reason, re-checked at execution), gate on compile and lint, commit with attribution, then push per inbox-zero/push-the-declared. A held promotion is loud in the operator's agent view, never silent. Each harness needs its own turn-end boundary; a harness without one is reported as uncovered, not assumed covered.
+@violation-signature a promotion that commits files the turn did not touch; a commit under another seat's live edit; a silent hold; a harness assumed covered because another harness's hook exists; an exemption that never lifts, letting exempt dirt age past 24h unreported.
+! conclusion: Commit and push what a turn touched at the turn's end, exempting live edits by other seats, with holds made loud and uncovered harnesses reported.
+
+  + context: Many agent sessions of different harnesses edit the same repos concurrently; sessions end, rotate or are poisoned.
+
+  + IF:
+    A turn ends having modified tracked or new files that are real work.
+
+  + HOWEVER:
+    Another seat may be editing the same files; the harness may have no turn-end hook; and a repo under continuous activity can stay "in flight" indefinitely, so an in-flight exemption can hide accumulation.
+
+  + THEN:
+    Promote the turn's own attributed files behind gates, exempt other seats' live edits with recorded reasons, make holds loud, and report exemptions older than 24h as failures of the exemption, not as clean.
+
+  + BECAUSE:
+    It is the only mechanism that attacks real uncommitted work at its source instead of sweeping it afterwards, and a sweep is an event that stops when its session dies.
+
+  + evidence: futon3c 2026-08-14 baseline (29 files, oldest 42 days); the 2026-08-31 checkpoint (futon2, fifteen paths accumulated three days after a sweep); U59 sweeper-committed-under-a-live-edit incident and the compensating-commit path (futon3c 06ff3181, 8e72e6fe).
+
+  + NEXT-STEPS:
+    - Turn-end boundaries for Codex and Claude Code sessions (open decision in E-inbox-zero-implementation).

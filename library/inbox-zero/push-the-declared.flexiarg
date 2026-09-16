@@ -1,0 +1,32 @@
+@flexiarg inbox-zero/push-the-declared
+@title Push What The Author Already Declared Done
+@keywords push, unpushed, mechanics, compile-gate, sensitivity-screen, only-one-place
+@audience promotion executors, inbox-zero policy authors
+@tone technical
+@style pattern
+@status draft 2026-09-16 (claude-7; from futon0/README-inbox-zero.md "Committed-but-unpushed is not a hygiene problem"; implementation: futon3 inbox-zero-lib promote_push.clj with default-ahead-threshold 10, screen-sensitivity in escalation.clj)
+@references [inbox-zero/classify-the-dirt inbox-zero/escalate-by-who-can-act]
+@see-also buffer-cleaner/receipt-then-gate
+@why committing is the author's declaration that work is done; pushing carries no judgement and is the whole difference between a decision on one disk and a decision that survives the disk. `futon-sync push` called read-line, so it could only run when a human was already deciding — a capability that requires the discipline it replaces is not a mechanism.
+@how for an ordinary repo (ahead count at or below the declared threshold, default 10): gate on a cheap compile check where one exists and on the sensitivity screen (a describe-the-kind rule set: key material, credentials, personal data, large binaries), then push the default branch without asking. A sensitivity hit is held with :held :sensitive-content (tier 3). Above the threshold the repo is an outlier and goes to inbox-zero/escalate-by-who-can-act instead. The threshold is a declared value with its source, never an implicit constant.
+@violation-signature a push path that waits on a human; a compile gate that becomes the reason nothing is pushed; an outlier auto-pushed without anyone told; a sensitivity screen that enumerates filenames.
+! conclusion: Ordinary committed work is pushed automatically behind a compile check and a sensitivity screen; only outliers and sensitive hits wait.
+
+  + context: Agents commit continuously across repos; commits accumulate unpushed on whichever box did the work.
+
+  + IF:
+    A repo has committed-but-unpushed work on its default branch.
+
+  + HOWEVER:
+    Pushing a broken commit feels risky — but a pushed broken commit is a visible, revertible code-quality problem, while an unpushed one is a data-loss problem sitting on one disk.
+
+  + THEN:
+    Push ordinary accumulation automatically after the compile gate and sensitivity screen; send outliers to escalation; hold sensitive hits with a question.
+
+  + BECAUSE:
+    Not pushing does not make a commit less broken, only less recoverable.
+
+  + evidence: three non-compiling commits on 2026-08-14 that a compile gate would have caught; Zone held 110 commits diverged for two days on 2026-08-19; the 2026-09-16 21:01 gate run: p4ng 291 unpushed (oldest 151h), apm-lean 1778 (173h), futon3c 14 (46h), futon3 9 (32h), voxterm 4 (97h).
+
+  + NEXT-STEPS:
+    - Confirm which harnesses' sessions reach the push path (README: turn-end hook covers agent-chat only).

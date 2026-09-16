@@ -1,0 +1,29 @@
+@flexiarg inbox-zero/ignore-by-kind
+@title Ignore Generated Noise By Describing Its Kind
+@keywords gitignore, generated, noise, describe-the-kind, check-ignore, enumeration
+@audience repo maintainers, inbox-zero classifiers
+@tone technical
+@style pattern
+@status draft 2026-09-16 (claude-7; from futon0/README-inbox-zero.md "Generated noise" and "Only the ROOT data/ is ignored")
+@references [inbox-zero/classify-the-dirt]
+@see-also inbox-zero/measure-against-the-remote
+@why 2,012 of the fleet's 2,610 dirty files on 2026-08-19 were one missing ignore pattern: the rules listed `migration-store*`, `switchover-store`, `ams-store.retired-*` and every other store name seen so far, and failed silently on the Linodes' `chicago-store/`. A rule that enumerates cases looks complete and fails on the case in front of you.
+@how for untracked generated output: write one pattern that describes the kind (`*-store*/`), verify it with `git check-ignore -v` on a probe path on every box that carries the kind, and confirm nothing tracked matches. Never rely on nested `data/` being ignored: only root `data/*` is (futon3c .gitignore:15), by design. Raw data goes under root data/ and travels by an explicit sha-verified sync, not git. Tracked generated outputs are out of scope here (see inbox-zero/classify-the-dirt).
+@violation-signature an ignore list of instance names; a nested data/ directory assumed ignored; an ignore rule added without check-ignore verification; ignoring a file that is tracked.
+! conclusion: Generated noise is removed once per kind by a verified describe-the-kind ignore rule, never file by file and never by enumerating instances.
+
+  + context: Services write stores, logs and build products into working trees on boxes the rules' authors never saw.
+
+  + IF:
+    A repo's dirt is untracked output of a generator.
+
+  + HOWEVER:
+    Each new box or run picks a new instance name, and an enumerating rule misses it silently; and ignore semantics are subtle (a bare `data/` rule once deadened every `!data/…` negation and hid a 44-record corpus).
+
+  + THEN:
+    Describe the kind in one pattern, verify with check-ignore on real probe paths, and move raw data to the root data/ with an explicit sync.
+
+  + BECAUSE:
+    Boxes that "looked neglected for months" were missing one pattern.
+
+  + evidence: futon1b 49cc714 (`*-store*/`, 1,006 files per Linode); the 2026-08-11 removal of the bare data/ rule.

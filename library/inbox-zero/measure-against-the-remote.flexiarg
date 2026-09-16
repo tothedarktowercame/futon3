@@ -1,0 +1,32 @@
+@flexiarg inbox-zero/measure-against-the-remote
+@title Measure Against The Remote, Not The Local Copy Of It
+@keywords observation, fetch, behind, upstream, only-one-place, clean-definition
+@audience inbox-zero gate, hygiene-policy authors, WM observation adapters
+@tone technical
+@style pattern
+@status draft 2026-09-16 (claude-7; distilled from futon0/README-inbox-zero.md; implementation: futon0/scripts/futon-sync.clj check-clean, hourly via futon-sync-check-clean.timer)
+@references [inbox-zero/classify-the-dirt inbox-zero/gate-fails-loudly]
+@see-also buffer-cleaner/observe-categories
+@why a clean working tree was twice read as a healthy box: lucy reported dirty=0 in seven repos while 37, 54, 2, 3, 16, 15 and 326 commits behind, and wedged (2026-08-14); futon-sync computed ahead/behind without fetching, so futon3 was 27 behind and reported "=" (2026-08-19). A conclusion about the remote drawn from a proxy that never looked at it.
+@how per repo on its default branch: fetch first (read-only, safe beside working agents), then read the five clauses of the definition — nothing in `git status --porcelain -uall` older than 24h and not ignored by design; not behind upstream; oldest unpushed commit under 24h; an upstream configured (missing upstream is a failed check, never a satisfied one); no dead worktree (HEAD contained in the default branch) and no checkout outside the sibling tree. Report the invariant "nothing exists in only one place": ahead and dirty are the dangerous states, behind is benign only while visible.
+@violation-signature `=` from an unfetched ref; `git log --all` on an unfetched tree answering "nothing missing"; a repo absent from the manifest (voxterm, p4ng were) so its dirt is invisible; missing upstream treated as zero ahead.
+! conclusion: Observe cleanliness against the fetched remote on the default branch, with all five clauses; a repo the check cannot compare fails the check.
+
+  + context: Eighteen repos on five boxes, edited by many agent sessions, some boxes idle for weeks.
+
+  + IF:
+    Anyone or anything needs to know whether a repository is at inbox zero.
+
+  + HOWEVER:
+    Every local proxy for the remote (the last-fetched ref, `git log --all`, a filesystem existence check) reads "fine" exactly where drift is largest, and a dirt-only check calls a box clean while it is hundreds of commits behind.
+
+  + THEN:
+    Fetch, then evaluate the five clauses per repo on its default branch; treat an unevaluable clause (no upstream, not in the manifest) as a failure; report feature-branch and unmerged-worktree work as information, not failure.
+
+  + BECAUSE:
+    Dirt is local work missing from the remote, behind is remote work missing from the local, and stale-base authoring is new work built on the second — the same one-host-disagrees-with-the-record failure, and only a fetched comparison sees all three.
+
+  + evidence: lucy 2026-08-14 (seven repos dirty=0 and behind; box wedged); futon-sync 2026-08-19 before/after fetch (behind 1 → 5 repos); codex-10's packet reviewed against a base 355 commits stale (2026-08-19); clauses 3–5 added 2026-09-01 after 182 dead apm-lean worktrees and p4ng/voxterm missing from the manifest.
+
+  + NEXT-STEPS:
+    - Cross-machine aggregation: each host publishes its reading so "is Zone in sync?" is a query (README mechanism #4, not built).

@@ -1,5 +1,5 @@
 @flexiarg pattern-interpretation/put-uncertainty-in-theta
-@title Put Real Uncertainty In θ And C, Not In Unknown Facts
+@title Put Uncertainty In q0 Or θ, Preference In C, And Keep Unknown For Unobserved
 @keywords theta, prior, outcome, want, coverage, observation, preference
 @audience interpretation jobs, cascade-model builders
 @tone technical
@@ -8,9 +8,9 @@
 @references [pattern-interpretation/declare-the-universe pattern-interpretation/compile-guards-exactly translation/declare-what-is-lost]
 @see-also buffer-cleaner/classify-staleness
 @why prose patterns carry uncertainty about the world ("will this buffer be needed later?") and name outcomes no act directly produces ("clean enough", "repo clean"). Encoding the first as an unknown fact makes the pattern never fire; leaving the second as an effect-less want makes coverage zero on every path.
-@how a prior about the world becomes the attested θ of the acting pattern (the probability its effect is achieved) or part of C, never a guard over an :unknown fact. A want that is a world outcome is added as a θ-weighted effect of the pattern whose act brings it about, and coverage is scored on the predicted observation of that token, so a fix that is confirmed only by the next tick's observation is counted as predicted, not as done.
-@violation-signature a guard NOT needed-later that can never fire; θ left at the documented default 1 for an outcome with a declared prior; want coverage computed over produced tokens at θ = 1.
-! conclusion: World uncertainty lives in θ or C, outcome wants are θ-weighted effects scored on predicted observation, and unknown is kept for unobserved facts.
+@how split by what the uncertainty is about: uncertainty about the current state goes in q0 as a distribution over states; uncertainty about what an act achieves goes in the attested θ of the acting pattern; how much an outcome is wanted goes in C, which holds preference only. None of these becomes a guard over an :unknown fact. "Needed later" is about the future, so it is θ (or q0 if it is a present, unobserved fact), never C. θ is one number per pattern for its whole effect set (P3), so an act with a near-certain direct token (the edit is made) and an uncertain outcome token (the repo is clean) is split into linked parts (:source-pattern, :part), one token per part with its own θ; per-token θ within one pattern is not in the approved design. A want that is a world outcome is added as a θ-weighted effect of the pattern whose act brings it about, and coverage is scored on the predicted observation of that token, so a fix that is confirmed only by the next tick's observation is counted as predicted, not as done.
+@violation-signature a guard NOT needed-later that can never fire; a world prior placed in C; one θ covering a certain direct effect and an uncertain outcome; θ left at the documented default 1 for an outcome with a declared prior; want coverage computed over produced tokens at θ = 1.
+! conclusion: Present-state uncertainty lives in q0, uncertainty about what an act achieves in θ (split into parts when effects differ in certainty), preference in C, outcome wants are θ-weighted effects scored on predicted observation, and unknown is kept for unobserved facts.
 
   + context: Flexiargs such as buffer-cleaner/classify-staleness state priors (temp 0.05, dired 0.25, file-stale 0.40 at 6 h).
 
@@ -21,9 +21,9 @@
     The guard language is logical and the effect language is add-only and certain.
 
   + THEN:
-    Move priors into θ or C and give outcome wants a θ-weighted producing effect scored by observation.
+    Put present-state uncertainty in q0 and act uncertainty in θ, keep C for preference, split acts whose effects differ in certainty, and give outcome wants a θ-weighted producing part scored by observation.
 
   + BECAUSE:
-    Guards decide whether an act may happen; θ and C decide what it is expected to achieve and how much that is wanted.
+    Guards decide whether an act may happen; q0 says what is believed now, θ what the act is expected to achieve, and C how much that is wanted.
 
   + evidence: worked instances §1 (clean-enough never produced), §2 (repo-clean likewise); claude-4's tick-1 observation that "partial summary observes cleanly" is established by the fix but confirmed only at the next tick.

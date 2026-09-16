@@ -5,7 +5,7 @@
 @tone technical
 @style pattern
 @status draft 2026-09-16 (claude-7; the missing integration — the registry CLI exists but no handoff path carries or consumes a warrant: no caller of futon3c.test-registry outside its own namespace and tests)
-@references [test-registry/register-the-run test-registry/bind-warrant-to-the-diff inbox-zero/measure-against-the-remote]
+@references [test-registry/register-the-run test-registry/bind-warrant-to-the-diff inbox-zero/measure-against-the-remote hygiene/route-to-who-can-act]
 @see-also buffer-cleaner/receipt-then-gate
 @why a registry nobody's handoff points to is a second place to look, and reviewers under time pressure will rerun instead. The README-inbox-zero stale-base incident (a packet reviewed against a base 355 commits old) shows the handoff contract must name what it hands over: the base sha, and here also the warrant.
 @how every author-to-reviewer handoff (bell, whistle, packet, review request) carries the base sha and the registry entry id of each test run it relies on, one per namespace command; the reviewer's reply carries the review entry id. A handoff without a warrant is legal but typed :unwarranted, and the reviewer's lane is then full rerun of the declared namespaces — priced, not forbidden. Agency can render the warrant fields in the delivered turn so the reviewer sees them without searching.

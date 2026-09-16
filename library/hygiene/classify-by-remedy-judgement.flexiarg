@@ -1,0 +1,29 @@
+@flexiarg hygiene/classify-by-remedy-judgement
+@title Classify Items By How Much Judgement Their Remedy Needs
+@keywords classification, judgement, remedy, prior, lane, role, hygiene
+@audience hygiene-policy authors, readers learning how the library's layers relate
+@tone technical
+@style pattern
+@status draft 2026-09-16 (claude-7; shared across three hygiene generations — see hygiene/README.md)
+@references [buffer-cleaner/classify-staleness inbox-zero/classify-the-dirt inbox-zero/generated-by-role test-registry/rerun-when-the-warrant-fails hygiene/exempt-the-in-use hygiene/receipt-then-gate]
+@see-also apparatus/evidence-to-disposition-once
+@why a pile containing any item that needs judgement cannot be handled automatically, so the whole pile waits for a person and recurs. Splitting items by how much judgement their remedy needs lets the mechanical classes act unattended and leaves only the rest for a person or a slower lane.
+@how every generation must: (1) assign each item exactly one class with recorded evidence for the assignment; (2) give each class its own remedy and the judgement it needs (none, once per kind, per item); (3) state uncertainty as a declared value with its source (a prior, a rate, a threshold) rather than hiding it in a class label; (4) keep an explicit unclassifiable class that is reported, never folded into another; (5) decide class by role or kind, not by an enumeration of instances or by file extension.
+@violation-signature buffer cleaner: temp buffers labelled "decisive" while carrying a needed-later prior of 0.05, corrected at futon2 aa158c6. Inbox zero: fifty sweeps of one undifferentiated pile (2,610 files that were 35 unpushed commits, ~2,012 noise and ~68 real work, 2026-08-19); and a tracked-generated class the first three classes did not cover (p4ng 2026-09-16). Test registry: an extension rule would have ignored futon2's 268 tracked .log files, which are run cassettes (evidence), not build byproducts.
+! conclusion: Split items into classes by the judgement their remedy needs, each with its own remedy, declared uncertainty and an explicit unclassifiable class.
+
+  + context: Each generation faces a mixed population: buffers of seven kinds, dirt of several origins, test namespaces with and without changed tests.
+
+  + IF:
+    A policy must decide what to do with many items at once.
+
+  + HOWEVER:
+    One remedy for the whole population forces the slowest remedy on everything; and labels that look like facts ("decisive", "noise", ".log") can hide judgement or uncertainty.
+
+  + THEN:
+    Classify by remedy judgement with recorded evidence, declared uncertainty and an unclassifiable class.
+
+  + BECAUSE:
+    The size of the manual problem is the size of the per-item class, not of the pile.
+
+  + evidence: As in the violation signatures. Gaps: in the test registry the classes are review lanes (full rerun or spot-check per namespace), so an item's class can change when its warrant fails; inbox zero needs two patterns (classify-the-dirt and generated-by-role) because tracked generated files split again by role.

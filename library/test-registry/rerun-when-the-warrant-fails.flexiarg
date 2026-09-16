@@ -5,7 +5,7 @@
 @tone technical
 @style pattern
 @status draft 2026-09-16 (claude-7; Joe's ruling 2026-09-14: full rerun mandatory pre-push and on invariant-relevant lanes; test_registry.clj `review` :rerun-required outcome)
-@references [test-registry/bind-warrant-to-the-diff test-registry/spot-check-at-the-declared-rate]
+@references [test-registry/bind-warrant-to-the-diff test-registry/spot-check-at-the-declared-rate hygiene/classify-by-remedy-judgement hygiene/exempt-the-in-use]
 @see-also buffer-cleaner/exempt-the-in-use
 @why the saving is not unconditional: some situations structurally require execution, just as some buffers are structurally in use. Deciding them by a score would erode them.
 @how require the declared namespace command (never the unbounded suite) when any of: no warrant (:unwarranted handoff); the record check refuses (stale manifest, uncovered path, environment mismatch, incomplete chain); the lane is :pre-push or :invariant; the namespace's tests are new or changed since their last warranted run (first run of this test content). Otherwise the lane is routine and the spot-check applies. The lane and the reason are recorded; the rerun is itself registered, so it becomes the next warrant.

@@ -1,0 +1,29 @@
+@flexiarg hygiene/settle-with-meters
+@title Settle Each Cycle With Meters, Including What Is Not Known
+@keywords meters, report, unknown, unavailable, change-not-state, saving, hygiene
+@audience hygiene-policy authors, monitor designers, readers learning the library's layers
+@tone technical
+@style pattern
+@status draft 2026-09-16 (claude-7; shared across three hygiene generations — see hygiene/README.md)
+@references [buffer-cleaner/yield-settled inbox-zero/gate-fails-loudly test-registry/meter-the-saving hygiene/route-to-who-can-act]
+@see-also apparatus/done-is-observed-running
+@why a hygiene cycle that ends in prose ("cleaned up", "tests green", "saved time") gives downstream decisions nothing to check, and a report that defaults an unknown to false or zero overclaims. A monitor that is always red is ignored as surely as one that never runs.
+@how every generation must: (1) end each cycle with typed meters of what was done; (2) state declared thresholds with their source labels; (3) report unavailable truth as its own value, never as false or zero; (4) report changes rather than repeating a steady state, so a change is visible; (5) measure claimed benefits against a recorded baseline, and say so when there is no benefit.
+@violation-signature buffer cleaner: the real cleaner cannot know its false-kill rate, so every report carries :revisit-truth :unavailable rather than a success claim; both wirings missed the declared threshold (134 and 131 remaining against 16) and the report said so. Inbox zero: 248 consecutive hourly gate failures went to journald with no consumer (2026-09-12). Test registry: the only measured round trip saved no wall time (reviewer total 4,599 ms for one test; author full namespace 1,008 ms) and the technote says so.
+! conclusion: Each cycle ends with typed meters, declared thresholds, unavailable truth as a legal value, changes rather than steady states, and measured rather than assumed benefit.
+
+  + context: Each generation runs repeatedly and its reports feed tuning decisions.
+
+  + IF:
+    A hygiene cycle completes.
+
+  + HOWEVER:
+    Meters invite narrative, unknowns invite defaults, and constant alarms invite neglect.
+
+  + THEN:
+    Emit meters, thresholds with sources, explicit unavailable values, change-only alerts and measured benefit.
+
+  + BECAUSE:
+    Every later decision tuned on the report inherits whatever it overclaimed.
+
+  + evidence: As in the violation signatures.

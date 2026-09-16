@@ -1,0 +1,29 @@
+@flexiarg hygiene/exempt-the-in-use
+@title Exempt The In-Use, Before And Independent Of Scoring
+@keywords exemption, protection, in-use, structural-fact, lane, re-check, hygiene
+@audience hygiene-policy authors, adapter builders, reviewer-gate designers, readers learning the library's layers
+@tone technical
+@style pattern
+@status draft 2026-09-16 (claude-7; promoted from buffer-cleaner/exempt-the-in-use, which named itself the shared pattern of the three generations and asked to move on the third citation; that file now carries the buffer-cleaner instance)
+@references [buffer-cleaner/exempt-the-in-use inbox-zero/promote-at-turn-end test-registry/rerun-when-the-warrant-fails hygiene/classify-by-remedy-judgement hygiene/receipt-then-gate]
+@see-also apparatus/loudness-is-conserved
+@why a score prices uncertainty, and items demonstrably in use have none about whether they may be acted on. Folding "in use" into a prior lets a low prior drift toward acting on the item; each generation's history records that exact error once.
+@how every generation must: (1) define the protected class by structural or witnessed facts only, never by a preference weight or parameter; (2) apply the exemption before scoring or eligibility, so every consumer inherits it; (3) record the reason for each exemption, so a deliberate keep is distinguishable from a missed one; (4) re-check the exemption at execution time, since a receipt is evidence of a past state; (5) report an exemption that has outlived its declared window as a failure of the exemption, not as a clean state.
+@violation-signature buffer cleaner: a modified buffer (buffer-modified-p returning :autosaved, read as false) entered the kill set (futon2 a87d27e6); active-agent and server-clients declared but unchecked until futon2 f27da45b. Inbox zero: the sweeper committed under a live edit (U59); and on p4ng the in-flight exemption is permanently true because the repo is committed to every few minutes, so exempt dirt aged 40.7 h unreported (2026-09-16). Test registry: pre-push and invariant lanes, and namespaces whose tests changed, must run in full; putting them on the spot-check path would drop the execution those lanes exist for.
+! conclusion: Items demonstrably in use are exempt from the policy's action by structural fact, before scoring, with the reason recorded, re-checked at execution, and reported when the exemption outlives its window.
+
+  + context: Three generations act unattended on items that are usually, but not always, safe to act on.
+
+  + IF:
+    A policy will act on items and some items are demonstrably in use.
+
+  + HOWEVER:
+    Scoring the exemption erodes it; structural facts are wider than booleans; and an exemption that never lifts hides accumulation.
+
+  + THEN:
+    Exempt by structural fact before scoring, record reasons, re-check at execution, and fail exemptions that outlive their window.
+
+  + BECAUSE:
+    The exempt class is where acting is certainly wrong, so it is kept out of the part of the policy that trades off risk.
+
+  + evidence: As in the violation signatures. Gap: the test registry's "in use" is a lane (execution is required) rather than an item that must not be touched; the direction of the exemption is reversed — it exempts items from the saving, not from an action.

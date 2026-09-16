@@ -5,7 +5,7 @@
 @tone technical
 @style pattern
 @status draft 2026-09-16 (claude-7; from futon0/README-inbox-zero.md checkpoints 2026-08-31 and 2026-09-12; implementation: futon-sync-check-clean.timer hourly, futon0 scripts/inbox-zero-delta.bb via OnSuccess/OnFailure, data/inbox-zero-delta.log)
-@references [inbox-zero/measure-against-the-remote inbox-zero/escalate-by-who-can-act]
+@references [inbox-zero/measure-against-the-remote inbox-zero/escalate-by-who-can-act hygiene/settle-with-meters]
 @see-also buffer-cleaner/yield-settled
 @why a sweep is an event, not a facility: nothing notices when it stops, and three days after a nineteen-item sweep futon2 had fifteen dirty paths and nobody was told (2026-08-31). The scheduled gate then became the inverse failure: 248 consecutive hourly failures into journald with OnFailure empty — a permanently red lamp nobody watched (2026-09-12). A monitor that is always red carries no more information than one that never runs.
 @how run the check on a schedule without anyone choosing to; wire a consumer that reports only changes (new failure, recovery, changed signature) so steady-state red is silent and a change is visible; route changes per inbox-zero/escalate-by-who-can-act rather than to a log alone; and extend the check to citations — every `path:line` in a committed record must resolve to a committed file.

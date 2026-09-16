@@ -5,7 +5,7 @@
 @tone technical
 @style pattern
 @status draft 2026-09-16 (claude-7; from NOTE-test-registry "What the reviewer does instead of rerunning"; implementation test_registry.clj `review` requires a different :reviewer and a substantive :adequacy note)
-@references [test-registry/bind-warrant-to-the-diff test-registry/spot-check-at-the-declared-rate]
+@references [test-registry/bind-warrant-to-the-diff test-registry/spot-check-at-the-declared-rate hygiene/receipt-then-gate]
 @see-also buffer-cleaner/exempt-the-in-use
 @why rerunning the author's tests never supplied what a separate reviewer is for: whether these are the right tests, whether they pin the behaviour claimed, whether they would catch the likely bug. On 2026-09-16 claude-4's review of the WM-11 selection posterior found the committed score added F where the Lean subtracts it and added a sign-falsifier test — adequacy work; the rerun of the author's five tests contributed nothing to that catch.
 @how after a passing record check, the reviewer records an adequacy judgement: the behaviours the change claims, which tests pin each, named coverage gaps, and any tests the reviewer adds (which are new tests and carry their own warrant). Adequacy is a recorded judgement, never inferred from test success. The reviewer is a different agent from the author (checked, not assumed).

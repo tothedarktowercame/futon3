@@ -5,7 +5,7 @@
 @tone technical
 @style pattern
 @status draft 2026-09-16 (claude-7; Joe's ruling 2026-09-14: one test per routine review by default, re-priced on measurement; zai-8's countercheck futon2 runs/cascade-worked-example-2-2026-09-15)
-@references [test-registry/judge-adequacy test-registry/rerun-when-the-warrant-fails test-registry/meter-the-saving]
+@references [test-registry/judge-adequacy test-registry/rerun-when-the-warrant-fails test-registry/meter-the-saving hygiene/classify-by-remedy-judgement]
 @see-also buffer-cleaner/classify-staleness
 @why sampling replaces duplication, but its evidential power must not be overstated. zai-8's constructed check: with a complete retained result record, 40/40 verdicts were decided by the record regardless of the sampled index; with the record removed, one passing draw under a sparse bug moves P(clean) from 0.5 only to 0.526 — a single spot-check cannot reach a 0.95 verdict from an uninformative prior.
 @how in the routine lane, after a passing record check, execute exactly one declared test from the warrant (reviewer's choice, recorded) and confirm it executed one test and agrees with the recorded result. Its role is a drift and tamper check on the record — does this environment reproduce what the record says — not a correctness verdict. The rate is a declared value with its source, re-priced when measured disagreement rates exist.

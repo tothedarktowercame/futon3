@@ -5,7 +5,7 @@
 @tone technical
 @style pattern
 @status draft 2026-09-16 (claude-7; from futon0/README-inbox-zero.md "The anomaly is the thing worth a human", Joe's refinement 2026-08-24, and "The Street Sweeper already solved this"; implementation: futon3 inbox-zero-lib escalation.clj route)
-@references [inbox-zero/push-the-declared inbox-zero/promote-at-turn-end buffer-cleaner/receipt-then-gate]
+@references [inbox-zero/push-the-declared inbox-zero/promote-at-turn-end buffer-cleaner/receipt-then-gate hygiene/route-to-who-can-act]
 @see-also inbox-zero/gate-fails-loudly
 @why the Street Sweeper produced 2,551 correct patches on 2026-05-25 into an operator review queue and stopped; three months later 0 of 60 sampled still applied and the work had been redone by hand. A mechanism whose output is a human queue is a deferral, and deferred work decays. Yet outliers (110 commits diverged for two days on Zone) deserve attention — just not by default from Joe ("nothing should be routed to me unless absolutely necessary").
 @how route by who can act, trying each tier before the next: tier 0 nobody (ordinary accumulation, auto-push); tier 1 the responsible seats found by session–commit links and claims (outlier over the declared ahead threshold, held plan, stale base), delivered exact-seat through the followup queue; tier 2 the street-sweeper peripheral when the tier-1 seat cannot be found; tier 3 Joe, only as a hold with a question for judgement only a human can make (sensitive content, an agent declaring it cannot decide). Volume is never by itself a tier-3 signal. Every escalation has a deadline after which it acts or is re-routed, never waits indefinitely.

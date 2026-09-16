@@ -5,7 +5,7 @@
 @tone technical
 @style pattern
 @status staged (field source: futon-buffer-cleaner.el candidate-kind predicates; live evaluation: futon2/holes/labs/wm-contract/buffer-cleaner-adapter/adapter/dump-state.el, read-only; first real packet 2026-09-15, 138 buffers)
-@references [buffer-cleaner/classify-staleness]
+@references [buffer-cleaner/classify-staleness hygiene/observe-the-authority]
 @see-also apparatus/done-is-observed-running
 @why the cleaner's own predicates already distinguish seven structural kinds (file, stream, http, invoke, dired, temp, render) plus preservation signals; the original adapter conflated preserved buffers with unknown ones because kind was decided by the loaded threshold. Structural kind at observation is what lets each candidate wiring re-decide staleness from the same packet instead of the collector pre-deciding.
 @how emit per buffer the structural kind plus raw safety signals — name, kind, file, modified (normalized: any Emacs-truthy value including :autosaved is true), has-process, visible, active-agent, server-clients, display-age-seconds (buffer-local read, -1 if never displayed) — and nothing else: no threshold logic, no kill decisions, read-only.

@@ -5,7 +5,7 @@
 @tone technical
 @style pattern
 @status draft 2026-09-16 (claude-7; from futon0/README-inbox-zero.md "Committed-but-unpushed is not a hygiene problem"; implementation: futon3 inbox-zero-lib promote_push.clj with default-ahead-threshold 10, screen-sensitivity in escalation.clj)
-@references [inbox-zero/classify-the-dirt inbox-zero/escalate-by-who-can-act]
+@references [inbox-zero/classify-the-dirt inbox-zero/escalate-by-who-can-act hygiene/receipt-then-gate]
 @see-also buffer-cleaner/receipt-then-gate
 @why committing is the author's declaration that work is done; pushing carries no judgement and is the whole difference between a decision on one disk and a decision that survives the disk. `futon-sync push` called read-line, so it could only run when a human was already deciding — a capability that requires the discipline it replaces is not a mechanism.
 @how for an ordinary repo (ahead count at or below the declared threshold, default 10): gate on a cheap compile check where one exists and on the sensitivity screen (a describe-the-kind rule set: key material, credentials, personal data, large binaries), then push the default branch without asking. A sensitivity hit is held with :held :sensitive-content (tier 3). Above the threshold the repo is an outlier and goes to inbox-zero/escalate-by-who-can-act instead. The threshold is a declared value with its source, never an implicit constant.

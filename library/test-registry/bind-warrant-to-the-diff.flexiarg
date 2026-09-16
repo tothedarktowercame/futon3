@@ -5,7 +5,7 @@
 @tone technical
 @style pattern
 @status draft 2026-09-16 (claude-7; implementation futon3c test_registry.clj `check`; independent refusal and correction 2026-09-14 on LC_ALL)
-@references [test-registry/warrant-rides-the-handoff test-registry/rerun-when-the-warrant-fails]
+@references [test-registry/warrant-rides-the-handoff test-registry/rerun-when-the-warrant-fails hygiene/observe-the-authority]
 @see-also inbox-zero/measure-against-the-remote
 @why a warrant is only evidence about the code it names. The first independent review refused because the author shell set LC_ALL=C.UTF-8 and the reviewer's did not; the refusal was right, and its empty mismatch details were a real defect.
 @how the reviewer declares the diff scope (changed paths) and runs the record check: complete chain, intent-result binding, timestamps, exact current code and test manifests against the recorded ones, diff coverage (every changed path is inside the warrant's manifests), resolved environment against the fingerprint, log hash, parsed result envelope. A mismatch refuses with :warrant? false, the expected and observed differing fields, and a next action. Declared test-environment values (locale, timezone) are inputs, never waived comparisons.

@@ -5,7 +5,7 @@
 @tone technical
 @style pattern
 @status draft 2026-09-16 (claude-7; distilled from futon0/README-inbox-zero.md; implementation: futon0/scripts/futon-sync.clj check-clean, hourly via futon-sync-check-clean.timer)
-@references [inbox-zero/classify-the-dirt inbox-zero/gate-fails-loudly]
+@references [inbox-zero/classify-the-dirt inbox-zero/gate-fails-loudly hygiene/observe-the-authority]
 @see-also buffer-cleaner/observe-categories
 @why a clean working tree was twice read as a healthy box: lucy reported dirty=0 in seven repos while 37, 54, 2, 3, 16, 15 and 326 commits behind, and wedged (2026-08-14); futon-sync computed ahead/behind without fetching, so futon3 was 27 behind and reported "=" (2026-08-19). A conclusion about the remote drawn from a proxy that never looked at it.
 @how per repo on its default branch: fetch first (read-only, safe beside working agents), then read the five clauses of the definition — nothing in `git status --porcelain -uall` older than 24h and not ignored by design; not behind upstream; oldest unpushed commit under 24h; an upstream configured (missing upstream is a failed check, never a satisfied one); no dead worktree (HEAD contained in the default branch) and no checkout outside the sibling tree. Report the invariant "nothing exists in only one place": ahead and dirty are the dangerous states, behind is benign only while visible.

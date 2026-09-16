@@ -1,0 +1,32 @@
+@flexiarg hygiene/observe-the-authority
+@title Observe The Thing The Verdict Is About, Not A Local Stand-In For It
+@keywords observation, authority, proxy, fetch, fingerprint, raw-signals, hygiene
+@audience hygiene-policy authors, readers learning how the library's layers relate
+@tone technical
+@style pattern
+@status draft 2026-09-16 (claude-7; shared across three hygiene generations: buffer cleaner, inbox zero, test registry — see hygiene/README.md)
+@references [buffer-cleaner/observe-categories inbox-zero/measure-against-the-remote test-registry/bind-warrant-to-the-diff hygiene/classify-by-remedy-judgement]
+@see-also apparatus/done-is-observed-running
+@why an unattended hygiene policy acts on what its observation says. When the observation reads a stand-in (a cached ref, the observer's own session, the reviewer's own shell) instead of the thing the verdict is about, the policy reports "fine" in exactly the cases where the stand-in has drifted, and nothing downstream can tell.
+@how every generation must: (1) name the authority the verdict is about (the live buffer, the fetched remote, the recorded run and its environment); (2) read it directly, or refresh the stand-in immediately before reading (fetch; re-fingerprint); (3) emit raw signals, leaving decisions to the consumer; (4) treat an unreadable or incomparable authority as a failed observation, never a pass; (5) on mismatch, name the fields that differ.
+@violation-signature buffer cleaner: every file buffer reported the same display age, read from the eval buffer rather than each buffer. Inbox zero: futon-sync compared against the last-fetched ref and showed "=" while futon3 was 27 commits behind (2026-08-19). Test registry: the first independent review refused on an environment mismatch whose details were empty; the difference was LC_ALL set in the author's shell and unset in the reviewer's (2026-09-14).
+! conclusion: A hygiene observation reads the authority its verdict is about, refreshes any stand-in before use, and fails when the authority cannot be compared.
+
+  + context: Three policies act unattended on items: buffers in an Emacs session, repositories across boxes, test runs across agents.
+
+  + IF:
+    A policy's decision depends on the state of something outside the process making the decision.
+
+  + HOWEVER:
+    A local stand-in is cheaper and usually right, and it is wrong silently: it drifts exactly when the thing it stands in for has moved.
+
+  + THEN:
+    Name the authority, refresh or read it directly, emit raw signals, and fail on incomparability with the differing fields named.
+
+  + BECAUSE:
+    A verdict about state is only as current as the read behind it, and a stale read that passes is indistinguishable from a true pass.
+
+  + evidence: The three violation signatures above, each caught by a consumer or reviewer rather than by the observer. Gap: in the test registry the "stand-in" is the reviewer's environment, so the fix is a declared test environment (locale, timezone) rather than a fetch.
+
+  + NEXT-STEPS:
+    - When a fourth generation is written, check it against the five-part @how before it cites this pattern.

@@ -1,0 +1,29 @@
+@flexiarg contracts/holder-states-the-claim
+@title The Holder States Exactly What Correspondence Is Claimed
+@keywords holder, transcription, not-live-path, live-shadow, live-enactment, lagging, live-selection
+@audience contract emitters, reviewers, readers of certification status
+@tone technical
+@style pattern
+@status draft 2026-09-16 (claude-7; holders in mathlib4 DarkTower/WarMachine/MachineContracts.lean and emit-machine-contracts.py HOLDERS)
+@references [contracts/declare-the-reductions translation/declare-what-is-preserved hygiene/settle-with-meters]
+@see-also pattern-interpretation/route-the-untranslatable
+@why "certified" hides the difference between "the Lean transcribes what the old code does", "a tested function computes the Lean but nothing live calls it", and "the live path runs it". Readers then take a correspondence to be about the running system when it is not.
+@how each entry carries one holder: model-transcription-only (Lean mirrors legacy code; no correspondence claimed); runtime-correspondence-not-live-path (tested function computes the declaration; not called live); runtime-correspondence-live-shadow (called live, result only recorded); runtime-correspondence-live-enactment (called live and determines enacted output); runtime-correspondence-lagging (correspondence except on a named input class, stated first in the falsifier); runtime-correspondence-live-selection (reserved; refused until its authorising decision). The verifier checks holder-specific requirements (live-call-site; LAGGING prefix) and refuses reserved holders.
+@violation-signature a live claim with no resolvable call site; a disagreement between Lean and runtime not declared; a reserved holder emitted early; "lagging" left in place after the runtime caught up.
+! conclusion: Every contract entry's holder states which correspondence is claimed, and the verifier enforces what each holder requires.
+
+  + context: Contracts accumulate while the runtime moves from legacy code to aligned, shadowed and finally live implementations.
+
+  + IF:
+    An entry records Lean–runtime correspondence.
+
+  + HOWEVER:
+    Stages change quickly and one word ("certified") cannot carry them.
+
+  + THEN:
+    Choose the holder that states the stage, and let the verifier check it.
+
+  + BECAUSE:
+    The holder is what a reader uses to decide whether a proof says anything about the running War Machine.
+
+  + evidence: P10 lag declared (27bfcd3fff) and closed when futon2 8222c700 landed (dd56aa89d8); first live-shadow entry shadow-cascade-g (r9); first live-enactment entry acting-order (r12, 7e6760dba5); live-selection reserved for P11 step 3.

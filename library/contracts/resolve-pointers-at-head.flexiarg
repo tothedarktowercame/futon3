@@ -1,0 +1,29 @@
+@flexiarg contracts/resolve-pointers-at-head
+@title Resolve Every Cross-Language Pointer At Committed HEAD
+@keywords contract, pointer, locus, fixture, evidence, HEAD, dirty-source, live-call-site
+@audience contract emitters, Lean and Clojure owners
+@tone technical
+@style pattern
+@status draft 2026-09-16 (claude-7; mathlib4 scripts/emit-machine-contracts.py, change 4867ba07bf; MachineContracts bundles r1-r12)
+@references [contracts/rebase-by-name translation/bind-to-the-source hygiene/observe-the-authority]
+@see-also pattern-interpretation/cite-the-source-bytes
+@why a contract binds a Lean declaration to a Clojure function, a fixture test and a Lean theorem by file:line. If pointers resolve against working trees, an owner's uncommitted edit elsewhere in the file can break verification or, worse, satisfy it with code that is not committed.
+@how pin Lean sources at their commit (emission refuses a dirty source) and resolve every Clojure locus, fixture and live call site with `git show HEAD:` in its own repository. Require each pointer to name its expected form (the defn, deftest or theorem by name), matched as one (locus, fixture, evidence) triple. A live holder names a live-call-site whose line must call the entry's function.
+@violation-signature an emission blocked by another agent's half-finished edit; a pointer satisfied by uncommitted code; a live call site that names the right line number but calls a different function.
+! conclusion: Contract pointers resolve at committed HEAD in each repository and must land on their named forms, so only committed code on both sides is certified.
+
+  + context: Several agents edit the Lean and Clojure sides concurrently while contracts are emitted.
+
+  + IF:
+    A contract bundle is emitted or verified.
+
+  + HOWEVER:
+    Working trees hold other owners' in-progress edits.
+
+  + THEN:
+    Read both sides at HEAD and check named forms.
+
+  + BECAUSE:
+    A certificate about code that exists only in one working tree certifies nothing another agent can use.
+
+  + evidence: r8 refused on a dirty CascadeTransition.lean during WM-03's P10 edit; WM-03's uncommitted Clojure moved observed-belief 114→115 and refused emission until pointers moved to HEAD (4867ba07bf); the live-shadow call site :578 named `:score-fn`, not a call of shadow-cascade-g, and would have been refused (:566 used, 24fd84fdb6).

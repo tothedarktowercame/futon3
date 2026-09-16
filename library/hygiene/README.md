@@ -9,7 +9,7 @@ always, safe to act on:
 - **test registry** (`test-registry/`) — lets a reviewer verify an author's
   registered test run instead of rerunning it (being built, 2026-09-16).
 
-The patterns in this directory state what the three share. Each one's `@why` is
+The patterns in this directory state what the three share. Where a unit must stay equivalent after crossing a boundary rather than be cleared, see `translation/`. Each one's `@why` is
 the reason that holds in all three settings; its `@how` is a checklist every
 generation must satisfy; its violation signature gives one real incident from
 each generation. The generation patterns carry the mechanics for their own

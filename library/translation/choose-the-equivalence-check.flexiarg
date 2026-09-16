@@ -1,0 +1,29 @@
+@flexiarg translation/choose-the-equivalence-check
+@title Choose The Equivalence Check By What Happens To The Unit
+@keywords identity, hash, behavioural-equivalence, destroy, move, translate
+@audience designers of review, certification and interpretation checks
+@tone technical
+@style pattern
+@status draft 2026-09-16 (claude-7; see translation/README.md for the destroy / move / translate spectrum)
+@references [translation/declare-what-is-preserved translation/test-by-reproducing-behaviour test-registry/bind-warrant-to-the-diff contracts/every-entry-has-a-falsifier pattern-interpretation/compile-guards-exactly]
+@see-also hygiene/receipt-then-gate
+@why the check that shows a crossing went right depends on what the crossing does to the unit. A destroyed unit can only be judged by what happens later; a unit moved unchanged can be checked completely and cheaply by hash; a translated unit has no hash in common with its source and needs a declared relation tested by behaviour.
+@how classify the crossing: DESTROY (a killed buffer) — check afterwards whether it was needed, and say when that truth is unavailable; MOVE (a pushed commit, a registered run handed to a reviewer) — compare hashes of everything the preserved property depends on, including environment; TRANSLATE (Lean to Clojure, prose to guards) — bind to source by hash where possible, then test the declared relation on fixtures and recorded runs, with falsifiers. Use the cheapest check that covers the preserved property, and no cheaper.
+@violation-signature a translation accepted because its source hash matches (the hash says nothing about the rendering); a moved unit re-executed instead of hash-checked (reviewers rerunning 86 tests on futon2 cb5f8b1288); a destroyed unit reported as safely removed when revisit truth is unavailable.
+! conclusion: Destroyed units are judged by later truth, moved units by hash, translated units by source binding plus a declared relation tested by behaviour.
+
+  + context: The three hygiene generations and the three translation instances each need a way to know the crossing succeeded.
+
+  + IF:
+    A crossing must be verified.
+
+  + HOWEVER:
+    Hash checks are cheap and tempting where they prove nothing, and behavioural tests are expensive where a hash would do.
+
+  + THEN:
+    Choose the check by crossing kind.
+
+  + BECAUSE:
+    Each kind leaves a different kind of evidence behind.
+
+  + evidence: buffer cleaner :revisit-truth :unavailable; test registry record check (795 ms) against the author's run; contracts named-form triples plus falsifier tests; worked-instance reproductions.

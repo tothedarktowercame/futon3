@@ -1,0 +1,29 @@
+@flexiarg pattern-interpretation/route-the-untranslatable
+@title Refuse And Route What Cannot Be Interpreted, With The Failing Clause
+@keywords refusal, no-admitted-interpretation, authoring, coverage, routing, backlog
+@audience cascade-model builders, WM-14 authoring, coverage reporters
+@tone technical
+@style pattern
+@status draft 2026-09-16 (claude-7; PROPOSAL D1 typed refusal; refusal split agreed between claude-4 and claude-7; authoring is WM-14)
+@references [pattern-interpretation/cite-the-source-bytes translation/route-the-untranslatable hygiene/route-to-who-can-act hygiene/settle-with-meters]
+@see-also inbox-zero/escalate-by-who-can-act
+@why a cascade containing a pattern without an admitted interpretation cannot be scored or enacted honestly; skipping the pattern or substituting a default would score a different cascade. With most of the library uninterpreted, the refusals are also the authoring backlog, which silts up like any queue unless each refusal reaches someone who can act.
+@how a pattern in the firing set with no admitted interpretation yields :no-admitted-interpretation, never a skipped or default pattern. The refusal carries the pattern id, the clause that failed (quote missing, fact undeclared, guard not compilable) and the mission it was needed for, and is routed to authoring (WM-14) while the mission is live — interpretation inside the tick where possible. Coverage reports count refusals in separate classes: not interpretable under the rule (a design question) and no admitted interpretation yet (authoring backlog). Fixture interpretations carry a distinct authority that admission refuses on the live path and coverage never counts.
+@violation-signature a cascade scored with a pattern silently dropped; a refusal without the failing clause; one refusal count mixing rule gaps and authoring gaps; fixture interpretations counted as coverage.
+! conclusion: Uninterpretable patterns refuse typedly with their failing clause, are routed to authoring while needed, and are counted by cause.
+
+  + context: The library has 1352 patterns; interpretation is moving into the running tick.
+
+  + IF:
+    A needed pattern has no admitted interpretation.
+
+  + HOWEVER:
+    Refusing everything stalls the machine, and defaulting falsifies its scores.
+
+  + THEN:
+    Refuse typedly, route with the failing clause, and count refusals by cause.
+
+  + BECAUSE:
+    A rule change and an authoring gap look the same in a single count and need different people.
+
+  + evidence: M-shared-memory-control-build-test and M-aif-policy-conditioned-eig refused under the word-level reader and carry no authored interpretations (PROPOSAL §4); coverage target ~1000/1352 (Joe, 2026-09-16) on hold while interpretation moves into the tick.

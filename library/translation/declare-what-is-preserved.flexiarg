@@ -1,0 +1,29 @@
+@flexiarg translation/declare-what-is-preserved
+@title Declare What The Crossing Must Preserve
+@keywords translation, preservation, equivalence, boundary, invariants
+@audience anyone moving a unit of work or meaning across a boundary: repositories, agents, languages
+@tone technical
+@style pattern
+@status draft 2026-09-16 (claude-7; shared by test-registry, contracts and pattern-interpretation — see translation/README.md)
+@references [test-registry/register-the-run contracts/holder-states-the-claim pattern-interpretation/declare-the-universe translation/choose-the-equivalence-check translation/declare-what-is-lost]
+@see-also hygiene/observe-the-authority
+@why a translation of C++ into Python preserves what the program computes and not its memory layout or timing, and that is fine as long as everyone agrees which was meant. Without a declared preservation target, "equivalent" gets checked against whatever the checker happens to look at.
+@how before crossing, state (1) the unit (a test run, a Lean declaration, a prose pattern); (2) what must be the same on both sides (the recorded outcome for these inputs; the value the function computes; when the pattern acts and what it establishes); (3) the conditions under which that holds; (4) who decides the target (for the War Machine, the approved design).
+@violation-signature test registry: a warrant checked against HEAD alone while the working tree differs. Contracts: a function "certified" for a declaration it matches only in a live shadow, read as driving selection. Pattern interpretation: a fact named change-reported where the pattern's requirement is change-routed-to-actor, so the translation preserves the wrong thing.
+! conclusion: A crossing starts by stating the unit, what must be the same on the other side, and the conditions under which it is.
+
+  + context: Work and meaning cross boundaries all the time in this stack: author to reviewer, Lean to Clojure, prose pattern to token kernel.
+
+  + IF:
+    A unit is to be used on the other side of a boundary in place of the original.
+
+  + HOWEVER:
+    Most properties cannot all be preserved, and unstated targets default to whatever is easiest to check.
+
+  + THEN:
+    Declare the preserved properties and their conditions first.
+
+  + BECAUSE:
+    Equivalence is always relative to a chosen set of properties.
+
+  + evidence: As in the violation signatures.

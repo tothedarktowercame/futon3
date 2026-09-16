@@ -1,0 +1,29 @@
+@flexiarg pattern-interpretation/compile-guards-exactly
+@title Compile Guards Exactly, Including Unknowns And Disjunctions
+@keywords guard, strong-Kleene, NNF, DNF, siblings, add-only, split-THEN
+@audience cascade-model builders, admission gates
+@tone technical
+@style pattern
+@status draft 2026-09-16 (claude-7; design PROPOSAL-pattern-interpretation D2-D5 by claude-4, not yet approved; checked against futon2 find_receipt/guard-value and receipt_construction/acting-order; F4 split agreed by claude-4)
+@references [pattern-interpretation/declare-the-universe pattern-interpretation/reproduce-the-recorded-run translation/choose-the-equivalence-check contracts/declare-the-reductions]
+@see-also hygiene/receipt-then-gate
+@why the model's state is a set of tokens and enactment evaluates guards in three-valued (strong Kleene) logic over a fact map. If the encoding treats a missing token as false, the model fires a pattern enactment would not, and prediction and enactment disagree exactly on unobserved facts.
+@how each fact f gives two tokens, f⁺ (established) and f⁻ (observed false); q0 holds f⁺ for true, f⁻ for false and neither for :unknown. Put the guard in negation normal form and expand to a disjunction of conjunctions; each conjunction becomes a sibling pattern in the same precedence slot, where [:fact f] consumes f⁺ and [:not [:fact f]] consumes f⁻ and forbids f⁺. Effects produce f⁺ only (add-only; retraction refused; withdrawal is a new token). A THEN holding two acts is split into consecutive parts p#1, p#2 carrying :source-pattern and :part, the second's guard requiring the first's token. A check's pass or fail enters by observation, not as an effect.
+@violation-signature a missing token read as false; an :or guard refused, dropping a real interpretation; a false effect accepted; two acts compiled as one effect; "refused" modelled as a produced token.
+! conclusion: Two tokens per fact, sibling expansion for disjunctions, add-only effects and linked parts for multi-act THENs make the compiled guard fire exactly when strong-Kleene enactment does.
+
+  + context: Prediction (B, rollout, G) and enactment (acting-order) consume the same interpretation.
+
+  + IF:
+    An admitted guard and effect must become a token kernel.
+
+  + HOWEVER:
+    Closed-world token sets and three-valued guards disagree on unknowns; disjunctions and multi-act THENs have no single-pattern encoding.
+
+  + THEN:
+    Use the two-token encoding, sibling expansion and linked parts.
+
+  + BECAUSE:
+    NNF and distribution are valid in strong Kleene logic, so the siblings are enabled exactly when the guard is true.
+
+  + evidence: worked example agent/evidence-over-assertion (PROPOSAL §4); inbox-zero NOT(tests-exist AND tests-pass) sibling check; receipt-then-gate split (F4); test-registry check outcome as observation (F11).

@@ -1,0 +1,29 @@
+@flexiarg translation/test-by-reproducing-behaviour
+@title Test A Translation By Whether It Reproduces The Source's Behaviour
+@keywords behavioural-equivalence, fixture, recorded-run, falsifier, attribution
+@audience translators, reviewers
+@tone technical
+@style pattern
+@status draft 2026-09-16 (claude-7; shared by contracts and pattern-interpretation; the test registry is the identity case, where reproduction is the spot-check)
+@references [contracts/every-entry-has-a-falsifier pattern-interpretation/reproduce-the-recorded-run test-registry/spot-check-at-the-declared-rate translation/choose-the-equivalence-check]
+@see-also hygiene/settle-with-meters
+@why when source and target share no representation, the preserved property can only be observed in what they do. Running both on the same inputs, including inputs chosen to catch plausible wrong translations, is the test; and when they disagree, the disagreement is information about one side or the other.
+@how run the translation on fixtures and, where they exist, recorded runs of the source system; compare on the declared preserved properties; include falsifier inputs a wrong translation would fail; attribute each disagreement explicitly to the translation or the source-side implementation. In the identity case, reproduction shrinks to a spot-check that the record reproduces.
+@violation-signature a fixture copied from the translation's own output; disagreement assumed to be the translator's fault; a spot-check presented as a correctness verdict.
+! conclusion: A translation is tested by running it where the source's behaviour is known, with falsifier inputs, and each disagreement is attributed to one side.
+
+  + context: Lean theorems and fixtures meet Clojure tests; interpreted cascades meet recorded runs.
+
+  + IF:
+    A translation must be shown to preserve behaviour.
+
+  + HOWEVER:
+    Easy fixtures confirm rather than test, and a disagreement does not say which side erred.
+
+  + THEN:
+    Test on known behaviour with falsifiers and attribute disagreements.
+
+  + BECAUSE:
+    A test the wrong translation would also pass shows nothing.
+
+  + evidence: WM-11 +F sign bug caught by a behavioural falsifier (74a118c5); inbox-zero interpretation disagreeing with the implementation and naming three implementation defects; zai-8's countercheck that one spot-check moves P(clean) only from 0.5 to 0.526.

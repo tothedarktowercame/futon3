@@ -1,0 +1,29 @@
+@flexiarg translation/route-the-untranslatable
+@title Refuse What Cannot Be Translated, And Route It With The Reason
+@keywords refusal, untranslatable, routing, coverage, unwarranted
+@audience translators, coordinators, coverage reporters
+@tone technical
+@style pattern
+@status draft 2026-09-16 (claude-7; shared by test-registry, contracts and pattern-interpretation)
+@references [pattern-interpretation/route-the-untranslatable test-registry/warrant-rides-the-handoff contracts/holder-states-the-claim hygiene/route-to-who-can-act]
+@see-also translation/declare-what-is-lost
+@why some units cannot cross under the declared preservation target: a run with no warrant, a function that disagrees with the Lean on an input class, a pattern whose clause no admitted fact expresses. Substituting a default or dropping the unit produces a translation of something else.
+@how refuse with a typed reason naming the part that failed; route the refusal to whoever can act (the reviewer lane that reruns, the owner who aligns the runtime, authoring for the pattern); count refusals by cause, separating "cannot cross under the current rule" from "not translated yet".
+@violation-signature an :unwarranted handoff silently rerun or silently trusted; a lagging correspondence not declared; a cascade scored with an uninterpreted pattern dropped.
+! conclusion: Untranslatable units refuse with a typed reason, go to whoever can act, and are counted by cause.
+
+  + context: Coverage of every translation here is partial.
+
+  + IF:
+    A unit cannot be translated under the declared target.
+
+  + HOWEVER:
+    Refusal stops work and defaults keep it moving.
+
+  + THEN:
+    Refuse typedly, route, and count by cause.
+
+  + BECAUSE:
+    Moving on with a substitute gives results about a unit nobody asked about.
+
+  + evidence: :unwarranted handoffs (zai-8 build, 2026-09-16); runtime-correspondence-lagging for P10 (27bfcd3fff); :no-admitted-interpretation (PROPOSAL D1).

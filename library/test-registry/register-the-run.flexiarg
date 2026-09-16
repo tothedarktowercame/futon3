@@ -5,7 +5,7 @@
 @tone technical
 @style pattern
 @status draft 2026-09-16 (claude-7; from futon2/holes/labs/wm-contract/NOTE-test-registry.md with Joe's rulings 2026-09-14; implementation futon3c src/futon3c/test_registry.clj `run`, commits 076746d6, 6930dfb2; one round trip 2026-09-14, no use since)
-@references [test-registry/warrant-rides-the-handoff test-registry/bind-warrant-to-the-diff hygiene/receipt-then-gate]
+@references [test-registry/warrant-rides-the-handoff test-registry/bind-warrant-to-the-diff hygiene/receipt-then-gate translation/declare-what-is-preserved]
 @see-also buffer-cleaner/receipt-then-gate
 @why under author-is-not-reviewer the reviewer reruns the author's tests, paying full execution again and buying none of the judgement that justifies a second agent. An unrecorded run cannot be relied on, so it is rerun; a run recorded as a warrant can be checked instead.
 @how the author runs the declared test command through the registry: capture code and test manifests (path-to-file sha, so uncommitted bytes are identified, HEAD kept separately), the environment fingerprint (resolved classpath bytes, CLI config, JVM, declared locale/timezone values), append an intent, run with a fresh captured log, re-check inputs and environment, append the result with parsed counts. Records are canonical EDN in the evidence store, sha-chained. An interrupted run leaves an intent without a result; a failed append yields no warrant; unparseable results are typed-absent, never zeros.

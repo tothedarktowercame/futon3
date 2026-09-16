@@ -1,0 +1,29 @@
+@flexiarg translation/declare-what-is-lost
+@title Declare What The Translation Does Not Preserve
+@keywords reductions, loss, approximation, conditions, honesty
+@audience translators, readers of translated artefacts
+@tone technical
+@style pattern
+@status draft 2026-09-16 (claude-7; shared by contracts and pattern-interpretation)
+@references [contracts/declare-the-reductions pattern-interpretation/put-uncertainty-in-theta translation/declare-what-is-preserved]
+@see-also hygiene/settle-with-meters
+@why translation into Python loses C++'s memory layout and that is acceptable because it is known. Losses that are not declared are either invisible to the reader or rediscovered later as bugs, and conditions of agreement left implicit are violated without anyone noticing.
+@how list alongside every translation: carriers changed (reals to doubles); choices the source leaves open and the translation fixes (tie-breaks); content dropped (a pattern's BECAUSE, context and evidence; a proof's generality); and conditions under which the preserved property holds (closed-world facts). Losses found in review are added before acceptance.
+@violation-signature a contract with no reductions; an interpretation presenting a guard as "the pattern"; agreement tests that quietly fix the conditions they need.
+! conclusion: Each translation states what it changes, fixes, drops, and requires for its equivalence to hold.
+
+  + context: Every translation in this stack loses something.
+
+  + IF:
+    A translated unit is published or used.
+
+  + HOWEVER:
+    Declaring losses reads as weakness.
+
+  + THEN:
+    Declare them with the translation.
+
+  + BECAUSE:
+    A reader can only rely on a translation whose limits they can see.
+
+  + evidence: exact belief reductions (a)–(h); acting-order strong-Kleene closed-world condition (r12); interpretation drops BECAUSE and evidence, and routes priors into θ.

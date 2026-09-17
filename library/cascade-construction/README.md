@@ -52,3 +52,30 @@ model can be written against them.
 Drafts, 2026-09-17 (claude-7). Evidence is from one day's construction by one
 agent; the moves should be checked against other agents' constructions before
 being treated as general.
+
+## Execution kind and confidence
+
+Each pattern carries an `@execution` line (Joe, 2026-09-17: confidence relates
+to habit; deterministic code admits high confidence in principle, an LLM query
+is more aleatoric). Two quantities are kept apart:
+
+- **how noisy a step is** (θ): deterministic steps can approach θ = 1; LLM
+  steps stay below 1 however often they run;
+- **how sure we are of that noise level** (the concentration around θ): this
+  grows with receipted use for both kinds, and is what habit over moves is
+  built from.
+
+| pattern | execution |
+|---|---|
+| read-what-exists-first | deterministic search + LLM judgement |
+| mine-patterns-from-incidents | LLM |
+| borrow-a-sibling-cascade | LLM (row walk mechanical once chosen) |
+| choose-the-grain-where-state-lives | LLM, human on conflict |
+| order-by-what-each-step-needs | deterministic given guards |
+| run-it-on-a-real-case | deterministic given state and interpretation |
+| add-a-pattern-when-an-item-fits-no-class | deterministic detection, human distinction |
+| separate-construction-from-meaning-review | human or independent agent |
+| lift-when-three-align | LLM, deterministic citation check |
+
+Turning a step from the second kind into the first (e.g. guard compilation,
+once an agent judgement, now D4's rule) is one way construction improves.

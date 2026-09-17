@@ -5,6 +5,7 @@
 @tone technical
 @style pattern
 @status draft 2026-09-17 (claude-7; used for the eight inbox-zero and seven test-registry patterns on 2026-09-16)
+@execution LLM. Aleatoric: two runs over the same sources can carve requirements differently.
 @references [cascade-construction/read-what-exists-first cascade-construction/borrow-a-sibling-cascade pattern-mining/probe-the-claimed-property-not-the-acceptance-proxy]
 @see-also apparatus/new-failure-class-is-a-design-defect
 @why a requirement written without the failure that produced it cannot be interpreted precisely: "measure against the remote" is ambiguous until you know futon-sync reported "=" from an unfetched ref. The incident fixes what the pattern's guard and effect must mean, and gives a reviewer something to check it against.

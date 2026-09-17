@@ -5,6 +5,7 @@
 @tone technical
 @style pattern
 @status draft 2026-09-17 (claude-7; generated-by-role, 2026-09-16)
+@execution detecting unclassified items is deterministic; naming the distinction needs a human or domain owner (e.g. the .aux/.pdf roles). Not an LLM-only step.
 @references [hygiene/classify-by-remedy-judgement cascade-construction/run-it-on-a-real-case inbox-zero/generated-by-role]
 @see-also apparatus/new-failure-class-is-a-design-defect
 @why when a real item in the run fits none of the cascade's classes, either the item is exceptional or the cascade is missing a step. Forcing it into the nearest class hides the second case; stopping to name the gap and ask the person who knows the domain usually finds a distinction the requirement never wrote down.

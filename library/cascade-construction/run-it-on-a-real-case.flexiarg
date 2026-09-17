@@ -6,6 +6,8 @@
 @style pattern
 @status draft 2026-09-17 (claude-7; three runs on 2026-09-16)
 @execution deterministic given the recorded state and the interpretation; its value is mostly epistemic. Reading q0 from the record may need LLM judgement.
+@epistemic-value the main epistemic move. It observes whether the cascade reproduces recorded behaviour, and each disagreement resolves an interpretation or names an implementation defect.
+@done done after one recorded case per distinct outcome the cascade predicts (for example enabled vs blocked act), or when no recorded case exists, which is recorded. A further case is run only if it could change a guard, a grain or the decision.
 @references [pattern-interpretation/reproduce-the-recorded-run translation/test-by-reproducing-behaviour cascade-construction/read-what-exists-first]
 @see-also apparatus/monitors-measure-the-work
 @why a constructed cascade is a hypothesis about what a system should do. Running it on one real case from recorded state costs little and says whether it reproduces what happened, whether the implementation diverges from it, and — for a feature not yet built — how much the feature would actually change.

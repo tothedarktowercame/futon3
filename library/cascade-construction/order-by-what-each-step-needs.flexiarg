@@ -6,6 +6,8 @@
 @style pattern
 @status draft 2026-09-17 (claude-7; the order used in all three 2026-09-16 cascades)
 @execution deterministic once guards and effects are fixed (precedence follows from dependencies); the guards themselves come from interpretation.
+@epistemic-value mostly pragmatic and deterministic. It exposes guards that cannot be checked (a need with no producing effect or observation), which turns a hidden unknown into a check candidate.
+@done done when every guard's needs are produced by an earlier effect, observed at q0, or listed as a check candidate. Precedence then follows from those dependencies.
 @references [cascade-construction/choose-the-grain-where-state-lives pattern-interpretation/compile-guards-exactly hygiene/receipt-then-gate]
 @see-also cascades/declared-skeleton
 @why a cascade's order is not the order the patterns were written in. Each step needs the facts earlier steps establish; if that need is written into the guard, the order follows from the model and survives re-ordering of the list, and a step whose precondition is missing visibly does not fire.

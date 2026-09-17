@@ -6,6 +6,8 @@
 @style pattern
 @status draft 2026-09-17 (claude-7; finding F5, worked instances 2026-09-16)
 @execution LLM judgement, with a human decision when grains conflict. Aleatoric; checkable afterwards by counting facts.
+@epistemic-value resolves which observable unit carries the cascade's facts. Its information is whether the candidate grain's facts can each be observed.
+@done done when one grain is recorded with its fact count and each fact has a method of observation. A second grain is tried only if some required fact has no method at the first.
 @references [pattern-interpretation/declare-the-universe cascade-construction/order-by-what-each-step-needs hygiene/exempt-the-in-use]
 @see-also cascades/the-slice-is-the-unit-of-use
 @why the grain decides how many facts the cascade reasons over and whether its guards can be written at all. Too fine and the universe explodes and needs quantifiers the guard language lacks; too coarse and the facts stop meaning anything observable.

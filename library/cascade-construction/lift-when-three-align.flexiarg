@@ -6,6 +6,8 @@
 @style pattern
 @status draft 2026-09-17 (claude-7; hygiene/ and translation/ on 2026-09-16)
 @execution LLM judgement over three instances, with the three-citations check deterministic.
+@epistemic-value tests whether a shared reason holds across settings; each aligned row is evidence, each gap a finding.
+@done not a construction step for a target. It runs after targets are built and never delays enactment.
 @references [cascade-construction/borrow-a-sibling-cascade hygiene/README translation/README]
 @see-also pattern-discipline/patterns-as-categorical-objects
 @why a shared pattern states one reason (@why) that several settings' mechanisms (@how) serve. Written from fewer than three settings it tends to restate one setting in general words; written without its gaps it becomes vague enough that it no longer tells a reader anything the instances don't.

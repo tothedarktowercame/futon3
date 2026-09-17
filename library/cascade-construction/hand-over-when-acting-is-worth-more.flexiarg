@@ -1,0 +1,32 @@
+@flexiarg cascade-construction/hand-over-when-acting-is-worth-more
+@title Stop Constructing When Acting On The Best Current Family Is Worth More
+@keywords definition-of-done, stopping, budget, hand-over, construction-receipt, unknown-to-halt
+@audience construction runtimes, agents constructing cascades
+@tone technical
+@style pattern
+@status draft 2026-09-17 (claude-7; Joe's requirement relayed by claude-4: construction is a policy for creating policies, so it must be epistemic and must have a definition of done)
+@execution deterministic comparison once move values are estimated; estimating a move's epistemic value needs the model (mathlib4 EpistemicValue, 3b19f6225e, for state information; interpretation and parameter information is not yet formalised).
+@epistemic-value none of its own. It compares the other moves' expected value with acting now.
+@done this pattern is the definition of done for construction as a whole.
+@references [cascade-construction/run-it-on-a-real-case cascade-construction/order-by-what-each-step-needs pattern-interpretation/route-the-untranslatable hygiene/settle-with-meters]
+@see-also apparatus/the-system-stops-on-schedule
+@why construction can always find another pattern to read, another sibling row to check, another case to run. Without a stopping rule it becomes an endless search that does no work: a costlier version of treating an unknown as a reason to halt. Acting is also informative, since enactment produces observations, so continuing to construct is only worth it while it beats acting.
+@how at each construction step, compare (a) the best admitted move's expected value, meaning its expected reduction of G for the resulting family, including epistemic value, minus its declared cost; with (b) the value of handing the current best family to selection now. Stop and hand over when (a) ≤ (b). Also stop when the declared budget for this target is spent (moves or time), or when a stopping observation arrives (no admitted move lowers G; every remaining move needs a human input, which is then routed; the target's want is already observed). A check candidate for an unknown fact counts as an action in the family, not as more construction, so unknowns are handed to selection to be found out rather than held in construction. The construction receipt records moves taken, the family and its coverage, the stop reason and the budget used.
+@violation-signature construction that runs until its budget with no family handed over; a move admitted with no estimate of what it reveals; "stopped" reported as "target succeeded"; an unknown fact kept in construction instead of becoming a check candidate; a budget raised silently to continue.
+! conclusion: Construction stops and hands its best family to selection when acting is worth at least as much as the best further move, or at a declared budget or stopping observation, and the receipt records why it stopped.
+
+  + context: A construction policy builds candidate cascades for a target before selection and enactment.
+
+  + IF:
+    Another construction move is available.
+
+  + HOWEVER:
+    Moves are always available, their value is uncertain, and acting on an imperfect family also teaches.
+
+  + THEN:
+    Compare the best move's expected value (pragmatic plus epistemic, minus cost) with acting now; stop at that point or at the declared budget or stopping observation; record the reason.
+
+  + BECAUSE:
+    A policy for building policies has to end in a policy that runs, or it has not done its job.
+
+  + evidence: on 2026-09-16 the inbox-zero construction stopped after one real case (the 21:01 gate run) because the case already separated enabled from blocked steps and named three defects; a second case could not change the grain or the guards. The test-registry counterfactual (2 of 64 deftests saved) stopped construction of the reviewer-lane cascade and redirected the build, instead of refining it further.

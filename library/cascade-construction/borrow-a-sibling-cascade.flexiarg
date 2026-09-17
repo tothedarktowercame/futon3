@@ -1,0 +1,29 @@
+@flexiarg cascade-construction/borrow-a-sibling-cascade
+@title Use An Analogous Cascade's Rows As A Checklist, And Record The Rows That Don't Fit
+@keywords analogy, template, sibling, generation, row-fit, gap
+@audience agents constructing cascades
+@tone technical
+@style pattern
+@status draft 2026-09-17 (claude-7; buffer cleaner → inbox zero → test registry on 2026-09-16)
+@references [cascade-construction/mine-patterns-from-incidents cascade-construction/lift-when-three-align hygiene/README]
+@see-also cascades/edges-earn-permanence
+@why a new cascade for an analogous problem needs roughly the same kinds of step as an existing one. Checking each row of the sibling against the new setting finds missing steps quickly; a row that does not fit is a finding, either about the new setting or about the sibling.
+@how pick the closest existing cascade (same kind of upkeep, same kind of crossing); list its patterns as rows (observe, classify, exempt, propose/act, route, settle); for each row write the new setting's counterpart or record why there is none; treat a reversed or empty row as something to explain, not to fill with an invented pattern.
+@violation-signature a new cascade that copies a sibling's patterns with renamed nouns; an empty row filled to make the table complete; a sibling row that fits badly and is used anyway.
+! conclusion: Construct against a sibling cascade's rows, writing the new counterpart for each and recording rows that are empty or reversed as findings.
+
+  + context: The library has cascades for analogous problems.
+
+  + IF:
+    A new problem resembles one an existing cascade addresses.
+
+  + HOWEVER:
+    Analogies suggest steps the new setting does not need and hide steps it does.
+
+  + THEN:
+    Walk the sibling's rows one by one and record fit, counterpart or gap.
+
+  + BECAUSE:
+    Gaps between siblings are exactly where the settings differ, which is what the new cascade has to handle.
+
+  + evidence: the buffer cleaner has no routing pattern because its execution is refused until a gated consumer exists; in the test registry the exemption runs the other way (mandatory lanes are exempt from the saving, not from an action); inbox zero needed a second classification pattern (generated-by-role) that the buffer cleaner had no equivalent for.

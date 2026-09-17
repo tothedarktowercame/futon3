@@ -1,0 +1,29 @@
+@flexiarg cascade-construction/lift-when-three-align
+@title Write A Shared Pattern Only When Three Written Cascades Align, And Keep The Gaps
+@keywords abstraction, shared-layer, three-citations, gaps, @why, @how
+@audience library authors
+@tone technical
+@style pattern
+@status draft 2026-09-17 (claude-7; hygiene/ and translation/ on 2026-09-16)
+@references [cascade-construction/borrow-a-sibling-cascade hygiene/README translation/README]
+@see-also pattern-discipline/patterns-as-categorical-objects
+@why a shared pattern states one reason (@why) that several settings' mechanisms (@how) serve. Written from fewer than three settings it tends to restate one setting in general words; written without its gaps it becomes vague enough that it no longer tells a reader anything the instances don't.
+@how when three written cascades have rows that line up, write the shared pattern with a @why that holds in all three, a @how written as a checklist every instance must meet, one violation signature per instance, and the rows that do not line up recorded as gaps. Point each instance's @references up and the shared pattern's down. If one of the three exists only as a proposal, write that generation first.
+@violation-signature a shared pattern citing two instances and a hypothetical; a gap filled with an invented instance; instances that do not reference their shared pattern.
+! conclusion: Lift to a shared pattern from three written, aligned cascades, with a checklist @how, one incident per instance and recorded gaps.
+
+  + context: Several cascades in the library address analogous problems.
+
+  + IF:
+    Their rows appear to line up.
+
+  + HOWEVER:
+    Abstraction is tempting after two, and the third instance may be only a proposal.
+
+  + THEN:
+    Wait for three written instances, then lift with gaps kept.
+
+  + BECAUSE:
+    The shared pattern is useful to a reader only if its @why can be seen working in each concrete @how.
+
+  + evidence: hygiene/ was written after buffer-cleaner, inbox-zero and test-registry existed, with the buffer cleaner's empty routing row recorded (futon3 684aa73); translation/ waited until pattern-interpretation/ and contracts/ were written as generations rather than lifting over claude-4's unapproved proposal (futon3 c0d5b62).

@@ -1,0 +1,29 @@
+@flexiarg cascade-construction/mine-patterns-from-incidents
+@title One Pattern Per Requirement, Carrying The Incident That Forced It
+@keywords pattern-mining, incident, evidence, violation-signature, requirement
+@audience agents constructing cascades, library authors
+@tone technical
+@style pattern
+@status draft 2026-09-17 (claude-7; used for the eight inbox-zero and seven test-registry patterns on 2026-09-16)
+@references [cascade-construction/read-what-exists-first cascade-construction/borrow-a-sibling-cascade pattern-mining/probe-the-claimed-property-not-the-acceptance-proxy]
+@see-also apparatus/new-failure-class-is-a-design-defect
+@why a requirement written without the failure that produced it cannot be interpreted precisely: "measure against the remote" is ambiguous until you know futon-sync reported "=" from an unfetched ref. The incident fixes what the pattern's guard and effect must mean, and gives a reviewer something to check it against.
+@how for each requirement found by reading, write one pattern whose @why names the failure, whose @violation-signature restates the incident as a recognisable symptom, and whose evidence cites where it happened (date, file, commit, count). If a requirement has no incident, say so in @status; if an incident has no requirement, it is a candidate for a new pattern.
+@violation-signature a pattern whose evidence is a restatement of its conclusion; several requirements folded into one pattern because they share a keyword; an incident used twice to justify unrelated patterns.
+! conclusion: Each constructed pattern states one requirement and carries the incident that forced it as its @why, violation signature and evidence.
+
+  + context: The requirement sources contain both rules and the history behind them.
+
+  + IF:
+    Requirements are being turned into patterns.
+
+  + HOWEVER:
+    Rules read cleaner without their history, and history is long.
+
+  + THEN:
+    Keep one incident per pattern as its reason and its test.
+
+  + BECAUSE:
+    The incident is what later interpretation and review use to decide whether the guard means the right thing.
+
+  + evidence: inbox-zero patterns each carry an incident — lucy wedged at dirty=0 while 326 commits behind (measure-against-the-remote), 2,012 files from one missing ignore rule (ignore-by-kind), Street Sweeper's 2,551 patches with 0/60 applicable (escalate-by-who-can-act); test-registry/spot-check-at-the-declared-rate carries zai-8's 0.5 → 0.526 result.

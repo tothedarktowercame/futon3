@@ -1,0 +1,29 @@
+@flexiarg cascade-construction/read-what-exists-first
+@title Read The Requirement, The Implementation And The Live State Before Proposing Patterns
+@keywords construction, grounding, prior-work, live-state, implementation, I-4
+@audience agents constructing cascades for a problem, reviewers of constructed cascades
+@tone technical
+@style pattern
+@status draft 2026-09-17 (claude-7; distilled from constructing the inbox-zero and test-registry cascades on 2026-09-16)
+@references [cascade-construction/mine-patterns-from-incidents cascade-construction/run-it-on-a-real-case hygiene/observe-the-authority cascades/on-the-fly-cascade]
+@see-also apparatus/done-is-observed-running
+@why patterns proposed from a problem statement alone describe the problem as stated, not as it is. What the requirement says, what the implementation actually does, and what the running system currently shows usually differ, and the differences are where the cascade has work to do.
+@how before proposing any pattern, collect four things and keep their sources: (1) the requirement text and the decisions recorded against it; (2) the implementation, found by searching for it (callers, timers, services), not assumed; (3) the live state now (logs, journals, gate runs, evidence store); (4) earlier attempts and their findings. Note every place where two of these disagree.
+@violation-signature a cascade built from the README while the service has failed silently for weeks; a registry designed as if unused code were wired in; patterns that repeat a requirement the implementation already meets.
+! conclusion: Construction starts from the requirement, the implementation, the live state and prior attempts, with their disagreements written down.
+
+  + context: An agent is asked to design a cascade for a feature that is partly described, partly built and partly running.
+
+  + IF:
+    A cascade is to be constructed for a problem.
+
+  + HOWEVER:
+    Reading takes time, and a plausible cascade can be written from the problem statement in minutes.
+
+  + THEN:
+    Read the four sources first and record where they disagree.
+
+  + BECAUSE:
+    The disagreements decide which patterns the cascade needs; a cascade built without them restates the requirement.
+
+  + evidence: inbox zero — the README said escalate outliers; the futon-sync-check-clean journal showed six repos red at 21:01 and the escalation code (futon3 inbox-zero-lib) only runs from agent-chat turn-end promotion, so p4ng sat at 291 unpushed commits. Test registry — NOTE-test-registry rulings and a working CLI existed, but nothing outside its own tests called futon3c.test-registry and the evidence store showed no use after 2026-09-14.

@@ -52,6 +52,22 @@ porting code to futon3a/3b/3c, the existing code documents what worked
 and what failed — read it as design documentation, not as code to copy
 blindly. See futon3c's CLAUDE.md invariant I-5.
 
+## Test discipline: check a warrant before you run a suite
+
+Joe, 2026-09-17: with the test registry in place, **nobody should be running a
+full suite often**. A warrant is recorded evidence you can check without
+re-executing anything.
+
+```bash
+clojure -M -m futon3c.test-registry check <config.edn>   # no execution
+clojure -M:test -n futon3.some.specific-test             # if you must run
+```
+
+A check refuses with a typed reason (`:stale-sha`, `:environment-mismatch`,
+`:results-log-mismatch`) the moment code, tests, environment or load closure
+move. **A refusal is the signal to run. No refusal means a run tells you
+nothing you do not already hold.** The full contract is futon3c/CLAUDE.md I-6.
+
 ## The Three-Pillar Connection
 
 The futon stack is organized around three pillars (see

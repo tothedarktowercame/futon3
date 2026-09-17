@@ -13,6 +13,13 @@
 
 ---
 
+## Warrants before suites (adopted 2026-09-17)
+
+Check a recorded warrant rather than re-running; when you do run, run one
+namespace. `clojure -M -m futon3c.test-registry check <config.edn>` executes
+nothing and refuses with a typed reason when the evidence is stale — that
+refusal is your signal to run. See futon3c/CLAUDE.md I-6.
+
 ## Sigil validation with 印章 (chops)
 
 Before creating or modifying patterns, validate sigils against canonical sets using `futon3.chops`.

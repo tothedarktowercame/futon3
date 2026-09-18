@@ -210,10 +210,32 @@
                        {:from from :to token :kind (keyword kind)
                         :file (str (fs/relativize library file)) :line (inc i)})
                      [])))
-               (map-indexed vector lines))]
+               (map-indexed vector lines))
+        ;; Why a target dangles matters more than how many do. A mistyped id is
+        ;; one author's slip; a whole directive written as prose is a convention
+        ;; failure, and the two need opposite remedies. §5a declares @why, @how
+        ;; and @see-also to be pattern-id-lists, so a line holding anything else
+        ;; is classified :prose here and counted apart -- the edge parser keeps
+        ;; only path-shaped tokens, so prose contributes silently, either nothing
+        ;; at all or an accident like `before/after` and `runs/L8-....edn`.
+        link-lines (keep
+                    (fn [[i line]]
+                      (let [code (first (str/split line #";;" 2))]
+                        (when-let [[_ kind tail]
+                                   (re-matches #"\s*@(why-posthoc|why|how|see-also)\s+(.+?)\s*" code)]
+                          (let [tokens (remove str/blank?
+                                               (str/split (str/replace tail #"[\[\],]" " ") #"\s+"))]
+                            {:kind (keyword kind)
+                             :shape (if (and (seq tokens)
+                                             (every? #(re-matches target-pattern %) tokens))
+                                      :id-list
+                                      :prose)
+                             :file (str (fs/relativize library file)) :line (inc i)}))))
+                    (map-indexed vector lines))]
     (cond-> {:id from :file (str (fs/relativize library file))
              :body-line (when (< body-start (count lines)) (inc body-start))
-             :body-digest (sha256 body) :edges (vec edges)}
+             :body-digest (sha256 body) :edges (vec edges)
+             :link-lines (vec link-lines)}
       draft (assoc :draft draft))))
 
 (defn scan-library [library]
@@ -224,6 +246,7 @@
      ;; The three quarantine laws below all key on this set.
      :draft-ids (set (map :id (filter :draft patterns)))
      :edges (vec (mapcat :edges patterns))
+     :link-lines (vec (mapcat :link-lines patterns))
      :body-digests (into (sorted-map) (map (juxt :file :body-digest) patterns))}))
 
 (defn snapshot [scan]
@@ -817,6 +840,15 @@
                       :edges-by-kind kind-counts
                       :patterns-in-why-graph (count why-nodes)
                       :unresolved-targets (count dangling)
+                      ;; Reported, deliberately not a failure. Making ~1000 files
+                      ;; fail at once would light the permanently red lamp that
+                      ;; inbox-zero/gate-fails-loudly exists to warn against, and
+                      ;; the remedy is one editorial decision about the directive
+                      ;; names, not 1000 independent repairs.
+                      :link-directives-by-shape
+                      (reduce (fn [m {:keys [kind shape]}]
+                                (update-in m [kind shape] (fnil inc 0)))
+                              {} (:link-lines scan))
                       :edge-refusals (count (filter #(and (valid-attestation? %)
                                                           (= :refused (:state %))) att-rows))
                       :warrant-refusals (count (filter #(and (valid-attestation? %)

@@ -1,33 +1,32 @@
 @flexiarg inbox-zero/gate-fails-loudly
 @title Make The Check A Facility That Fails Loudly On Change
-@keywords facility, schedule, failure, delta, consumer, red-lamp, citation-resolution
+@keywords facility, trigger, failure, delta, consumer, red-lamp, citation-resolution
 @audience inbox-zero gate operators, monitor designers
 @tone technical
 @style pattern
-@status draft 2026-09-16 (claude-7; from futon0/README-inbox-zero.md checkpoints 2026-08-31 and 2026-09-12; implementation: futon-sync-check-clean.timer hourly, futon0 scripts/inbox-zero-delta.bb via OnSuccess/OnFailure, data/inbox-zero-delta.log)
-@references [inbox-zero/measure-against-the-remote inbox-zero/escalate-by-who-can-act hygiene/settle-with-meters]
-@see-also buffer-cleaner/yield-settled
-@why a sweep is an event, not a facility: nothing notices when it stops, and three days after a nineteen-item sweep futon2 had fifteen dirty paths and nobody was told (2026-08-31). The scheduled gate then became the inverse failure: 248 consecutive hourly failures into journald with OnFailure empty — a permanently red lamp nobody watched (2026-09-12). A monitor that is always red carries no more information than one that never runs.
-@how run the check on a schedule without anyone choosing to; wire a consumer that reports only changes (new failure, recovery, changed signature) so steady-state red is silent and a change is visible; route changes per inbox-zero/escalate-by-who-can-act rather than to a log alone; and extend the check to citations — every `path:line` in a committed record must resolve to a committed file.
+@status draft 2026-09-16 (claude-7; from futon0/README-inbox-zero.md checkpoints 2026-08-31 and 2026-09-12; restructured 2026-09-18, see the note under NEXT-STEPS)
+@why hygiene/settle-with-meters
+@see-also inbox-zero/measure-against-the-remote inbox-zero/escalate-by-who-can-act buffer-cleaner/yield-settled
 @violation-signature a gate with no consumer; a consumer that repeats steady red until it is ignored; a change logged but routed to no one; a clean gate while committed records cite untracked files.
 ! conclusion: The cleanliness check runs itself, reports changes rather than states, routes each change to someone who can act, and checks citations as well as trees.
 
-  + context: The gate has run hourly since 2026-09-01 across eighteen repos on this box.
+  + context: The gate runs unattended over every repository in the fleet.
 
   + IF:
     Inbox zero is meant to hold, not merely be reached once.
 
   + HOWEVER:
-    Unscheduled sweeps stop silently; scheduled checks that are always red are ignored; and a change written to a log is still a queue that waits.
+    A sweep somebody has to start stops silently; a self-triggering check that is always red is ignored; and a change written to a log is still a queue that waits.
 
   + THEN:
-    Schedule the check, consume its changes, route them to a tier that can act, and add citation resolution.
+    Give the check a trigger the system supplies, so no person has to choose to run it. A clock and a threshold the watched quantity crosses are both admissible; which one a generation uses is a property of that generation, not of this pattern. Consume the check's output as changes rather than states — new failure, recovery, changed signature — so that steady-state red is silent and a change is visible. Route each change to a party who can act on it rather than to a log alone. Resolve citations as well as trees: every `path:line` in a committed record must name a committed file.
 
   + BECAUSE:
-    A clean tree and an unswept tree look identical from inside, and a check that never fails loudly reports nothing rather than failure.
+    A clean tree and an unswept tree look identical from inside, so a check nobody starts reports nothing rather than failure; and a monitor that is always red carries no more information than one that never runs.
 
-  + evidence: 2026-08-31 checkpoint; 2026-09-12 repair (inbox-zero-delta.bb, 74 dead worktrees removed); data/inbox-zero-delta.log records 16 changes to 2026-09-16 14:02; the 21:01 run on 2026-09-16 failed with six repos red (futon2, futon3, futon3c, apm-lean, p4ng, voxterm) and thirteen passing.
+  + evidence: A sweep is an event, not a facility: three days after a nineteen-item sweep, one repository had fifteen dirty paths and nobody was told (2026-08-31). The self-triggering gate then produced the inverse failure — 248 consecutive failures into a log with no consumer attached, a permanently red lamp nobody watched (2026-09-12), repaired by adding a change-only consumer and removing 74 dead worktrees. The change log recorded 16 changes to 2026-09-16 14:02; the 2026-09-16 21:01 run failed with six repositories red and thirteen passing. On 2026-09-18 the trigger was replaced wholesale — the clock retired, a threshold on accumulated dirt put in its place — and every clause above survived the swap unchanged except the ones that had named the clock.
 
   + NEXT-STEPS:
-    - Citation resolution on a schedule (still not built, per the 2026-09-12 checkpoint).
-    - Route delta changes to tier 1 instead of notify-send and a log.
+    - Citation resolution still not built, per the 2026-09-12 checkpoint.
+    - Route changes to tier 1 rather than to a desktop notification and a log.
+    - 2026-09-18, why this pattern was restructured. It carried prose in `@why` and `@how`, and an id-list in `@references`. README-flexiarg §5a declares `@why` and `@how` to be pattern-id-lists: `@why` names the authority a pattern rests on, `@how` names methods that carry it out, and `@how` is curatorial — written by an editor later, only where a method is worth naming, never required. Terminal behaviour belongs in `+ THEN:`, which is required. This file now carries `@why hygiene/settle-with-meters`, no `@how` (no refining pattern exists to point at yet), peers under `@see-also`, and the prose that had been in the directives moved into `+ THEN:`, `+ BECAUSE:` and `+ evidence:`. The same restructuring is owed by most of the library — see the note in flexiarg-directives.edn.

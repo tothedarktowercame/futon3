@@ -26,4 +26,4 @@
   + BECAUSE:
     Evidence is a claim addressed to a future process; storage the future process cannot reach makes it self-addressed.
 
-  + evidence: 2026-09-19 conformance run: five subjects :no-warrant because their chains were minted against the atom-backed store of exited JVMs (EV-uniform-run-record among them; re-mint through the fixed CLI queued); futon3c 224da745.
+  + evidence: 2026-09-19 conformance run: five subjects :no-warrant because their chains were minted against the atom-backed store of exited JVMs (EV-uniform-run-record among them); futon3c 224da745 (fix) and 91b0424c (receipts). The lost chains were re-minted as NEW executions against current committed code (6c81db28→afad45cf…, c91be0ba→8e466ec7…), never reconstructed — a lost chain's historical execution is unrecoverable, and pretending otherwise would be the backfill fill-forward-not-sweep forbids. Post-fix fresh-JVM report: zero :no-warrant rows among bound subjects; a fabricated id still reports :no-warrant.

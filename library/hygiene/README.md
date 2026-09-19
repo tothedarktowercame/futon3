@@ -7,7 +7,9 @@ always, safe to act on:
 - **inbox zero** (`inbox-zero/`) — keeps repositories committed, pushed and in
   step across boxes;
 - **test registry** (`test-registry/`) — lets a reviewer verify an author's
-  registered test run instead of rerunning it (being built, 2026-09-16).
+  registered test run instead of rerunning it (running since 2026-09-19:
+  end-to-end mint-and-bind CLI, subject index, revalidation queue; see
+  `test-registry/README.md`).
 
 The patterns in this directory state what the three share. Where a unit must stay equivalent after crossing a boundary rather than be cleared, see `translation/`. Each one's `@why` is
 the reason that holds in all three settings; its `@how` is a checklist every
@@ -59,7 +61,13 @@ pattern rather than smoothed over:
 Drafts, 2026-09-16 (claude-7). `exempt-the-in-use` and `receipt-then-gate` were
 promoted from `buffer-cleaner/`, where they had named themselves shared and asked
 to move on the third generation's citation; the `buffer-cleaner/` files keep the
-buffer-cleaner instance. The test-registry column rests partly on a feature
-still being built; its evidence is from the 2026-09-14 round trip and a
-2026-09-16 worked instance
-(`futon2/holes/labs/wm-contract/WORKED-INSTANCES-pattern-interpretation-2026-09-16.md`).
+buffer-cleaner instance. The test-registry column originally rested on a feature
+still being built (2026-09-14 round trip; 2026-09-16 worked instance,
+`futon2/holes/labs/wm-contract/WORKED-INSTANCES-pattern-interpretation-2026-09-16.md`);
+since 2026-09-19 the service runs (Joe's rulings of that day: registry not
+scanner, warrants only for needed behaviour, verification registered not
+rerun) and `test-registry/` gained four patterns with no hygiene row yet —
+`fill-forward-not-sweep` in particular is a candidate shared pattern: the
+buffer cleaner and inbox zero are sweepers by design, the registry is
+constitutionally not one, and stating which policies may sweep and why is
+exactly a hygiene-level question.

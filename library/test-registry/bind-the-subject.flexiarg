@@ -1,0 +1,29 @@
+@flexiarg test-registry/bind-the-subject
+@title Bind Subjects To Warrants; Close Incidents Only With Fresher Ones
+@keywords subject-index, binding, revalidation, incident, conformance, evidence-not-gate, freshness
+@audience validation-service operators, reviewers consuming conformance readouts
+@tone technical
+@style pattern
+@status draft 2026-09-19 (claude-12; implementation futon3c.test-registry.validation, commits 5a4f1a7e, d41f03eb, 224da745; four subject bindings live on the day of writing)
+@references [test-registry/warrant-only-the-wires test-registry/rerun-when-the-warrant-fails test-registry/outlive-the-process hygiene/route-to-who-can-act apparatus/evidence-to-disposition-once]
+@see-also inbox-zero/escalate-by-who-can-act
+@why a warrant alone answers "did this run happen against these bytes"; the question the machine's operators ask is "is wire X currently warranted". That needs a durable subject→warrant index, and it needs a discipline for what an observed failure does to a binding — otherwise incidents either silently kill warrants (a gate) or silently don't matter (a fiction).
+@how an append-only subject index maps each wire-subject to its current warrant (rebinding appends; history is kept). An observed failure of warranted behaviour is enqueued as an incident against the subject — at observation time, by the observer, never by a sweep. The incident does not revoke anything: conformance readout reports the subject :revalidation-open, alongside :current, :stale (pinned shas drifted, drift paths named), :unverifiable and :no-warrant. Closing the incident requires a warrant that is (a) the subject's currently bound one and (b) minted strictly after the incident — a rerun from before the observation cannot answer it, and an unbound fresh run hasn't been accepted. All of this is readout, never a gate: nothing in the service halts a machine run (burden of proof sits on any guard, per standing ruling).
+@violation-signature an incident that flips a verdict with no fresh run; a close accepted with the old warrant or an unbound one; a conformance readout wired as a precondition of execution; rebinding that rewrites rather than appends.
+! conclusion: Subjects bind to warrants in an append-only index; incidents open revalidation that only a currently-bound warrant minted after the incident can close; the whole readout is evidence, never a gate.
+
+  + context: Warrants exist per run; operators need per-wire currency, and failures of warranted behaviour do get observed.
+
+  + IF:
+    Someone observes warranted behaviour failing, or asks whether a wire is currently warranted.
+
+  + HOWEVER:
+    Without a freshness rule, the cheapest close is to re-cite the warrant that just failed; without the evidence-not-gate rule, the readout drifts into a veto that halts tuning runs.
+
+  + THEN:
+    Enqueue the incident, keep the binding, report :revalidation-open, and accept only a fresher currently-bound warrant as closure.
+
+  + BECAUSE:
+    The binding records acceptance and the incident records observation; only a new run, registered and accepted, carries information that postdates both.
+
+  + evidence: futon3c data/test-registry-validation/subjects.ednlog (four bindings by 2026-09-19, e.g. WM-01-numerical-operations, EV-uniform-run-record); close-revalidation! refuses :fresh-warrant-not-bound and :warrant-not-fresh with the compared instants in the details.

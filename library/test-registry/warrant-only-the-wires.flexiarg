@@ -1,0 +1,29 @@
+@flexiarg test-registry/warrant-only-the-wires
+@title Warrant Only The Wires The Machine Runs On
+@keywords wires, needed-behaviour, subjects, wire-types, wire-instances, scope-discipline, excess-bookkeeping
+@audience subject-taxonomy authors, warrant commissioners
+@tone technical
+@style pattern
+@status draft 2026-09-19 (claude-12; Joe's ruling same day: "The warrants that the registry will produce will certify only needed behaviour, required for running the machine"; wire register futon2 15641d7d)
+@references [test-registry/bind-the-subject test-registry/register-the-run apparatus/one-authority-per-question hygiene/observe-the-authority]
+@see-also apparatus/repairs-name-defects-not-neighborhoods
+@why a registry that accepts any test as a subject grows into the thing it was built against: a heavy suite whose upkeep is its own workload. A tremendous amount of WM code was written that has no place in the machine — excess bookkeeping (T-wm-excessive-guardrails-19092026 is one example among several) — and warranting it would fund it. What is "needed" is not a judgement call made subject-by-subject; it is read off the actual wiring: the producer→consumer seams the machine runs on.
+@how subjects come from a reviewable wire register, not from whatever tests exist. A wire is either an instance (one producer→consumer seam, e.g. [:find :candidate-set], [:live-c :preference-spec]) or a type (a duty holding across every wire of a class: retention, recording, identity, independence). The register joins the theory-side edge classification (drawn+equation-justified, theory-demanded-but-unrealised, plumbing, unexplained) with the requirement list and the live subject bindings, so "what is tested and warranted" is one query, and so is its complement, the unwarranted gap list. A proposed subject that names no wire is challenged before it is bound. Field contracts between endpoints (the producer writes :g-terms where the consumer reads it) are wires too: one contract artifact, its sha pinned by both endpoint warrants.
+@violation-signature a warrant for behaviour no wire carries; a subject whose name is a namespace rather than a seam; the gap list maintained by hand instead of queried; two endpoint warrants green while the field they disagree about drifts between them.
+! conclusion: Every registry subject names a wire (instance or type) from the queriable register; behaviour on no wire gets no warrant.
+
+  + context: The registry accepts subject bindings and the codebase holds far more tests than the machine has wires.
+
+  + IF:
+    Someone proposes a subject for warranting.
+
+  + HOWEVER:
+    Tests are easy to write and green tests feel like progress, so the subject list grows by accretion unless admission asks what wire the behaviour rides.
+
+  + THEN:
+    Admit subjects only from the wire register; keep the register a live join of theory edges, requirements and bindings, so both the warranted list and the gap list are queries.
+
+  + BECAUSE:
+    The registry's economy (no rerun while code is unchanged) only pays if the warranted set is the needed set; warranting the unneeded funds its persistence.
+
+  + evidence: futon2 15641d7d (wire-requirements.edn: 27 ARGUE'd requirements classified as 8 wire-types + instances; wire_register.bb joining them with aif-conformance.edn: 42 edge wires {conformant 15, missing 13, plumbing 8, unexplained 6}, 2 of 27 requirement wires warranted on the day of writing); the 2026-09-19 field-drift specimen (producer wrote :g-term-decomposition at top level, consumer read :g-terms under :decision — both sides individually plausible, the seam untested).

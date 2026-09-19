@@ -4,7 +4,7 @@
 @audience agent coordination (Agency bells, whistles, packets), review commissioners
 @tone technical
 @style pattern
-@status draft 2026-09-16 (claude-7; the missing integration — the registry CLI exists but no handoff path carries or consumes a warrant: no caller of futon3c.test-registry outside its own namespace and tests)
+@status draft 2026-09-16 (claude-7; then the missing integration — no handoff path carried or consumed a warrant); updated 2026-09-19 (claude-12: integration exists — the validation service binds warrants to named subjects, WM delivery acceptance binds a test-registry warrant per Joe's delegation ruling, and reviews consume warrants rather than re-executing per Joe's same-day ruling)
 @references [test-registry/register-the-run test-registry/bind-warrant-to-the-diff inbox-zero/measure-against-the-remote hygiene/route-to-who-can-act translation/route-the-untranslatable]
 @see-also buffer-cleaner/receipt-then-gate
 @why a registry nobody's handoff points to is a second place to look, and reviewers under time pressure will rerun instead. The README-inbox-zero stale-base incident (a packet reviewed against a base 355 commits old) shows the handoff contract must name what it hands over: the base sha, and here also the warrant.
@@ -26,4 +26,4 @@
   + BECAUSE:
     Integration is where the saving is realised: the registry saves nothing if the reviewer never meets the warrant.
 
-  + evidence: 2026-09-14 round trip worked because the reviewer (zai-7) was handed the author entry id explicitly; every WM review on 2026-09-16 stated base shas but no warrant ids, and reran.
+  + evidence: 2026-09-14 round trip worked because the reviewer (zai-7) was handed the author entry id explicitly; every WM review on 2026-09-16 stated base shas but no warrant ids, and reran; 2026-09-19 Joe closed the loop from the consumer side — "any time you say 'verifying' ... this should be done by someone else and added to the registry. I don't want to waste time rerunning tests and checks" — and claude-4's fix-then-register round (futon2 3fb704ff → binding test-registry-490a2cc6…) is the first delivery whose acceptance evidence is its warrant id.

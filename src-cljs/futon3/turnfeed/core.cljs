@@ -13,6 +13,25 @@
            :lit nil          ; the note id a cue is pointing at
            :filter ""}))
 
+;; kimi-2's alignment of the intent vocabulary onto ChipWits IBOL chips
+;; (2026-09-23). The chips are 1-bit black on transparent and sit on the
+;; #fffff8 page without a plate behind them. An intent with no chip simply
+;; shows its name -- a missing icon is not worth a wrong one.
+(def intent-chip
+  {"ask-action" "op-go"           "explain"     "op-sing"
+   "report"     "op-sing"         "clarify"     "op-look-for"
+   "propose"    "op-subpanel"     "constrain"   "arg-wall"
+   "unresolved" "op-flip-coin"    "qualify"     "op-num-equal"
+   "report-problem" "arg-bomb"    "approve"     "op-plus"
+   "disagree"   "op-minus"        "extend"      "op-wire"
+   "prioritize" "arg-num-stack"   "defer"       "op-keypress"
+   "continue"   "arg-forward"     "delegate"    "op-boomerang"
+   "redirect"   "arg-turn-right"  "collect"     "op-pickup"})
+
+(defn chip [intent]
+  (when-let [c (intent-chip intent)]
+    [:img.chip {:src (str "chips/" c ".png") :alt "" :title (str intent " · " c)}]))
+
 (def feed-url "feed-claude-1.json")
 (def poll-ms 10000)
 
@@ -41,7 +60,7 @@
 (defn note-card [{:keys [id intent target rationale relations patterns]} lit]
   [:p {:class (str "note" (when (= id lit) " lit")) :id id
        :on-click #(swap! state assoc :lit id)}
-   [:span.intent intent] " "
+   [chip intent] [:span.intent intent] " "
    (when (seq target) [:span.target target])
    (when (seq rationale) [:<> [:br] rationale])
    (when (seq relations) [:<> [:br] [:span.rel (str/join " · " relations)]])
@@ -83,8 +102,21 @@
                           :on-click (when n
                                       #(swap! state update :lit
                                               (fn [c] (when (not= c n) n))))}
-                   t])]]
-         [:p.note.unresolved "No cascade."])]]]))
+                   (if (= k "intent") [:<> [chip t] t] t)])]]
+         [:p.note.unresolved "No cascade."])
+       ;; Proposed flexiargs for the holes above. They are candidates, not
+       ;; library entries: shown here so a name can be read and argued with
+       ;; before anyone admits it.
+       (for [c (:candidates turn)]
+         ^{:key (:id c)}
+         [:div.candidate
+          [:p.cand-id "? " (:id c) " — " (:title c)]
+          [:dl
+           (for [[label k] [["context" :context] ["IF" :if] ["HOWEVER" :however]
+                            ["THEN" :then] ["BECAUSE" :because]
+                            ["tried first" :tried]]
+                 :let [v (get c k)] :when (seq v)]
+             ^{:key label} [:<> [:dt label] [:dd v]])]])]]]))
 
 (defn matches? [needle turn]
   (or (str/blank? needle)
@@ -109,7 +141,10 @@
      [:input.filter {:placeholder "filter by text…"
                      :value filter
                      :on-change #(swap! state assoc :filter (-> % .-target .-value))}]
-     (for [t shown] ^{:key (:name t)} [turn-block t lit])]))
+     (for [t shown] ^{:key (:name t)} [turn-block t lit])
+     [:footer
+      "Chip art by Doug Sharp, ChipWits 1984–86, CC BY-SA 4.0. "
+      "Intent alignment proposed by kimi-2, 2026-09-23."]]))
 
 (defonce root (delay (rdom-client/create-root (js/document.getElementById "app"))))
 

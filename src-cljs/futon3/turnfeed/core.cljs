@@ -53,13 +53,18 @@
 
 (defn run-span
   "One slice of the turn's text. A run with :n resolves to a note and is
-  underlined; the rest is the surplus it sits in and stays unmarked."
-  [{:keys [t n]} lit]
+  underlined; the rest is the surplus it sits in and stays unmarked. A run
+  with :q is a block Joe quoted with >>> -- shown, never interpreted, and set
+  in a fixed-width face because what he pastes is usually code."
+  [{:keys [t n q]} lit]
+  (cond
+    q [:pre.quoted t]
+    :else
   (if n
     [:span {:class (str "cue" (when (= n lit) " lit"))
             :on-click #(swap! state update :lit (fn [c] (when (not= c n) n)))}
      t]
-    [:span t]))
+    [:span t])))
 
 (defn note-card [{:keys [id intent target rationale relations patterns]} lit]
   [:p {:class (str "note" (when (= id lit) " lit")) :id id

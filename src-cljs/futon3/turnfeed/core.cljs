@@ -67,9 +67,23 @@
       ;; it, otherwise the annotation restated as an s-expression -- labelled
       ;; as derived, because nobody wrote it and it must not be read as a
       ;; translation.
+      ;; Third column: the cascade, token by token. Each token carries what it
+      ;; IS -- a resolving pattern id, a hole, an intent, plain markup -- so
+      ;; the colour answers the question at a glance: which parts of this turn
+      ;; actually reached the library? Tokens derived from a fragment carry its
+      ;; note id and light with it, so clicking a cue in the prose shows the
+      ;; sub-expression it produced.
       [:div.sexp
-       (if sexp
-         [:<> [:p.sexp-by (str "cascade · " by)] [:pre sexp]]
+       (if (seq sexp)
+         [:<>
+          [:p.sexp-by (str "cascade · " by)]
+          [:pre (for [[i {:keys [t k n]}] (map-indexed vector sexp)]
+                  ^{:key i}
+                  [:span {:class (str "tk-" k (when (and n (= n lit)) " lit"))
+                          :on-click (when n
+                                      #(swap! state update :lit
+                                              (fn [c] (when (not= c n) n))))}
+                   t])]]
          [:p.note.unresolved "No cascade."])]]]))
 
 (defn matches? [needle turn]
@@ -87,6 +101,11 @@
       (if error (str "feed error: " error)
           (str "refreshed " (some-> fetched-at (.toLocaleTimeString))))
       " · polling every " (quot poll-ms 1000) "s"]
+     [:p.legend
+      [:span {:class "tk-pattern"} "pattern (resolves)"]
+      [:span {:class "tk-dangling"} "id with no file"]
+      [:span {:class "tk-hole"} "HOLE"]
+      [:span {:class "tk-intent"} "intent only — markup, no pattern"]]
      [:input.filter {:placeholder "filter by text…"
                      :value filter
                      :on-change #(swap! state assoc :filter (-> % .-target .-value))}]

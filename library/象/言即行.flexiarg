@@ -1,6 +1,6 @@
 @flexiarg 象/言即行
 @title 言即行：把言语行为写成一等公民
-@keywords 言语行为, 施为, 象2000, 控制语言, 铃, 设计模式
+@keywords 言语行为, 施为, 力, 力度, 象2000, 控制语言, 铃, 设计模式
 @audience 操作者, 代理, 调度层的作者
 @tone 分析
 @style pattern
@@ -19,11 +19,16 @@
     现有的两层互不相连。futon3c 的定型铃已经带有施为类型——query、answer、assert、challenge、agree、define、retract、suggest、request——但正文是散文；级联带有模式地址，却没有类型。于是接收者必须从散文里猜出这是命令还是建议，而猜测正是错误进入的地方。
 
   + THEN:
-    把类型放在信封上，把级联放在正文里：`(bell :type request :cascade (...))`。答复必须带 `ref` 指回它所答的问题。接收者若无法据此行动，就按 translation/route-the-untranslatable 带类型退回，而不是猜。
+    把类型放在信封上，把级联放在正文里：`(bell :type request :force 强 :cascade (...))`。答复必须带 `ref` 指回它所答的问题。接收者若无法据此行动，就按 translation/route-the-untranslatable 带类型退回，而不是猜。
+    类型之外还要记力：同一种言语行为有轻重之分，而轻重决定接收者欠下多少。取三档——`轻`（试探：「大概」「或许」「我们可以」）、`平`（未加修饰的默认）、`强`（加重：「务必」「我告诉你」、重复、责备）。力必须由话中的词承担：声明 `:force` 就要一并给出承载它的 `:force-span`，即原文中的确切偏移。力不是译者对语气的印象，而是可被指认、可被反驳的一段字。
 
   + BECAUSE:
     言语行为的类型决定了接收者欠下什么：请求欠一个行动，断言欠一次核验，收回解除先前的承诺。类型若只存在于语气里，欠债就无法被记录，也就无法被追讨。
 
     + evidence: futon3c/CLAUDE.md §Typed Bell Contract 已实现九种施为类型与 `ref` 线索，但正文仍为自然语言。
     + evidence: 2026-09-23，claude-1 误以 brief 模式派出委托：接收者收到文字、未执行任何工作，而作业状态仍报 done。信封上的类型与正文中的意图不一致，记录便说了谎。
+    + evidence: 2026-09-23，claude-1、zai-2、kimi-2 三方各自翻译同一回合，互不参看。十八个模式 id 中仅两个为三方共引；而三方各自独立报告了同一处缺口——九种类型之下没有轻重，于是「我们可以」与「务必」记成同一件事。三个对齐的实例，满足 cascade-construction/lift-when-three-align 的准入。
+    + evidence: 同日 turn-v2qr9R，操作者以两句演示这一维度：「No, look, you're wrong.」与「See, I'm telling you, you're wrong.」——类型未变，力变了。按改前的写法，二者记录相同。
+    + evidence: 「力」一词在本库中另有旧义（Alexander 的诸力，见各模式的 + HOWEVER）。操作者 2026-09-23 裁定：本项目只用言语行为一义，旧义留待论文另述。一名两义是 @why 失守的成因，故此处明记。
     + COUNTERFACTUAL: 若带类型的级联与散文派工在澄清回铃率上没有差别，则类型未起作用，本模式应予撤回。
+    + COUNTERFACTUAL: 若三档力在译者之间的一致率，与不记力时无异，则力只是译者的印象，未能由词承担，本条应予撤回。

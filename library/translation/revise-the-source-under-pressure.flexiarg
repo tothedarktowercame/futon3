@@ -1,0 +1,31 @@
+@flexiarg translation/revise-the-source-under-pressure
+@title Let The Target Push Back: Revise The Source Model Under Pressure
+@keywords translation, pressure, feedback, proof-plan, transcoder, causal-model, distillation
+@audience translating agents, proof engineers, anyone porting one representation into another
+@tone analytical
+@style pattern
+@status draft 2026-09-23 (claude-1; lifted from three aligned instances, not yet reviewed)
+@why [translation/choose-the-equivalence-check translation/declare-what-is-lost math-strategy/plan-first-attempt]
+@see-also [cascade-construction/lift-when-three-align 象/翻译契约 translation/test-by-reproducing-behaviour]
+@provenance Lifted 2026-09-23 from three instances aligned in the same session: operator turns into pattern cascades (claude-1, zai-2), informal proofs into Lean (Joe and Rob's pattern-first proving), and a C++ to Python transcoder carrying a causal model the translating agent updates as it goes (Rob). Joe named the mechanism: "update the informal treatment if the Lean version shows pressure".
+
+! conclusion: A translator keeps a model of what it is translating, grades the difficulty the target pushes back, and revises that model when the difficulty is structural rather than local.
+
+  + context: One representation is being carried into another by an agent that works through the source incrementally — prose into a formal language, a proof into a proof assistant, a program into another language.
+
+  + IF:
+    The target resists: the next step needs a case the source never made, or an obligation the source assumed away, or it goes through only at great length and expense.
+
+  + HOWEVER:
+    Resistance is easy to absorb silently. The translator patches locally, the translation completes, and the defect stays in the source where the next translator will meet it again. Treating resistance as binary hides this: outright contradiction is rare, while the ordinary signal is digression and cost, which reads as the translator merely having a hard day.
+
+  + THEN:
+    Grade the pressure rather than testing it. Contradiction at the extreme; long detours, repeated case splits and computational expense in the ordinary case. Above a declared threshold, stop and revise the model of the source instead of pressing on, and record what the pressure was and what the revision changed. Name which artifact the revision lands in — the source itself, a plan standing beside it, or an auxiliary model the translator maintains — because that choice is not the same in every instance.
+
+  + BECAUSE:
+    The target is the only honest reader the source has. A proof assistant, a compiler or an executing agent cannot be persuaded by fluency, so where it struggles is evidence about the source's structure and not only about the translator's skill. Discarding that evidence throws away the one measurement the translation produces for free.
+
+    + evidence: Pattern-first proving (Joe and Rob, 2026-09-23): current APM practice proves a problem informally, sets that aside, and proves it in Lean from scratch, so the informal treatment never learns what the formal attempt discovered.
+    + evidence: `math-strategy/plan-first-attempt` already carries the loop for one instance — state lemma-sized steps, prove in that order, "update the written plan whenever compilation or mathematics" forces it, and preserve the revisions rather than defending a failed step.
+    + evidence: Rob's C++ to Python transcoder maintains a causal model that the translating agent updates as it goes. Here the revision lands in an auxiliary model rather than in the source, which is the recorded gap: the artifact revised varies across instances even though the mechanism does not.
+    + COUNTERFACTUAL: if translations that record graded pressure and revise the source produce no fewer repeat defects than translations that patch locally and finish, the grading is ceremony and this pattern should be withdrawn.

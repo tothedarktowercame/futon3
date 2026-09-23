@@ -106,21 +106,27 @@
                           :on-click (when n
                                       #(swap! state update :lit
                                               (fn [c] (when (not= c n) n))))}
-                   (if (= k "intent") [:<> [chip t] t] t)])]]
+                   ;; No chips here: the cascade column is code, and an icon
+                   ;; inside it breaks the alignment that makes an s-expression
+                   ;; readable. The chips live in the notes.
+                   t])]]
          [:p.note.unresolved "No cascade."])
        ;; Proposed flexiargs for the holes above. They are candidates, not
        ;; library entries: shown here so a name can be read and argued with
        ;; before anyone admits it.
-       (for [c (:candidates turn)]
-         ^{:key (:id c)}
-         [:div.candidate
-          [:p.cand-id "? " (:id c) " — " (:title c)]
-          [:dl
-           (for [[label k] [["context" :context] ["IF" :if] ["HOWEVER" :however]
-                            ["THEN" :then] ["BECAUSE" :because]
-                            ["tried first" :tried]]
-                 :let [v (get c k)] :when (seq v)]
-             ^{:key label} [:<> [:dt label] [:dd v]])]])]]]))
+       (when (seq (:candidates turn))
+         [:div.candidates
+          [:p.cand-head "proposed"]
+          (for [c (:candidates turn)]
+            ^{:key (:id c)}
+            ;; A lineage, not a printed pattern: where the proposal hangs is
+            ;; what a reader needs at a glance, and the body stays in the file.
+            [:p.lineage {:title (:why c)}
+             (if-let [p (:parent c)]
+               [:<> [:span.known p] [:span.descends " ﹥ "]]
+               [:span.toplevel "root ﹥ "])
+             [:span.suggested (:id c)]
+             [:span.cand-title " — " (:title c)]])])]]]))
 
 (defn matches? [needle turn]
   (or (str/blank? needle)

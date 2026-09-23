@@ -49,19 +49,28 @@
      ^{:key (:id p)}
      [:<> [:br] [:span.pat (:id p)] " " (:why p)])])
 
-(defn turn-block [{:keys [name at agent surface labeller runs notes]} lit]
-  [:section.turn-block
-   [:p.meta
-    [:a {:href (str name ".html")} name] " · " at
-    (when (seq agent) (str " · " agent))
-    " · " surface " · "
-    (if labeller (str "interpreted by " labeller) "not yet interpreted")]
-   [:div.turn
-    [:div.prose (for [[i run] (map-indexed vector runs)]
-                  ^{:key i} [run-span run lit])]
-    [:div.notes (if (seq notes)
-                  (for [n notes] ^{:key (:id n)} [note-card n lit])
-                  [:p.note.unresolved "Not yet interpreted."])]]])
+(defn turn-block [{:keys [name at agent surface labeller runs notes sexp] :as turn} lit]
+  (let [by (get turn (keyword "sexp-by"))]
+    [:section.turn-block
+     [:p.meta
+      [:a {:href (str name ".html")} name] " · " at
+      (when (seq agent) (str " · " agent))
+      " · " surface " · "
+      (if labeller (str "interpreted by " labeller) "not yet interpreted")]
+     [:div.turn
+      [:div.prose (for [[i run] (map-indexed vector runs)]
+                    ^{:key i} [run-span run lit])]
+      [:div.notes (if (seq notes)
+                    (for [n notes] ^{:key (:id n)} [note-card n lit])
+                    [:p.note.unresolved "Not yet interpreted."])]
+      ;; Third column: the cascade. An authored one when a translator wrote
+      ;; it, otherwise the annotation restated as an s-expression -- labelled
+      ;; as derived, because nobody wrote it and it must not be read as a
+      ;; translation.
+      [:div.sexp
+       (if sexp
+         [:<> [:p.sexp-by (str "cascade · " by)] [:pre sexp]]
+         [:p.note.unresolved "No cascade."])]]]))
 
 (defn matches? [needle turn]
   (or (str/blank? needle)

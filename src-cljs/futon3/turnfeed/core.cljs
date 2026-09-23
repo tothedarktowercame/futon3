@@ -26,7 +26,11 @@
    "disagree"   "op-minus"        "extend"      "op-wire"
    "prioritize" "arg-num-stack"   "defer"       "op-keypress"
    "continue"   "arg-forward"     "delegate"    "op-boomerang"
-   "redirect"   "arg-turn-right"  "collect"     "op-pickup"})
+   "redirect"   "arg-turn-right"  "collect"     "op-pickup"
+   ;; verify has no chip in kimi-2's table, and the extracted set has no
+   ;; op-test. op-qray is the query ray -- scan a square to learn what is
+   ;; actually there, which is the move.
+   "verify"     "op-qray"})
 
 (defn chip [intent]
   (when-let [c (intent-chip intent)]

@@ -10,7 +10,6 @@
 @done done when one grain is recorded with its fact count and each fact has a method of observation. A second grain is tried only if some required fact has no method at the first.
 @references [pattern-interpretation/declare-the-universe cascade-construction/order-by-what-each-step-needs hygiene/exempt-the-in-use]
 @see-also cascades/the-slice-is-the-unit-of-use
-@why the grain decides how many facts the cascade reasons over and whether its guards can be written at all. Too fine and the universe explodes and needs quantifiers the guard language lacks; too coarse and the facts stop meaning anything observable.
 @how choose the unit whose state one run of the cascade changes and whose facts can each be observed: a cleaning cycle, a repository, a handoff × namespace pair. Keep invariants over many items inside that unit (every modified buffer is protected) in the adapter and the gate, and expose only their outcome as a fact (exemptions-recorded). Record the chosen grain with the universe.
 @violation-signature a buffer-cleaner cascade grounded per buffer (134 buffers × about 5 facts ≈ 670 facts); a fleet-wide inbox-zero fact that is true when any one repo is clean; a test-registry fact about "the review" when lanes differ per namespace.
 ! conclusion: Pick the grain whose state one run changes and whose facts are observable, and keep many-item invariants in adapters and gates.

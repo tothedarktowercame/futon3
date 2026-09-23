@@ -10,7 +10,6 @@
 @done done when each of the four sources (requirement, implementation, live state, prior attempts) has been read or recorded as unavailable, and every disagreement found is listed. Reading more of a source that no candidate pattern's guard depends on adds nothing.
 @references [cascade-construction/mine-patterns-from-incidents cascade-construction/run-it-on-a-real-case hygiene/observe-the-authority cascades/on-the-fly-cascade]
 @see-also apparatus/done-is-observed-running
-@why patterns proposed from a problem statement alone describe the problem as stated, not as it is. What the requirement says, what the implementation actually does, and what the running system currently shows usually differ, and the differences are where the cascade has work to do.
 @how before proposing any pattern, collect four things and keep their sources: (1) the requirement text and the decisions recorded against it; (2) the implementation, found by searching for it (callers, timers, services), not assumed; (3) the live state now (logs, journals, gate runs, evidence store); (4) earlier attempts and their findings. Note every place where two of these disagree.
 @violation-signature a cascade built from the README while the service has failed silently for weeks; a registry designed as if unused code were wired in; patterns that repeat a requirement the implementation already meets.
 ! conclusion: Construction starts from the requirement, the implementation, the live state and prior attempts, with their disagreements written down.

@@ -1,0 +1,111 @@
+;; L6+ no-source check receipt. Deterministic, path-independent rerun.
+{:library-subdir "library"
+ :library-git-sha "e01cbbcddb89edbcfc2045ebc85d760b13a263e3"
+ :search "corpus = every library/problems/*.flexiarg (legacy 6 + L5 dossier 20 incl. TRACE + L5 record/ruling 6), each with its own @holds-at tokens read from the file; per pattern in scope: (a) holds-token equality against every corpus node, (b) qualified pattern id searched in every corpus node's full text"
+ :corpus-nodes [
+  {:node "problems/commitment-temperature-is-instrumented-as-gain" :holds-at ["R14"]}
+  {:node "problems/facade-instead-of-validated-efe-model" :holds-at []}
+  {:node "problems/fundamentals-drowned-by-backlog" :holds-at []}
+  {:node "problems/g-over-cascade-is-undefined" :holds-at ["R5"]}
+  {:node "problems/most-patterns-have-no-globally-recognised-rationale" :holds-at []}
+  {:node "problems/operator-turns-become-inference-observations" :holds-at ["R2"]}
+  {:node "problems/per-tick-mismatch-instruments-outer-loop-gain" :holds-at ["R8"]}
+  {:node "problems/process-conduct-is-unassured" :holds-at []}
+  {:node "problems/r1-belief-state" :holds-at ["R1"]}
+  {:node "problems/r10-scheduled-entrypoint" :holds-at ["R10"]}
+  {:node "problems/r11-hierarchical-shared-budget" :holds-at ["R11"]}
+  {:node "problems/r12-two-layer-calibration" :holds-at ["R12"]}
+  {:node "problems/r13-temporal-policy-depth" :holds-at ["R13"]}
+  {:node "problems/r14-commitment-temperature" :holds-at ["R14"]}
+  {:node "problems/r15-hierarchy-and-timescale" :holds-at ["R15"]}
+  {:node "problems/r16-grounded-actuation" :holds-at ["R16"]}
+  {:node "problems/r17-structure-learning" :holds-at ["R17"]}
+  {:node "problems/r2-structured-observation" :holds-at ["R2"]}
+  {:node "problems/r20-interoceptive-tripwires" :holds-at ["R20"]}
+  {:node "problems/r3-belief-update" :holds-at ["R3"]}
+  {:node "problems/r3a-prediction-error-projection" :holds-at ["R3a"]}
+  {:node "problems/r4-forward-model" :holds-at ["R4"]}
+  {:node "problems/r5-expected-free-energy-core" :holds-at ["R5"]}
+  {:node "problems/r6-candidate-action-space-and-selection" :holds-at ["R6"]}
+  {:node "problems/r7-evidence-channel-precision" :holds-at ["R7"]}
+  {:node "problems/r8-present-fit-mismatch" :holds-at ["R8"]}
+  {:node "problems/r9-no-self-certification" :holds-at ["R9"]}
+  {:node "problems/refusal-prediction-error-v1--source-field-missing" :holds-at []}
+  {:node "problems/satisfied-rungs-are-counted-and-surfaced" :holds-at ["R5"]}
+  {:node "problems/spec-and-implementation-must-converge-to-runtime-certificates" :holds-at []}
+  {:node "problems/tension-proposes-candidates" :holds-at ["R6"]}
+  {:node "problems/trace-wm-trace-store-route-ledger" :holds-at ["TRACE"]}
+ ]
+ :patterns [
+  {:pattern "war-room/wr-0-organise-without-apparatus" :holds-at [] :match nil}
+  {:pattern "war-room/wr-1-three-futon-split" :holds-at [] :match nil}
+  {:pattern "war-room/wr-10-next-move-surface-is-recursive-closure" :holds-at [] :match nil}
+  {:pattern "war-room/wr-11-external-applications-carry-predecessor-exemplar-relationships" :holds-at [] :match nil}
+  {:pattern "war-room/wr-12-essay-health-is-the-aif-observation-channel" :holds-at [] :match nil}
+  {:pattern "war-room/wr-13-futonic-debt-is-paid-in-order" :holds-at [] :match nil}
+  {:pattern "war-room/wr-14-predecessor-completion-pull-is-a-fourth-next-move-criterion" :holds-at [] :match nil}
+  {:pattern "war-room/wr-15-head-as-escrow-is-a-sanctioned-pattern" :holds-at [] :match nil}
+  {:pattern "war-room/wr-16-operationalised-exploit-loops-are-first-class-observation-channels" :holds-at ["R2"] :match ["problems/operator-turns-become-inference-observations" "holds"]}
+  {:pattern "war-room/wr-17-futon0-as-cyborg-futon7-as-markov-blanket" :holds-at [] :match nil}
+  {:pattern "war-room/wr-18-war-machine-is-demonstrated-not-hypothesised" :holds-at [] :match nil}
+  {:pattern "war-room/wr-19-tension-must-generate-not-only-rank" :holds-at ["R17"] :match ["problems/r17-structure-learning" "holds"]}
+  {:pattern "war-room/wr-2-pattern-library-stays-canonical" :holds-at [] :match nil}
+  {:pattern "war-room/wr-20-action-class-inventory-becomes-data" :holds-at [] :match nil}
+  {:pattern "war-room/wr-21-geometrization-is-a-shared-cross-mission-dependency" :holds-at [] :match nil}
+  {:pattern "war-room/wr-22-logic-model-before-code-is-a-sanctioned-verify-method" :holds-at [] :match nil}
+  {:pattern "war-room/wr-23-upstream-trackers-are-stack-surfaces" :holds-at [] :match nil}
+  {:pattern "war-room/wr-24-a-removed-constraint-does-not-remove-the-discipline-it-supplied" :holds-at ["R13"] :match ["problems/r13-temporal-policy-depth" "holds"]}
+  {:pattern "war-room/wr-25-good-news-gets-the-same-evidence-discipline-as-bad" :holds-at ["R9"] :match ["problems/r9-no-self-certification" "holds"]}
+  {:pattern "war-room/wr-26-a-capability-switched-off-carries-its-re-arm-condition-in-writing-at-the-switch" :holds-at ["R20"] :match ["problems/r20-interoceptive-tripwires" "holds"]}
+  {:pattern "war-room/wr-27-a-loop-is-born-instrumented-for-its-gain" :holds-at [] :match ["problems/commitment-temperature-is-instrumented-as-gain" "named"]}
+  {:pattern "war-room/wr-3-social-exotype-before-implementation" :holds-at [] :match nil}
+  {:pattern "war-room/wr-4-inhabit-before-building" :holds-at [] :match nil}
+  {:pattern "war-room/wr-5-war-machine-is-not-a-mission" :holds-at [] :match nil}
+  {:pattern "war-room/wr-6-daily-scan-is-depositing-heartbeat" :holds-at [] :match nil}
+  {:pattern "war-room/wr-7-frames-interoperate-or-they-do-not-exist" :holds-at [] :match nil}
+  {:pattern "war-room/wr-8-typed-files-are-sources-of-truth" :holds-at [] :match nil}
+  {:pattern "war-room/wr-9-bites-empirical-or-logical" :holds-at [] :match nil}
+  {:pattern "cascades/declared-skeleton" :holds-at [] :match nil}
+  {:pattern "cascades/edges-earn-permanence" :holds-at [] :match nil}
+  {:pattern "cascades/on-the-fly-cascade" :holds-at [] :match nil}
+  {:pattern "cascades/repointable-declarations" :holds-at [] :match nil}
+  {:pattern "cascades/the-slice-is-the-unit-of-use" :holds-at [] :match nil}
+  {:pattern "futon-theory/agent-contract" :holds-at [] :match nil}
+  {:pattern "futon-theory/all-or-nothing" :holds-at [] :match nil}
+  {:pattern "futon-theory/baldwin-cycle" :holds-at [] :match nil}
+  {:pattern "futon-theory/coordination-protocol" :holds-at [] :match nil}
+  {:pattern "futon-theory/counter-ratchet" :holds-at [] :match nil}
+  {:pattern "futon-theory/crime-relocates-to-a-scarcer-witness" :holds-at [] :match nil}
+  {:pattern "futon-theory/curry-howard-operational" :holds-at [] :match nil}
+  {:pattern "futon-theory/derive-exits-on-a-minted-sorry" :holds-at [] :match nil}
+  {:pattern "futon-theory/durability-first" :holds-at [] :match nil}
+  {:pattern "futon-theory/error-hierarchy" :holds-at [] :match nil}
+  {:pattern "futon-theory/event-protocol" :holds-at [] :match nil}
+  {:pattern "futon-theory/four-types" :holds-at [] :match nil}
+  {:pattern "futon-theory/futonic-logic" :holds-at [] :match ["problems/commitment-temperature-is-instrumented-as-gain" "named"]}
+  {:pattern "futon-theory/honest-map-over-flattering-counter" :holds-at [] :match nil}
+  {:pattern "futon-theory/interface-loop" :holds-at [] :match nil}
+  {:pattern "futon-theory/local-gain-persistence" :holds-at [] :match nil}
+  {:pattern "futon-theory/minimum-viable-events" :holds-at [] :match nil}
+  {:pattern "futon-theory/mission-dependency" :holds-at [] :match nil}
+  {:pattern "futon-theory/mission-interface-signature" :holds-at [] :match nil}
+  {:pattern "futon-theory/mission-lifecycle" :holds-at [] :match nil}
+  {:pattern "futon-theory/mission-scoping" :holds-at [] :match nil}
+  {:pattern "futon-theory/progress-signal" :holds-at [] :match nil}
+  {:pattern "futon-theory/proof-path" :holds-at [] :match nil}
+  {:pattern "futon-theory/rapid-debugging" :holds-at [] :match nil}
+  {:pattern "futon-theory/retroactive-canonicalization" :holds-at [] :match nil}
+  {:pattern "futon-theory/retrospective-stability" :holds-at [] :match nil}
+  {:pattern "futon-theory/reverse-morphogenesis" :holds-at [] :match ["problems/tension-proposes-candidates" "named"]}
+  {:pattern "futon-theory/single-source-of-truth" :holds-at [] :match nil}
+  {:pattern "futon-theory/stop-the-line" :holds-at [] :match nil}
+  {:pattern "futon-theory/structural-tension-as-observation" :holds-at [] :match nil}
+  {:pattern "futon-theory/symbolic-geodesic" :holds-at [] :match nil}
+  {:pattern "futon-theory/symbolic-individuation" :holds-at [] :match nil}
+  {:pattern "futon-theory/task-as-arrow" :holds-at [] :match nil}
+  {:pattern "futon-theory/the-woven-form" :holds-at [] :match nil}
+  {:pattern "futon-theory/theory-as-exotype" :holds-at [] :match nil}
+  {:pattern "futon-theory/wyrd" :holds-at [] :match nil}
+  {:pattern "futon-theory/xenotype-portability" :holds-at [] :match nil}
+ ]
+ :counts {:patterns 70 :matched 8 :no-match 62}}

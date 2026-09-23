@@ -1,0 +1,140 @@
+;; L6+ no-source check receipt. Deterministic, path-independent rerun.
+{:library-subdir "library"
+ :library-git-sha "5704359975a41ff125ffa94f7ce227dcf5d53217"
+ :search "corpus = every *.flexiarg in the grounding sections [problems], each with its own @holds-at tokens read from the file; per pattern in scope: (a) holds-token equality against every corpus node, (b) qualified pattern id searched in every corpus node's full text"
+ :corpus-nodes [
+  {:node "problems/commitment-temperature-is-instrumented-as-gain" :holds-at ["R14"]}
+  {:node "problems/facade-instead-of-validated-efe-model" :holds-at []}
+  {:node "problems/fundamentals-drowned-by-backlog" :holds-at []}
+  {:node "problems/g-over-cascade-is-undefined" :holds-at ["R5"]}
+  {:node "problems/most-patterns-have-no-globally-recognised-rationale" :holds-at []}
+  {:node "problems/operator-turns-become-inference-observations" :holds-at ["R2"]}
+  {:node "problems/per-tick-mismatch-instruments-outer-loop-gain" :holds-at ["R8"]}
+  {:node "problems/process-conduct-is-unassured" :holds-at []}
+  {:node "problems/r1-belief-state" :holds-at ["R1"]}
+  {:node "problems/r10-scheduled-entrypoint" :holds-at ["R10"]}
+  {:node "problems/r11-hierarchical-shared-budget" :holds-at ["R11"]}
+  {:node "problems/r12-two-layer-calibration" :holds-at ["R12"]}
+  {:node "problems/r13-temporal-policy-depth" :holds-at ["R13"]}
+  {:node "problems/r14-commitment-temperature" :holds-at ["R14"]}
+  {:node "problems/r15-hierarchy-and-timescale" :holds-at ["R15"]}
+  {:node "problems/r16-grounded-actuation" :holds-at ["R16"]}
+  {:node "problems/r17-structure-learning" :holds-at ["R17"]}
+  {:node "problems/r2-structured-observation" :holds-at ["R2"]}
+  {:node "problems/r20-interoceptive-tripwires" :holds-at ["R20"]}
+  {:node "problems/r3-belief-update" :holds-at ["R3"]}
+  {:node "problems/r3a-prediction-error-projection" :holds-at ["R3a"]}
+  {:node "problems/r4-forward-model" :holds-at ["R4"]}
+  {:node "problems/r5-expected-free-energy-core" :holds-at ["R5"]}
+  {:node "problems/r6-candidate-action-space-and-selection" :holds-at ["R6"]}
+  {:node "problems/r7-evidence-channel-precision" :holds-at ["R7"]}
+  {:node "problems/r8-present-fit-mismatch" :holds-at ["R8"]}
+  {:node "problems/r9-no-self-certification" :holds-at ["R9"]}
+  {:node "problems/refusal-prediction-error-v1--source-field-missing" :holds-at []}
+  {:node "problems/satisfied-rungs-are-counted-and-surfaced" :holds-at ["R5"]}
+  {:node "problems/spec-and-implementation-must-converge-to-runtime-certificates" :holds-at []}
+  {:node "problems/tension-proposes-candidates" :holds-at ["R6"]}
+  {:node "problems/trace-wm-trace-store-route-ledger" :holds-at ["TRACE"]}
+ ]
+ :patterns [
+  {:pattern "peeragogy/calling-in-not-out" :holds-at [] :match nil}
+  {:pattern "peeragogy/carrying-capacity" :holds-at [] :match nil}
+  {:pattern "peeragogy/check-in-rhythm" :holds-at [] :match nil}
+  {:pattern "peeragogy/creating-a-guide" :holds-at [] :match nil}
+  {:pattern "peeragogy/curating-not-experting" :holds-at [] :match nil}
+  {:pattern "peeragogy/discerning-a-pattern" :holds-at [] :match nil}
+  {:pattern "peeragogy/heartbeat" :holds-at [] :match nil}
+  {:pattern "peeragogy/moderation" :holds-at [] :match nil}
+  {:pattern "peeragogy/newcomer" :holds-at [] :match nil}
+  {:pattern "peeragogy/par" :holds-at [] :match nil}
+  {:pattern "peeragogy/pattern-language" :holds-at [] :match nil}
+  {:pattern "peeragogy/polling-for-ideas" :holds-at [] :match nil}
+  {:pattern "peeragogy/reciprocal-participation" :holds-at [] :match nil}
+  {:pattern "peeragogy/roadmap" :holds-at [] :match nil}
+  {:pattern "peeragogy/roles" :holds-at [] :match nil}
+  {:pattern "peeragogy/stewardship-succession" :holds-at [] :match nil}
+  {:pattern "peeragogy/use-or-make" :holds-at [] :match nil}
+  {:pattern "peeragogy/wrapper" :holds-at [] :match nil}
+  {:pattern "or3/ask-first-then-bring-the-expert" :holds-at [] :match nil}
+  {:pattern "or3/authorship-for-first-time-contributors" :holds-at [] :match nil}
+  {:pattern "or3/borrow-a-training-network" :holds-at [] :match nil}
+  {:pattern "or3/co-design-is-not-consultation" :holds-at [] :match nil}
+  {:pattern "or3/co-design-the-call" :holds-at [] :match nil}
+  {:pattern "or3/consent-bounded-analysis" :holds-at [] :match nil}
+  {:pattern "or3/coordinator-in-your-school" :holds-at [] :match nil}
+  {:pattern "or3/count-every-card-back" :holds-at [] :match nil}
+  {:pattern "or3/design-around-the-red-line" :holds-at [] :match nil}
+  {:pattern "or3/openness-without-exposure" :holds-at [] :match nil}
+  {:pattern "or3/plural-value-accounting" :holds-at [] :match nil}
+  {:pattern "or3/reproducibility-as-a-teaching-habit" :holds-at [] :match nil}
+  {:pattern "or3/scenarios-from-lived-experience" :holds-at [] :match nil}
+  {:pattern "or3/skills-that-travel-onward" :holds-at [] :match nil}
+  {:pattern "or3/student-project-as-collaboration" :holds-at [] :match nil}
+  {:pattern "or3/sustainability-without-enclosure" :holds-at [] :match nil}
+  {:pattern "or3/teach-the-process-not-the-facility" :holds-at [] :match nil}
+  {:pattern "musn/aif-live-scores" :holds-at [] :match nil}
+  {:pattern "musn/declare-scope" :holds-at [] :match nil}
+  {:pattern "musn/expensive-move-consent" :holds-at [] :match nil}
+  {:pattern "musn/fulab-report-block" :holds-at [] :match nil}
+  {:pattern "musn/intent-restatement" :holds-at [] :match nil}
+  {:pattern "musn/off-trail-brief-log" :holds-at [] :match nil}
+  {:pattern "musn/off-trail-budget" :holds-at [] :match nil}
+  {:pattern "musn/pattern-action-helper-command" :holds-at [] :match nil}
+  {:pattern "musn/pattern-action-justification" :holds-at [] :match nil}
+  {:pattern "musn/pattern-action-rpc" :holds-at [] :match nil}
+  {:pattern "musn/pause-backtrace" :holds-at [] :match nil}
+  {:pattern "musn/plan-before-tool" :holds-at [] :match nil}
+  {:pattern "musn/psr-pur-real-actions" :holds-at [] :match nil}
+  {:pattern "musn/read-aif-plus-one" :holds-at [] :match nil}
+  {:pattern "musn/selection-before-write" :holds-at [] :match nil}
+  {:pattern "musn/tool-name-hygiene" :holds-at [] :match nil}
+  {:pattern "musn/use-requires-evidence" :holds-at [] :match nil}
+  {:pattern "plos-npt-with-small-n/absence-as-evidence" :holds-at [] :match nil}
+  {:pattern "plos-npt-with-small-n/abstract-n-method-frame" :holds-at [] :match nil}
+  {:pattern "plos-npt-with-small-n/barrier-enabler-strategy-display" :holds-at [] :match nil}
+  {:pattern "plos-npt-with-small-n/coding-reliability-stated" :holds-at [] :match nil}
+  {:pattern "plos-npt-with-small-n/coherence-first-when-using-npt" :holds-at [] :match nil}
+  {:pattern "plos-npt-with-small-n/coreq-checklist-adherence" :holds-at [] :match nil}
+  {:pattern "plos-npt-with-small-n/data-availability-and-prereg" :holds-at [] :match nil}
+  {:pattern "plos-npt-with-small-n/disconfirmation-not-just-triangulation" :holds-at [] :match nil}
+  {:pattern "plos-npt-with-small-n/framework-spine-with-empirical-ribs" :holds-at [] :match nil}
+  {:pattern "plos-npt-with-small-n/inductive-before-deductive-warrant" :holds-at [] :match nil}
+  {:pattern "plos-npt-with-small-n/multi-method-triangulation-ladder" :holds-at [] :match nil}
+  {:pattern "plos-npt-with-small-n/open-science-phase-register" :holds-at [] :match nil}
+  {:pattern "plos-npt-with-small-n/paradigm-matched-rigour-frame" :holds-at [] :match nil}
+  {:pattern "plos-npt-with-small-n/quote-table-not-quote-flood" :holds-at [] :match nil}
+  {:pattern "plos-npt-with-small-n/research-questions-stated-early" :holds-at [] :match nil}
+  {:pattern "plos-npt-with-small-n/scope-shield-via-companion-paper" :holds-at [] :match nil}
+  {:pattern "plos-npt-with-small-n/site-case-data-display" :holds-at [] :match nil}
+  {:pattern "plos-npt-with-small-n/small-n-is-a-design-feature" :holds-at [] :match nil}
+  {:pattern "plos-npt-with-small-n/theory-as-heuristic-not-law" :holds-at [] :match nil}
+  {:pattern "plos-npt-with-small-n/training-role-feature-register" :holds-at [] :match nil}
+  {:pattern "plos-npt-with-small-n/transferability-not-generalisability" :holds-at [] :match nil}
+  {:pattern "plos-npt-with-small-n/venue-register-boundary" :holds-at [] :match nil}
+  {:pattern "agency/bounded-lifecycle" :holds-at [] :match nil}
+  {:pattern "agency/delivery-receipt" :holds-at [] :match nil}
+  {:pattern "agency/identifier-separation" :holds-at [] :match nil}
+  {:pattern "agency/invariants" :holds-at [] :match nil}
+  {:pattern "agency/loud-failure" :holds-at [] :match nil}
+  {:pattern "agency/self-attribution" :holds-at [] :match nil}
+  {:pattern "agency/single-routing-authority" :holds-at [] :match nil}
+  {:pattern "agency/state-atomicity" :holds-at [] :match nil}
+  {:pattern "agent/budget-bounds-exploration" :holds-at [] :match nil}
+  {:pattern "agent/commitment-varies-with-confidence" :holds-at [] :match nil}
+  {:pattern "agent/coordination-has-cost" :holds-at [] :match nil}
+  {:pattern "agent/environment-over-optimization" :holds-at [] :match nil}
+  {:pattern "agent/escalation-cost-vs-risk" :holds-at [] :match nil}
+  {:pattern "agent/evidence-over-assertion" :holds-at [] :match nil}
+  {:pattern "agent/handoff-preserves-context" :holds-at [] :match nil}
+  {:pattern "agent/hypothetical-proof-architecture" :holds-at [] :match nil}
+  {:pattern "agent/intent-handshake-is-binding" :holds-at [] :match nil}
+  {:pattern "agent/pause-is-not-failure" :holds-at [] :match nil}
+  {:pattern "agent/provisional-claims-ledger" :holds-at [] :match nil}
+  {:pattern "agent/reduction-to-kernel" :holds-at [] :match nil}
+  {:pattern "agent/scope-before-action" :holds-at [] :match nil}
+  {:pattern "agent/sense-deliberate-act" :holds-at [] :match nil}
+  {:pattern "agent/state-is-hypothesis" :holds-at [] :match nil}
+  {:pattern "agent/student-dispatch" :holds-at [] :match nil}
+  {:pattern "agent/trail-enables-return" :holds-at [] :match nil}
+ ]
+ :counts {:patterns 99 :matched 0 :no-match 99}}

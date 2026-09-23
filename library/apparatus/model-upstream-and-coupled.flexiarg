@@ -7,8 +7,6 @@
 @status promoted (field trial 2026-09-08, APM repair program S1-S10; evidence: futon3c/holes/technotes/TN-apm-principle-scoring-ledger.md @ b0c36489; Joe's ruling 2026-09-08)
 @references [apparatus/done-is-observed-running apparatus/one-authority-per-question]
 @see-also apparatus/monitors-measure-the-work
-@why APM register M8, known 2026-08-27, unfixed when it mattered: Lean emitter ↔ generated contract ↔ Clojure validator ↔ loaded namespace had no enforced coupling. The Lean contract perimeter stayed green throughout the campaign, and every registered defect landed OUTSIDE it — the register's own stated finding. APMCycleMachine.lean contains theorems named for incidents (f25ReusedStudentSession, f30CompiledButUnrecordedCandidate): the model trailed the incidents.
-@how own mechanism: the model is upstream when no new mechanism can ship without its contract obligation; post-hoc formalization is legitimate back-fill but may never constitute the perimeter; coupling between model, validator, and loaded runtime is enforced by a standing check.
 @violation-signature Every theorem is named after a past incident and none constrains an unshipped mechanism; a mechanism ships with no contract obligation; the model-to-runtime coupling is asserted in prose rather than checked by machinery.
 ! conclusion: The formal model is upstream when nothing ships without its contract obligation, and it is real only while model, validator, and loaded runtime are coupled by an enforced check — otherwise it is commentary, however green.
 

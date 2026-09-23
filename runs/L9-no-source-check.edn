@@ -1,0 +1,117 @@
+;; L6+ no-source check receipt. Deterministic, path-independent rerun.
+{:library-subdir "library"
+ :library-git-sha "fccd14e9f706e85f4ea33a1186060adeac64d659"
+ :search "corpus = every *.flexiarg in the grounding sections [problems], each with its own @holds-at tokens read from the file; per pattern in scope: (a) holds-token equality against every corpus node, (b) qualified pattern id searched in every corpus node's full text"
+ :corpus-nodes [
+  {:node "problems/commitment-temperature-is-instrumented-as-gain" :holds-at ["R14"]}
+  {:node "problems/facade-instead-of-validated-efe-model" :holds-at []}
+  {:node "problems/fundamentals-drowned-by-backlog" :holds-at []}
+  {:node "problems/g-over-cascade-is-undefined" :holds-at ["R5"]}
+  {:node "problems/most-patterns-have-no-globally-recognised-rationale" :holds-at []}
+  {:node "problems/operator-turns-become-inference-observations" :holds-at ["R2"]}
+  {:node "problems/per-tick-mismatch-instruments-outer-loop-gain" :holds-at ["R8"]}
+  {:node "problems/process-conduct-is-unassured" :holds-at []}
+  {:node "problems/r1-belief-state" :holds-at ["R1"]}
+  {:node "problems/r10-scheduled-entrypoint" :holds-at ["R10"]}
+  {:node "problems/r11-hierarchical-shared-budget" :holds-at ["R11"]}
+  {:node "problems/r12-two-layer-calibration" :holds-at ["R12"]}
+  {:node "problems/r13-temporal-policy-depth" :holds-at ["R13"]}
+  {:node "problems/r14-commitment-temperature" :holds-at ["R14"]}
+  {:node "problems/r15-hierarchy-and-timescale" :holds-at ["R15"]}
+  {:node "problems/r16-grounded-actuation" :holds-at ["R16"]}
+  {:node "problems/r17-structure-learning" :holds-at ["R17"]}
+  {:node "problems/r2-structured-observation" :holds-at ["R2"]}
+  {:node "problems/r20-interoceptive-tripwires" :holds-at ["R20"]}
+  {:node "problems/r3-belief-update" :holds-at ["R3"]}
+  {:node "problems/r3a-prediction-error-projection" :holds-at ["R3a"]}
+  {:node "problems/r4-forward-model" :holds-at ["R4"]}
+  {:node "problems/r5-expected-free-energy-core" :holds-at ["R5"]}
+  {:node "problems/r6-candidate-action-space-and-selection" :holds-at ["R6"]}
+  {:node "problems/r7-evidence-channel-precision" :holds-at ["R7"]}
+  {:node "problems/r8-present-fit-mismatch" :holds-at ["R8"]}
+  {:node "problems/r9-no-self-certification" :holds-at ["R9"]}
+  {:node "problems/refusal-prediction-error-v1--source-field-missing" :holds-at []}
+  {:node "problems/satisfied-rungs-are-counted-and-surfaced" :holds-at ["R5"]}
+  {:node "problems/spec-and-implementation-must-converge-to-runtime-certificates" :holds-at []}
+  {:node "problems/tension-proposes-candidates" :holds-at ["R6"]}
+  {:node "problems/trace-wm-trace-store-route-ledger" :holds-at ["TRACE"]}
+ ]
+ :patterns [
+  {:pattern "writing-coherence/balanced-pair-padding" :holds-at [] :match nil}
+  {:pattern "writing-coherence/citation-density-load-bearing-claim" :holds-at [] :match nil}
+  {:pattern "writing-coherence/cross-section-claim-drift" :holds-at [] :match nil}
+  {:pattern "writing-coherence/first-mention-undischarged" :holds-at [] :match nil}
+  {:pattern "writing-coherence/floating-formalism" :holds-at [] :match nil}
+  {:pattern "writing-coherence/hedged-lift" :holds-at [] :match nil}
+  {:pattern "writing-coherence/meet-the-reader-where-they-are" :holds-at [] :match nil}
+  {:pattern "writing-coherence/meta-lede" :holds-at [] :match nil}
+  {:pattern "writing-coherence/meta-title" :holds-at [] :match nil}
+  {:pattern "writing-coherence/missing-mechanism" :holds-at [] :match nil}
+  {:pattern "writing-coherence/name-what-you-drop" :holds-at [] :match nil}
+  {:pattern "writing-coherence/one-paragraph-per-typed-claim" :holds-at [] :match nil}
+  {:pattern "writing-coherence/paraphrase-drift" :holds-at [] :match nil}
+  {:pattern "writing-coherence/plain-language-thesis" :holds-at [] :match nil}
+  {:pattern "writing-coherence/recursion-cheque" :holds-at [] :match nil}
+  {:pattern "writing-coherence/scope-mush" :holds-at [] :match nil}
+  {:pattern "writing-coherence/section-bridge-missing" :holds-at [] :match nil}
+  {:pattern "writing-coherence/stale-reference-after-restructure" :holds-at [] :match nil}
+  {:pattern "writing-coherence/structural-style-inconsistency" :holds-at [] :match nil}
+  {:pattern "writing-coherence/subheading-without-paragraph" :holds-at [] :match nil}
+  {:pattern "writing-coherence/throat-clearing-close" :holds-at [] :match nil}
+  {:pattern "writing-coherence/triad-inflation" :holds-at [] :match nil}
+  {:pattern "writing-coherence/unearned-essentially" :holds-at [] :match nil}
+  {:pattern "devmap-coherence/baseline-freeze" :holds-at [] :match nil}
+  {:pattern "devmap-coherence/devmap-scope-discipline" :holds-at [] :match nil}
+  {:pattern "devmap-coherence/ifr-f0-sati" :holds-at [] :match nil}
+  {:pattern "devmap-coherence/ifr-f1-dhammavicaya" :holds-at [] :match nil}
+  {:pattern "devmap-coherence/ifr-f2-viriya" :holds-at [] :match nil}
+  {:pattern "devmap-coherence/ifr-f3-piti" :holds-at [] :match nil}
+  {:pattern "devmap-coherence/ifr-f3a-piti-audit" :holds-at [] :match nil}
+  {:pattern "devmap-coherence/ifr-f4-passaddhi" :holds-at [] :match nil}
+  {:pattern "devmap-coherence/ifr-f5-samadhi" :holds-at [] :match nil}
+  {:pattern "devmap-coherence/ifr-f6-upekkha" :holds-at [] :match nil}
+  {:pattern "devmap-coherence/ifr-f7-upa-upekkha" :holds-at [] :match nil}
+  {:pattern "devmap-coherence/ifr-state-convergence" :holds-at [] :match nil}
+  {:pattern "devmap-coherence/next-steps-to-done" :holds-at [] :match nil}
+  {:pattern "devmap-coherence/prototype-alignment-bridge" :holds-at [] :match nil}
+  {:pattern "devmap-coherence/prototype-alignment-embedding" :holds-at [] :match nil}
+  {:pattern "devmap-coherence/prototype-alignment-role" :holds-at [] :match nil}
+  {:pattern "devmap-coherence/prototype-alignment-tension" :holds-at [] :match nil}
+  {:pattern "devmap-coherence/prototype-maturity-lifecycle" :holds-at [] :match nil}
+  {:pattern "devmap-coherence/prototype-structure-checklist" :holds-at [] :match nil}
+  {:pattern "devmap-coherence/status-keywords" :holds-at [] :match nil}
+  {:pattern "relationship-coherence/absence-as-spaciousness" :holds-at [] :match nil}
+  {:pattern "relationship-coherence/affirmation-reframe" :holds-at [] :match nil}
+  {:pattern "relationship-coherence/base-camp" :holds-at [] :match nil}
+  {:pattern "relationship-coherence/body-attunement" :holds-at [] :match nil}
+  {:pattern "relationship-coherence/capacity-honoring" :holds-at [] :match nil}
+  {:pattern "relationship-coherence/co-created-project" :holds-at [] :match nil}
+  {:pattern "relationship-coherence/co-regulation" :holds-at [] :match nil}
+  {:pattern "relationship-coherence/cook-as-care" :holds-at [] :match nil}
+  {:pattern "relationship-coherence/held-uncertainty" :holds-at [] :match nil}
+  {:pattern "relationship-coherence/lexicon-minting" :holds-at [] :match nil}
+  {:pattern "relationship-coherence/low-pressure-bid" :holds-at [] :match nil}
+  {:pattern "relationship-coherence/meeting-the-people" :holds-at [] :match nil}
+  {:pattern "relationship-coherence/mutual-coaching" :holds-at [] :match nil}
+  {:pattern "relationship-coherence/narrative-suspension" :holds-at [] :match nil}
+  {:pattern "relationship-coherence/parallel-lives-mirroring" :holds-at [] :match nil}
+  {:pattern "relationship-coherence/quote-as-oblique-address" :holds-at [] :match nil}
+  {:pattern "relationship-coherence/resonance-weaving" :holds-at [] :match nil}
+  {:pattern "relationship-coherence/running-gag" :holds-at [] :match nil}
+  {:pattern "relationship-coherence/rupture-repair" :holds-at [] :match nil}
+  {:pattern "campaign-coherence/campaign-as-temporary-institution" :holds-at [] :match nil}
+  {:pattern "campaign-coherence/cross-mission-escrow" :holds-at [] :match nil}
+  {:pattern "campaign-coherence/shared-standard-has-no-single-owner" :holds-at [] :match nil}
+  {:pattern "code-coherence/dead-code-hygiene" :holds-at [] :match nil}
+  {:pattern "code-coherence/subsumption-claim-discipline" :holds-at [] :match nil}
+  {:pattern "collaboration-coherence/determined-fork-proto-psr" :holds-at [] :match nil}
+  {:pattern "collaboration-coherence/isolation" :holds-at [] :match nil}
+  {:pattern "collaboration-coherence/magical-thinking" :holds-at [] :match nil}
+  {:pattern "collaboration-coherence/messy-with-lurkers" :holds-at [] :match nil}
+  {:pattern "collaboration-coherence/misunderstanding-power-laws" :holds-at [] :match nil}
+  {:pattern "collaboration-coherence/navel-gazing" :holds-at [] :match nil}
+  {:pattern "collaboration-coherence/stasis" :holds-at [] :match nil}
+  {:pattern "collaboration-coherence/weak-tie-conflation" :holds-at [] :match nil}
+  {:pattern "career-coherence/free-solo-vs-rope" :holds-at [] :match nil}
+ ]
+ :counts {:patterns 76 :matched 0 :no-match 76}}

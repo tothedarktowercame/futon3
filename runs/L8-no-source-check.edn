@@ -1,0 +1,175 @@
+;; L6+ no-source check receipt. Deterministic, path-independent rerun.
+{:library-subdir "library"
+ :library-git-sha "54d58f6731dd86d957f5770820d4a63e7d25c3c3"
+ :search "corpus = every *.flexiarg in the grounding sections [problems futon-theory], each with its own @holds-at tokens read from the file; per pattern in scope: (a) holds-token equality against every corpus node, (b) qualified pattern id searched in every corpus node's full text"
+ :corpus-nodes [
+  {:node "problems/commitment-temperature-is-instrumented-as-gain" :holds-at ["R14"]}
+  {:node "problems/facade-instead-of-validated-efe-model" :holds-at []}
+  {:node "problems/fundamentals-drowned-by-backlog" :holds-at []}
+  {:node "problems/g-over-cascade-is-undefined" :holds-at ["R5"]}
+  {:node "problems/most-patterns-have-no-globally-recognised-rationale" :holds-at []}
+  {:node "problems/operator-turns-become-inference-observations" :holds-at ["R2"]}
+  {:node "problems/per-tick-mismatch-instruments-outer-loop-gain" :holds-at ["R8"]}
+  {:node "problems/process-conduct-is-unassured" :holds-at []}
+  {:node "problems/r1-belief-state" :holds-at ["R1"]}
+  {:node "problems/r10-scheduled-entrypoint" :holds-at ["R10"]}
+  {:node "problems/r11-hierarchical-shared-budget" :holds-at ["R11"]}
+  {:node "problems/r12-two-layer-calibration" :holds-at ["R12"]}
+  {:node "problems/r13-temporal-policy-depth" :holds-at ["R13"]}
+  {:node "problems/r14-commitment-temperature" :holds-at ["R14"]}
+  {:node "problems/r15-hierarchy-and-timescale" :holds-at ["R15"]}
+  {:node "problems/r16-grounded-actuation" :holds-at ["R16"]}
+  {:node "problems/r17-structure-learning" :holds-at ["R17"]}
+  {:node "problems/r2-structured-observation" :holds-at ["R2"]}
+  {:node "problems/r20-interoceptive-tripwires" :holds-at ["R20"]}
+  {:node "problems/r3-belief-update" :holds-at ["R3"]}
+  {:node "problems/r3a-prediction-error-projection" :holds-at ["R3a"]}
+  {:node "problems/r4-forward-model" :holds-at ["R4"]}
+  {:node "problems/r5-expected-free-energy-core" :holds-at ["R5"]}
+  {:node "problems/r6-candidate-action-space-and-selection" :holds-at ["R6"]}
+  {:node "problems/r7-evidence-channel-precision" :holds-at ["R7"]}
+  {:node "problems/r8-present-fit-mismatch" :holds-at ["R8"]}
+  {:node "problems/r9-no-self-certification" :holds-at ["R9"]}
+  {:node "problems/refusal-prediction-error-v1--source-field-missing" :holds-at []}
+  {:node "problems/satisfied-rungs-are-counted-and-surfaced" :holds-at ["R5"]}
+  {:node "problems/spec-and-implementation-must-converge-to-runtime-certificates" :holds-at []}
+  {:node "problems/tension-proposes-candidates" :holds-at ["R6"]}
+  {:node "problems/trace-wm-trace-store-route-ledger" :holds-at ["TRACE"]}
+  {:node "futon-theory/agent-contract" :holds-at []}
+  {:node "futon-theory/all-or-nothing" :holds-at []}
+  {:node "futon-theory/baldwin-cycle" :holds-at []}
+  {:node "futon-theory/coordination-protocol" :holds-at []}
+  {:node "futon-theory/counter-ratchet" :holds-at []}
+  {:node "futon-theory/crime-relocates-to-a-scarcer-witness" :holds-at []}
+  {:node "futon-theory/curry-howard-operational" :holds-at []}
+  {:node "futon-theory/derive-exits-on-a-minted-sorry" :holds-at []}
+  {:node "futon-theory/durability-first" :holds-at []}
+  {:node "futon-theory/error-hierarchy" :holds-at []}
+  {:node "futon-theory/event-protocol" :holds-at []}
+  {:node "futon-theory/four-types" :holds-at []}
+  {:node "futon-theory/futonic-logic" :holds-at []}
+  {:node "futon-theory/honest-map-over-flattering-counter" :holds-at []}
+  {:node "futon-theory/interface-loop" :holds-at []}
+  {:node "futon-theory/local-gain-persistence" :holds-at []}
+  {:node "futon-theory/minimum-viable-events" :holds-at []}
+  {:node "futon-theory/mission-dependency" :holds-at []}
+  {:node "futon-theory/mission-interface-signature" :holds-at []}
+  {:node "futon-theory/mission-lifecycle" :holds-at []}
+  {:node "futon-theory/mission-scoping" :holds-at []}
+  {:node "futon-theory/progress-signal" :holds-at []}
+  {:node "futon-theory/proof-path" :holds-at []}
+  {:node "futon-theory/rapid-debugging" :holds-at []}
+  {:node "futon-theory/retroactive-canonicalization" :holds-at []}
+  {:node "futon-theory/retrospective-stability" :holds-at []}
+  {:node "futon-theory/reverse-morphogenesis" :holds-at []}
+  {:node "futon-theory/single-source-of-truth" :holds-at []}
+  {:node "futon-theory/stop-the-line" :holds-at []}
+  {:node "futon-theory/structural-tension-as-observation" :holds-at []}
+  {:node "futon-theory/symbolic-geodesic" :holds-at []}
+  {:node "futon-theory/symbolic-individuation" :holds-at []}
+  {:node "futon-theory/task-as-arrow" :holds-at []}
+  {:node "futon-theory/the-woven-form" :holds-at []}
+  {:node "futon-theory/theory-as-exotype" :holds-at []}
+  {:node "futon-theory/wyrd" :holds-at []}
+  {:node "futon-theory/xenotype-portability" :holds-at []}
+ ]
+ :patterns [
+  {:pattern "math-formalization/additive-principal-parts-from-order-germs" :holds-at [] :match nil}
+  {:pattern "math-formalization/assemble-a-basis-from-an-independent-supremum" :holds-at [] :match nil}
+  {:pattern "math-formalization/bank-cheap-obligations-before-the-hard-bridge" :holds-at [] :match nil}
+  {:pattern "math-formalization/binder-expression-mismatch" :holds-at [] :match nil}
+  {:pattern "math-formalization/bound-sylow-order-from-faithful-prime-action" :holds-at [] :match nil}
+  {:pattern "math-formalization/cast-normalization" :holds-at [] :match nil}
+  {:pattern "math-formalization/classify-square-zero-actions-by-adapted-complements" :holds-at [] :match nil}
+  {:pattern "math-formalization/close-bijectivity-by-counting-not-inverting" :holds-at [] :match nil}
+  {:pattern "math-formalization/coercion-bridge" :holds-at [] :match nil}
+  {:pattern "math-formalization/collapse-self-normalizing-sylow-via-faithful-prime-action" :holds-at [] :match nil}
+  {:pattern "math-formalization/compact-thickening-upgrades-pointwise-analyticity" :holds-at [] :match nil}
+  {:pattern "math-formalization/construction-cost-asymmetry" :holds-at [] :match nil}
+  {:pattern "math-formalization/field-simp-reciprocal" :holds-at [] :match nil}
+  {:pattern "math-formalization/fixed-field-equality-via-degree-and-automorphism-count" :holds-at [] :match nil}
+  {:pattern "math-formalization/lift-prove-upstairs-reflect-by-injectivity" :holds-at [] :match nil}
+  {:pattern "math-formalization/memlp-power-law-scalar-thresholds" :holds-at [] :match nil}
+  {:pattern "math-formalization/minmax-normalization" :holds-at [] :match nil}
+  {:pattern "math-formalization/normalize-meromorphic-point-values-before-continuation" :holds-at [] :match nil}
+  {:pattern "math-formalization/notation-semantics-traps" :holds-at [] :match nil}
+  {:pattern "math-formalization/pointwise-hassum-to-taylor-coefficients-via-fps-uniqueness" :holds-at [] :match nil}
+  {:pattern "math-formalization/probe-constant-name-and-signature" :holds-at [] :match nil}
+  {:pattern "math-formalization/recover-radical-generators-from-a-reciprocal-polynomial-root" :holds-at [] :match nil}
+  {:pattern "math-formalization/replace-orbit-combinatorics-by-a-cyclic-module-quotient" :holds-at [] :match nil}
+  {:pattern "math-formalization/rewrite-orientation" :holds-at [] :match nil}
+  {:pattern "math-formalization/separate-proof-transfer-from-artifact-replay" :holds-at [] :match nil}
+  {:pattern "math-formalization/stamp-siblings-from-one-compiled-branch" :holds-at [] :match nil}
+  {:pattern "math-formalization/statement-ladder-before-proof-text" :holds-at [] :match nil}
+  {:pattern "math-formalization/tactic-algebra-interference" :holds-at [] :match nil}
+  {:pattern "math-formalization/transport-across-an-instance-diamond" :holds-at [] :match nil}
+  {:pattern "math-formalization/weld-range-lemmas-at-representation-seams" :holds-at [] :match nil}
+  {:pattern "math-formalization-CA/ae-integral-zero" :holds-at [] :match nil}
+  {:pattern "math-formalization-CA/complex-arg-of-cpow-root" :holds-at [] :match nil}
+  {:pattern "math-formalization-CA/continuous-linear-map-composition" :holds-at [] :match nil}
+  {:pattern "math-formalization-CA/divisor-sum-to-root-count-without-monic" :holds-at [] :match nil}
+  {:pattern "math-formalization-CA/fourier-inversion-for-real-oscillatory-integrals" :holds-at [] :match nil}
+  {:pattern "math-formalization-CA/hilbert-projection-properties" :holds-at [] :match nil}
+  {:pattern "math-formalization-CA/laurent-clearing-to-algebraic-polynomial" :holds-at [] :match nil}
+  {:pattern "math-formalization-CA/layer-cake-crossover-split" :holds-at [] :match nil}
+  {:pattern "math-formalization-CA/lp-norm-comparison" :holds-at [] :match nil}
+  {:pattern "math-formalization-CA/measure-integration-api" :holds-at [] :match nil}
+  {:pattern "math-formalization-CA/measure-restrict-simplify" :holds-at [] :match nil}
+  {:pattern "math-formalization-CA/metric-cauchy-convergence" :holds-at [] :match nil}
+  {:pattern "math-formalization-CA/ode-gronwall-api" :holds-at [] :match nil}
+  {:pattern "math-formalization-CA/pointwise-logderiv-bridge-interval-to-contour" :holds-at [] :match nil}
+  {:pattern "math-formalization-CA/radialize-via-gauge-rescale" :holds-at [] :match nil}
+  {:pattern "math-formalization-CA/riemann-darboux-api" :holds-at [] :match nil}
+  {:pattern "math-formalization-CA/rpow-exponent-limit" :holds-at [] :match nil}
+  {:pattern "math-formalization-CA/schwarz-disk-automorphism-formula" :holds-at [] :match nil}
+  {:pattern "math-formalization-CA/separation-function-from-distance" :holds-at [] :match nil}
+  {:pattern "math-formalization-CA/series-evaluation-api" :holds-at [] :match nil}
+  {:pattern "math-formalization-CA/surj-via-oriented-root-preimage" :holds-at [] :match nil}
+  {:pattern "math-formalization-CA/transfer-derivatives-via-eventuallyeq" :holds-at [] :match nil}
+  {:pattern "math-formalization-CA/uniform-continuity-boundedness" :holds-at [] :match nil}
+  {:pattern "math-informal/argue-by-contradiction" :holds-at [] :match nil}
+  {:pattern "math-informal/check-the-extreme-cases" :holds-at [] :match nil}
+  {:pattern "math-informal/construct-an-explicit-witness" :holds-at [] :match nil}
+  {:pattern "math-informal/construct-auxiliary-object" :holds-at [] :match nil}
+  {:pattern "math-informal/convert-growth-counts-to-summability-by-geometric-shells" :holds-at [] :match nil}
+  {:pattern "math-informal/dualise-the-problem" :holds-at [] :match nil}
+  {:pattern "math-informal/exploit-symmetry" :holds-at [] :match nil}
+  {:pattern "math-informal/failure-mode-characterization" :holds-at [] :match nil}
+  {:pattern "math-informal/find-the-right-abstraction" :holds-at [] :match nil}
+  {:pattern "math-informal/induction-and-well-ordering" :holds-at [] :match nil}
+  {:pattern "math-informal/local-to-global" :holds-at [] :match nil}
+  {:pattern "math-informal/parametric-tension-dissolution" :holds-at [] :match nil}
+  {:pattern "math-informal/quotient-by-irrelevance" :holds-at [] :match nil}
+  {:pattern "math-informal/reduce-to-known-result" :holds-at [] :match nil}
+  {:pattern "math-informal/separate-into-independent-pieces" :holds-at [] :match nil}
+  {:pattern "math-informal/split-into-cases" :holds-at [] :match nil}
+  {:pattern "math-informal/structural-characterization" :holds-at [] :match nil}
+  {:pattern "math-informal/structural-equivalence" :holds-at [] :match nil}
+  {:pattern "math-informal/structural-inclusion" :holds-at [] :match nil}
+  {:pattern "math-informal/the-diagonal-argument" :holds-at [] :match nil}
+  {:pattern "math-informal/transport-across-isomorphism" :holds-at [] :match nil}
+  {:pattern "math-informal/try-a-simpler-case" :holds-at [] :match nil}
+  {:pattern "math-informal/unfold-the-definition" :holds-at [] :match nil}
+  {:pattern "math-informal/work-examples-first" :holds-at [] :match nil}
+  {:pattern "math-strategy/characterization-result" :holds-at [] :match nil}
+  {:pattern "math-strategy/compose-independent-lemmas" :holds-at [] :match nil}
+  {:pattern "math-strategy/constraint-tension-resolution" :holds-at [] :match nil}
+  {:pattern "math-strategy/construction-before-estimates" :holds-at [] :match nil}
+  {:pattern "math-strategy/convention-bridge" :holds-at [] :match nil}
+  {:pattern "math-strategy/corpus-trust-protocol" :holds-at [] :match nil}
+  {:pattern "math-strategy/exhaustion-as-theorem" :holds-at [] :match nil}
+  {:pattern "math-strategy/existence-result" :holds-at [] :match nil}
+  {:pattern "math-strategy/hypothesis-category-check" :holds-at [] :match nil}
+  {:pattern "math-strategy/isolate-computational-kernel-before-transport" :holds-at [] :match nil}
+  {:pattern "math-strategy/missing-dependency-protocol" :holds-at [] :match nil}
+  {:pattern "math-strategy/non-circularity-check" :holds-at [] :match nil}
+  {:pattern "math-strategy/plan-first-attempt" :holds-at [] :match nil}
+  {:pattern "math-strategy/preemptive-objection-clearance" :holds-at [] :match nil}
+  {:pattern "math-strategy/proof-architecture" :holds-at [] :match nil}
+  {:pattern "math-strategy/property-of-object-result" :holds-at [] :match nil}
+  {:pattern "math-strategy/route-exploration-and-pivot" :holds-at [] :match nil}
+  {:pattern "math-strategy/structural-obstruction-as-theorem" :holds-at [] :match nil}
+  {:pattern "math-strategy/structural-relation-result" :holds-at [] :match nil}
+  {:pattern "math-strategy/technique-landscape-map" :holds-at [] :match nil}
+ ]
+ :counts {:patterns 97 :matched 0 :no-match 97}}

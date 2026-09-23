@@ -1,0 +1,135 @@
+;; L6+ no-source check receipt. Deterministic, path-independent rerun.
+{:library-subdir "library"
+ :library-git-sha "d26ae2a0c1281045572dd71de55bda14798e811b"
+ :search "corpus = every library/problems/*.flexiarg (legacy 6 + L5 dossier 20 incl. TRACE + L5 record/ruling 6), each with its own @holds-at tokens read from the file; per pattern in scope: (a) holds-token equality against every corpus node, (b) qualified pattern id searched in every corpus node's full text"
+ :corpus-nodes [
+  {:node "problems/commitment-temperature-is-instrumented-as-gain" :holds-at ["R14"]}
+  {:node "problems/facade-instead-of-validated-efe-model" :holds-at []}
+  {:node "problems/fundamentals-drowned-by-backlog" :holds-at []}
+  {:node "problems/g-over-cascade-is-undefined" :holds-at ["R5"]}
+  {:node "problems/most-patterns-have-no-globally-recognised-rationale" :holds-at []}
+  {:node "problems/operator-turns-become-inference-observations" :holds-at ["R2"]}
+  {:node "problems/per-tick-mismatch-instruments-outer-loop-gain" :holds-at ["R8"]}
+  {:node "problems/process-conduct-is-unassured" :holds-at []}
+  {:node "problems/r1-belief-state" :holds-at ["R1"]}
+  {:node "problems/r10-scheduled-entrypoint" :holds-at ["R10"]}
+  {:node "problems/r11-hierarchical-shared-budget" :holds-at ["R11"]}
+  {:node "problems/r12-two-layer-calibration" :holds-at ["R12"]}
+  {:node "problems/r13-temporal-policy-depth" :holds-at ["R13"]}
+  {:node "problems/r14-commitment-temperature" :holds-at ["R14"]}
+  {:node "problems/r15-hierarchy-and-timescale" :holds-at ["R15"]}
+  {:node "problems/r16-grounded-actuation" :holds-at ["R16"]}
+  {:node "problems/r17-structure-learning" :holds-at ["R17"]}
+  {:node "problems/r2-structured-observation" :holds-at ["R2"]}
+  {:node "problems/r20-interoceptive-tripwires" :holds-at ["R20"]}
+  {:node "problems/r3-belief-update" :holds-at ["R3"]}
+  {:node "problems/r3a-prediction-error-projection" :holds-at ["R3a"]}
+  {:node "problems/r4-forward-model" :holds-at ["R4"]}
+  {:node "problems/r5-expected-free-energy-core" :holds-at ["R5"]}
+  {:node "problems/r6-candidate-action-space-and-selection" :holds-at ["R6"]}
+  {:node "problems/r7-evidence-channel-precision" :holds-at ["R7"]}
+  {:node "problems/r8-present-fit-mismatch" :holds-at ["R8"]}
+  {:node "problems/r9-no-self-certification" :holds-at ["R9"]}
+  {:node "problems/refusal-prediction-error-v1--source-field-missing" :holds-at []}
+  {:node "problems/satisfied-rungs-are-counted-and-surfaced" :holds-at ["R5"]}
+  {:node "problems/spec-and-implementation-must-converge-to-runtime-certificates" :holds-at []}
+  {:node "problems/tension-proposes-candidates" :holds-at ["R6"]}
+  {:node "problems/trace-wm-trace-store-route-ledger" :holds-at ["TRACE"]}
+ ]
+ :patterns [
+  {:pattern "ukrns/anchor-case-maintenance" :holds-at [] :match nil}
+  {:pattern "ukrns/assumptions-commons" :holds-at [] :match nil}
+  {:pattern "ukrns/calibrate-impact-promises-to-current-indicator-capacity" :holds-at [] :match nil}
+  {:pattern "ukrns/coding-provenance" :holds-at [] :match nil}
+  {:pattern "ukrns/computation-as-exploration" :holds-at [] :match nil}
+  {:pattern "ukrns/cycle-position-publication" :holds-at [] :match nil}
+  {:pattern "ukrns/design-as-function-of-evidence" :holds-at [] :match nil}
+  {:pattern "ukrns/design-state-lineage" :holds-at [] :match nil}
+  {:pattern "ukrns/diagnose-before-prescribing" :holds-at [] :match nil}
+  {:pattern "ukrns/distinguish-delivery-from-practice-change" :holds-at [] :match nil}
+  {:pattern "ukrns/distributed-coverage" :holds-at [] :match nil}
+  {:pattern "ukrns/exercise-response-capture" :holds-at [] :match nil}
+  {:pattern "ukrns/join-up-training-indicators-and-sector-positioning" :holds-at [] :match nil}
+  {:pattern "ukrns/measure-where-least-sure" :holds-at [] :match nil}
+  {:pattern "ukrns/model-recompute-schedule" :holds-at [] :match nil}
+  {:pattern "ukrns/open-the-triangle" :holds-at [] :match nil}
+  {:pattern "ukrns/provision-at-network-scale" :holds-at [] :match nil}
+  {:pattern "ukrns/publication-cadence" :holds-at [] :match nil}
+  {:pattern "ukrns/reader-as-participant" :holds-at [] :match nil}
+  {:pattern "ukrns/reader-run-path" :holds-at [] :match nil}
+  {:pattern "ukrns/scale-register" :holds-at [] :match nil}
+  {:pattern "ukrns/self-application" :holds-at [] :match nil}
+  {:pattern "ukrns/separate-direct-indirect-and-out-of-scope-levers" :holds-at [] :match nil}
+  {:pattern "ukrns/separate-evidence-gaps-from-implementation-decisions" :holds-at [] :match nil}
+  {:pattern "ukrns/treat-funder-cycles-as-operational-rhythm" :holds-at [] :match nil}
+  {:pattern "ukrns/worked-contrast" :holds-at [] :match nil}
+  {:pattern "snatch/a-free-mark-is-always-worth-assigning" :holds-at [] :match nil}
+  {:pattern "snatch/accept-an-offer-that-beats-holding" :holds-at [] :match nil}
+  {:pattern "snatch/an-unmodelled-response-stops-the-line" :holds-at [] :match nil}
+  {:pattern "snatch/ask-for-surplus-not-surrender" :holds-at [] :match nil}
+  {:pattern "snatch/consult-the-remedy-before-exiting" :holds-at [] :match nil}
+  {:pattern "snatch/escalate-only-as-far-as-you-can-lose" :holds-at [] :match nil}
+  {:pattern "snatch/exchange-when-both-sides-gain" :holds-at [] :match nil}
+  {:pattern "snatch/forced-play-needs-a-loss-floor" :holds-at [] :match nil}
+  {:pattern "snatch/grim-cuts-the-cascade-and-never-widens-it" :holds-at [] :match nil}
+  {:pattern "snatch/have-a-temperament" :holds-at [] :match nil}
+  {:pattern "snatch/institutions-vary-by-position-and-force" :holds-at [] :match nil}
+  {:pattern "snatch/lead-with-the-exchange-rule" :holds-at [] :match nil}
+  {:pattern "snatch/mark-without-force" :holds-at [] :match nil}
+  {:pattern "snatch/non-binding-talk-still-moves-play" :holds-at [] :match nil}
+  {:pattern "snatch/play-the-authored-order-first" :holds-at [] :match nil}
+  {:pattern "snatch/preserve-the-right-to-abstain" :holds-at [] :match nil}
+  {:pattern "snatch/price-the-final-round-as-final" :holds-at [] :match nil}
+  {:pattern "snatch/probe-before-committing" :holds-at [] :match nil}
+  {:pattern "snatch/promote-the-remedy-before-the-exit" :holds-at [] :match nil}
+  {:pattern "snatch/protect-the-unprotected-move" :holds-at [] :match nil}
+  {:pattern "snatch/re-enter-after-observed-repair" :holds-at [] :match nil}
+  {:pattern "snatch/revert-then-invert" :holds-at [] :match nil}
+  {:pattern "snatch/use-talk-to-make-a-testable-offer" :holds-at [] :match nil}
+  {:pattern "snatch/widen-the-cascade-only-on-evidence" :holds-at [] :match nil}
+  {:pattern "vsatlas/accountable-poc" :holds-at [] :match nil}
+  {:pattern "vsatlas/askew-layer" :holds-at [] :match nil}
+  {:pattern "vsatlas/audience-shift" :holds-at [] :match nil}
+  {:pattern "vsatlas/current-strength-gap" :holds-at [] :match nil}
+  {:pattern "vsatlas/economic-resonance-layer" :holds-at [] :match nil}
+  {:pattern "vsatlas/festival-model" :holds-at [] :match nil}
+  {:pattern "vsatlas/isolarion-drift" :holds-at [] :match nil}
+  {:pattern "vsatlas/minimal-linking-pilot" :holds-at [] :match nil}
+  {:pattern "vsatlas/non-destructive-relational-layers" :holds-at [] :match nil}
+  {:pattern "vsatlas/offer-ladder" :holds-at [] :match nil}
+  {:pattern "vsatlas/open-ecosystem-mandate" :holds-at [] :match nil}
+  {:pattern "vsatlas/peeragogical-infrastructures" :holds-at [] :match nil}
+  {:pattern "vsatlas/pilot-offers" :holds-at [] :match nil}
+  {:pattern "vsatlas/pluriversal-infrastructure" :holds-at [] :match nil}
+  {:pattern "vsatlas/proof-of-concept-scope" :holds-at [] :match nil}
+  {:pattern "vsatlas/proof-through-pilots" :holds-at [] :match nil}
+  {:pattern "vsatlas/reasons-to-causes" :holds-at [] :match nil}
+  {:pattern "vsatlas/shared-stewardship-compact" :holds-at [] :match nil}
+  {:pattern "vsatlas/stewardship-layer" :holds-at [] :match nil}
+  {:pattern "vsatlas/story-emporium" :holds-at [] :match nil}
+  {:pattern "vsatlas/sustainable-trajectory" :holds-at [] :match nil}
+  {:pattern "vsatlas/upful-learning-trajectory" :holds-at [] :match nil}
+  {:pattern "vsatlas/value-flow-constellation" :holds-at [] :match nil}
+  {:pattern "storage/all-or-nothing-startup" :holds-at [] :match nil}
+  {:pattern "storage/canonical-interface" :holds-at [] :match nil}
+  {:pattern "storage/determinism-vs-expansion" :holds-at [] :match nil}
+  {:pattern "storage/deterministic-ingest-pipeline" :holds-at [] :match nil}
+  {:pattern "storage/deterministic-substrate" :holds-at [] :match nil}
+  {:pattern "storage/durability-first" :holds-at [] :match nil}
+  {:pattern "storage/durability-throughput-gate" :holds-at [] :match nil}
+  {:pattern "storage/error-layer-hierarchy" :holds-at [] :match nil}
+  {:pattern "storage/graph-memory-contract" :holds-at [] :match nil}
+  {:pattern "storage/guardrails-vs-tooling" :holds-at [] :match nil}
+  {:pattern "storage/identity-flex-uniqueness" :holds-at [] :match nil}
+  {:pattern "storage/identity-uniqueness" :holds-at [] :match nil}
+  {:pattern "storage/invariants-vs-repair" :holds-at [] :match nil}
+  {:pattern "storage/open-world-continuity" :holds-at [] :match nil}
+  {:pattern "storage/open-world-velocity-validation" :holds-at [] :match nil}
+  {:pattern "storage/persistence-speed-mirroring" :holds-at [] :match nil}
+  {:pattern "storage/postcommit-materialization-gate" :holds-at [] :match nil}
+  {:pattern "storage/rapid-debugging" :holds-at [] :match nil}
+  {:pattern "storage/reproducible-mirroring" :holds-at [] :match nil}
+  {:pattern "storage/schema-evolution-stability" :holds-at [] :match nil}
+  {:pattern "storage/startup-integrity-gate" :holds-at [] :match nil}
+ ]
+ :counts {:patterns 94 :matched 0 :no-match 94}}

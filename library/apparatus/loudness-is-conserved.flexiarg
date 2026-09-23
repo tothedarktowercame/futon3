@@ -7,8 +7,6 @@
 @status promoted (field trial 2026-09-08, APM repair program S1-S10; evidence: futon3c/holes/technotes/TN-apm-principle-scoring-ledger.md @ b0c36489; Joe's ruling 2026-09-08)
 @references [apparatus/monitors-measure-the-work apparatus/every-wait-has-a-deadline]
 @see-also apparatus/new-failure-class-is-a-design-defect
-@why futon3c/holes/T-apm-recurring-failure-end-to-end.md (790c0491): three individually-correct remedies in sequence — quota fast-burn reclassified to a bounded silent wait; void-and-advance replaced by evidence-preserving parks; escaped findings given rescue routes — composed into a campaign that converged on not-dying rather than working, and was dead for 63 minutes reporting state: ok.
-@how own mechanism: a remedy that quiets a failure must state who learned of the failure before and at what latency, and must deliver an alarm reaching the same party at comparable latency, or be rejected at review.
 @violation-signature A failure that used to reach an operator or owner now terminates in a state with no notification path; a review approves a remedy as "quieter but correct" with no stated loudness bar to clear.
 ! conclusion: Every remedy that converts a failure into a quieter state must add an alarm of the loudness it removed — named party, comparable latency — or be rejected at review.
 

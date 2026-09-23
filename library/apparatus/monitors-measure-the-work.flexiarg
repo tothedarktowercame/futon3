@@ -7,8 +7,6 @@
 @status promoted (field trial 2026-09-08, APM repair program S1-S10; evidence: futon3c/holes/technotes/TN-apm-principle-scoring-ledger.md @ b0c36489; Joe's ruling 2026-09-08)
 @references [apparatus/loudness-is-conserved apparatus/done-is-observed-running]
 @see-also apparatus/new-failure-class-is-a-design-defect
-@why APM (durable_coordinator.clj:475, pre-fix): the stall watchdog built its cursor from the coordinator's regulator state, whose only populated field was the coordinator's own tick id — a value that changes every tick by construction — so the progress clock reset forever and the watchdog could never fire; f193 was dead 63 minutes at state: ok. The same error was made twice more independently (operator strip; suppression condition). WM (futon2 e84c114e): the inverse polarity — a detector over a four-key projection of the row false-stalled on a healthy frame writing a fifth key, the third such false stall.
-@how own mechanism: the progress cursor is a total function of the object of work read from its durable record; nil object-identity is an alarm; commissioning requires witnessing both an induced real failure fire the alarm and an induced healthy transition pass in silence.
 @violation-signature The cursor lacks the work object's identity, or its fields resolve nil and the monitor proceeds; the monitor has never fired in its lifetime; the monitored projection has been widened once per incident; the detector was commissioned by code review alone.
 ! conclusion: A progress cursor is a total function of the object of work; a monitor whose inputs resolve to nothing alarms rather than degrades; and a detector is commissioned only by witnessing it fire on an induced failure AND stay silent across an induced healthy transition.
 

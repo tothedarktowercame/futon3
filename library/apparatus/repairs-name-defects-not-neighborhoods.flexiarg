@@ -7,8 +7,6 @@
 @status promoted (discovered during the 2026-09-08 field trial by claude-5, S5 slice 1; drafted claude-9, redlined claude-5; evidence: futon3c/holes/technotes/TN-apm-principle-scoring-ledger.md @ b0c36489; Joe's ruling 2026-09-08)
 @references [apparatus/new-failure-class-is-a-design-defect apparatus/done-is-observed-running]
 @see-also apparatus/pin-moves-with-the-population
-@why APM S5 slice 1 (2026-09-08): the wrapper-reconciliation fault fired twice, on f177 and f194. f177's park record credited commit f4ae8d5a — a real repair of a DIFFERENT fault in the same few lines — and hedged "watch f188+ for recurrence". The class recurred exactly once more while marked handled — at f194, where it discarded an authenticated submission. (An earlier count of seven was the drafter's own instrument error, caught because this pattern demands checkable claims; ledger b0c36489 records the correction.)
-@how own mechanism: an apparatus-repair citation names the checkable defect it closes (a violation signature made absent), never the commit or region it landed near; an adjudication carrying a forward-looking hedge is returned as unclosed.
 @violation-signature PRIMARY: the record hedges forward — "watch for recurrence" is the author recording that they know the citation does not close the defect, and filing anyway. Weak corroborating tell: proximity language ("same few lines", "that area was just fixed") standing where a defect statement should be.
 ! conclusion: A repair citation names the checkable defect it closes — never the commit, file, or region it landed near — and a citation that hedges toward future recurrence is an admission, not a closure.
 

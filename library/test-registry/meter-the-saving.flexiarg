@@ -7,7 +7,6 @@
 @status draft 2026-09-16 (claude-7; test_registry.clj cost fields distinguish execution from record-check and fingerprint/registration overhead)
 @references [test-registry/spot-check-at-the-declared-rate hygiene/settle-with-meters]
 @see-also buffer-cleaner/yield-settled
-@why the registry exists to save repeated execution; whether it does is an empirical claim. The only measured round trip shows no wall-time saving: JVM startup, fingerprinting and evidence API costs dominated a three-test namespace (author wrapper 3378 ms; reviewer total 4599 ms for one test).
 @how every review record carries meters: tests executed by the reviewer, tests the author's warrant covered, execution time, record-check time, fingerprint and registration overhead, and the lane per namespace. Report saving as a measured difference against the author's recorded full-namespace execution, never against an assumed rerun; report "no saving" plainly. Declared rates (spot-check count, lanes) are re-priced from these meters.
 @violation-signature a saving claimed without meters; overhead omitted; a small-namespace demo generalised to large suites; rates never revisited.
 ! conclusion: Each review reports measured execution and overhead against the author's recorded run, and states when there was no saving.

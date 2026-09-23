@@ -7,7 +7,6 @@
 @status staged (live evaluation: futon2 buffer-cleaner-adapter receipts; threshold and truth-availability emitted on every receipt)
 @references [buffer-cleaner/receipt-then-gate hygiene/settle-with-meters]
 @see-also apparatus/done-is-observed-running
-@why the worked example's most practical finding: the real cleaner cannot know its own false-kill rate (no identity/reopen history), so any "settled" report that implies measured cleanliness overclaims. The honest terminal states what was done, what threshold was declared, and what truth is unavailable.
 @how report meters only — remaining, kills-proposed, expected-recovery, fuel-charged — plus :clean-enough-threshold 16 (:declared-for-worked-example-not-measured; the historical constructed 16 is never silently used as a real verdict) and :revisit-truth :unavailable (not false; never defaulted).
 @violation-signature A terminal report containing prose success claims; a threshold presented as measured; revisit truth defaulted to false or zero where it is merely unknown.
 ! conclusion: The cycle ends with typed meters and an explicit statement of what is not known: unavailable is a legal value, false is not a substitute for it.

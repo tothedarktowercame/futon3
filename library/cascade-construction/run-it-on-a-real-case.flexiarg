@@ -10,7 +10,6 @@
 @done done after one recorded case per distinct outcome the cascade predicts (for example enabled vs blocked act), or when no recorded case exists, which is recorded. A further case is run only if it could change a guard, a grain or the decision.
 @references [pattern-interpretation/reproduce-the-recorded-run translation/test-by-reproducing-behaviour cascade-construction/read-what-exists-first]
 @see-also apparatus/monitors-measure-the-work
-@why a constructed cascade is a hypothesis about what a system should do. Running it on one real case from recorded state costs little and says whether it reproduces what happened, whether the implementation diverges from it, and — for a feature not yet built — how much the feature would actually change.
 @how take a recorded case (a state packet, a gate run, a reviewed delivery); read q0 from it with sources; run the cascade; compare with what happened; for an unbuilt feature, also run the counterfactual with the feature in place and measure the difference on the case. Let the result change the design before any code is commissioned.
 @violation-signature a feature built on an assumed saving; a cascade presented without ever meeting a real state; a divergence from the implementation explained away rather than recorded.
 ! conclusion: Run a new cascade on a real recorded case, and for unbuilt features on its counterfactual, and let the result reshape the design before building.

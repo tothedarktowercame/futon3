@@ -7,7 +7,6 @@
 @status draft 2026-09-16 (claude-7; mathlib4 scripts/rebase-contract-loci.py, dd56aa89d8, extended to live call sites 7e6760dba5)
 @references [contracts/resolve-pointers-at-head translation/bind-to-the-source]
 @see-also hygiene/observe-the-authority
-@why pointers are file:line, and every insertion above a test moves them. Rebasing by hand is slow and error-prone; rebasing by guessing lines certifies the wrong form.
 @how re-find each pointer's named form at HEAD; change a line only when the name occurs exactly once; report absence or duplication for a person. Line numbers quoted inside prose are not rebased and become stale text; keep binding pointers in structured fields.
 @violation-signature a pointer moved to the nearest defn; line numbers edited by offset; a falsifier's quoted ":440" relied on after rebase.
 ! conclusion: Rebase pointers by their named form, only on a unique match, and keep binding line numbers out of prose.

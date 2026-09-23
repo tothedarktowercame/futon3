@@ -7,7 +7,6 @@
 @status draft 2026-09-16 (claude-7; owner strings in MachineContracts.lean; ALIGNMENT "the holder must describe the code accurately")
 @references [contracts/holder-states-the-claim translation/declare-what-is-lost]
 @see-also pattern-interpretation/compile-guards-exactly
-@why a runtime never computes a Lean declaration bit for bit: floats replace reals, a tie-break picks one maximiser, a fact map is three-valued where the Lean state is closed. Undeclared, these differences are either invisible or later mistaken for bugs.
 @how the entry's owner string states every reduction: the numeric carrier, choices the Lean leaves open, conditions under which agreement holds, and gaps between the formal object and the source equation. Reductions found by review are declared before the entry closes.
 @violation-signature "computes eq. X" for a Double log-sum-exp of an ENNReal definition; a tie-break unmentioned; agreement tests that fix a closed world without saying so.
 ! conclusion: Each entry lists what the runtime does not preserve and under which conditions agreement holds.

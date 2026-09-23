@@ -7,8 +7,6 @@
 @status promoted (field trial 2026-09-08, APM repair program S1-S10; evidence: futon3c/holes/technotes/TN-apm-principle-scoring-ledger.md @ b0c36489; Joe's ruling 2026-09-08)
 @references [apparatus/done-is-observed-running apparatus/new-failure-class-is-a-design-defect]
 @see-also apparatus/loudness-is-conserved
-@why APM: the defect register (TN-apm-defect-register.md, 2026-08-27) defined the right standard — "guaranteed" means the defect cannot recur without a named mechanism failing — recorded 24 of 26 defects at "guarantee: none", and then sat as evidence rather than a work queue; twelve days later the singleton parks it predicted duly arrived. The end-to-end causal analysis (790c0491) happened within HOURS of the first deliberately scheduled halt, after weeks of patching a live campaign.
-@how own mechanism: halts are scheduled at wave boundaries; the defect register is the work queue for the halt; no new wave starts until the top "guarantee: none" rows have mechanisms.
 @violation-signature Register rows marked "guarantee: none" age across wave boundaries untouched; seam-level rebuilds happen only after an operator-forced halt; every fixing session runs against a live campaign.
 ! conclusion: Halt-and-consolidate is scheduled at wave boundaries, with the defect register as its work queue — no new wave until the top "guarantee: none" rows have mechanisms — because seam rebuilds never fit inside sessions patching a live system.
 

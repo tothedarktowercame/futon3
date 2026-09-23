@@ -7,7 +7,6 @@
 @status draft 2026-09-16 (claude-7; from futon0/README-inbox-zero.md "Generated noise" and "Only the ROOT data/ is ignored")
 @references [inbox-zero/classify-the-dirt hygiene/classify-by-remedy-judgement]
 @see-also inbox-zero/measure-against-the-remote
-@why 2,012 of the fleet's 2,610 dirty files on 2026-08-19 were one missing ignore pattern: the rules listed `migration-store*`, `switchover-store`, `ams-store.retired-*` and every other store name seen so far, and failed silently on the Linodes' `chicago-store/`. A rule that enumerates cases looks complete and fails on the case in front of you.
 @how for untracked generated output: write one pattern that describes the kind (`*-store*/`), verify it with `git check-ignore -v` on a probe path on every box that carries the kind, and confirm nothing tracked matches. Never rely on nested `data/` being ignored: only root `data/*` is (futon3c .gitignore:15), by design. Raw data goes under root data/ and travels by an explicit sha-verified sync, not git. Tracked generated outputs are out of scope here (see inbox-zero/classify-the-dirt).
 @violation-signature an ignore list of instance names; a nested data/ directory assumed ignored; an ignore rule added without check-ignore verification; ignoring a file that is tracked.
 ! conclusion: Generated noise is removed once per kind by a verified describe-the-kind ignore rule, never file by file and never by enumerating instances.

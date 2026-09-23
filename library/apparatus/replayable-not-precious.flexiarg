@@ -7,8 +7,6 @@
 @status promoted (field trial 2026-09-08, APM repair program S1-S10; evidence: futon3c/holes/technotes/TN-apm-principle-scoring-ledger.md @ b0c36489; Joe's ruling 2026-09-08)
 @references [apparatus/default-to-the-cheap-error apparatus/new-failure-class-is-a-design-defect]
 @see-also apparatus/pin-moves-with-the-population
-@why APM: because attempts are sacred data by experimental design (each attempt is a datum in the a1-vs-a2/a3 contrast) and consume provider tokens, frames could not be killed and re-run — so every failure bought bespoke preservation machinery: parks, latches, rescue chains, repair budgets, superseded/ directories, replay tooling. The preciousness decision was never made once; it was made incident-by-incident by whoever wrote each park.
-@how own mechanism: a unit of work is either cheaply killable and re-runnable from pinned inputs, or its preciousness is an explicitly named, once-decided design commitment with the preservation machinery costed against it.
 @violation-signature Preservation machinery accreting one piece per failure class; the replayability-vs-evidence tension being resolved locally, per incident, always toward preservation; a review gate that cannot afford to refuse work because rebuilding is too expensive.
 ! conclusion: A unit of work is cheaply killed and re-run from pinned inputs, or its preciousness is named as a design decision and paid for knowingly — never resolved incident-by-incident.
 

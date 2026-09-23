@@ -4,7 +4,6 @@
 @keywords repair, replay, promotion, certificate, revision, independent, pending
 @audience harness maintainers and independent reviewers
 @tone operational
-@why A repaired implementation does not inherit the witness that rejected its predecessor.
 @how Request an independent replay bound to repaired source and retain pending status until its receipt qualifies.
 
 ! conclusion: Bind certificate promotion to an independent replay of the repaired revision, not to the repair author's passing tests.

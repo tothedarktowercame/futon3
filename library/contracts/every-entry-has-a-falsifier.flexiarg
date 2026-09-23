@@ -7,7 +7,6 @@
 @status draft 2026-09-16 (claude-7; Emit.Declaration falsifier field; ALIGNMENT.md)
 @references [contracts/declare-the-reductions translation/test-by-reproducing-behaviour pattern-interpretation/reproduce-the-recorded-run]
 @see-also hygiene/receipt-then-gate
-@why a fixture that only replays values the author chose can pass for a function that computes something else. A falsifier states a concrete behaviour that would show the correspondence false, and a test that exercises it is what makes the certificate about behaviour rather than constants.
 @how each entry's falsifier names input classes and outcomes that would refute it, citing the Lean theorem and the deftest that exercise them (e.g. "p2/p1 ≠ exp(F1−F2) at equal G and habit"). At least one fixture must be able to fail for a plausible wrong implementation, not only for a crash.
 @violation-signature a falsifier that restates the claim; a fixture table copied from the implementation's own output; a sign error that every existing test passes.
 ! conclusion: Each correspondence names concrete refuting behaviours, and a test exercises at least one that a plausible wrong implementation would fail.

@@ -7,7 +7,6 @@
 @status draft 2026-09-16 (claude-7; shared by test-registry, contracts and pattern-interpretation)
 @references [test-registry/bind-warrant-to-the-diff contracts/resolve-pointers-at-head contracts/rebase-by-name pattern-interpretation/cite-the-source-bytes]
 @see-also hygiene/observe-the-authority
-@why the one part of any translation that can be checked by identity is which source it came from. If that link is loose, a later edit to the source silently orphans the translation and every downstream check compares against the wrong thing.
 @how record the source by content hash and a stable name at the moment of translation: code and test manifests by file sha (test registry), declaration and pointers resolved at committed HEAD by named form (contracts), quoted clauses cited to the pattern file's sha (interpretation). Refuse when the current source no longer matches, naming what changed.
 @violation-signature a warrant for a working tree not in its manifest; a contract satisfied by uncommitted code; an interpretation whose pattern file changed after admission.
 ! conclusion: Every translation carries a hash-level binding to its exact source and refuses when that source has moved.

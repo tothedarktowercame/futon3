@@ -10,7 +10,6 @@
 @done done when each named claim is confirmed or corrected. Reviewing again without new claims adds nothing.
 @references [cascade-construction/run-it-on-a-real-case test-registry/judge-adequacy contracts/every-entry-has-a-falsifier]
 @see-also hygiene/receipt-then-gate
-@why the constructor chooses patterns, grain and order and then writes what the steps mean in the model. The meaning part carries claims about the model's semantics that the constructor is not the authority on, and errors in it read naturally to the person who wrote them.
 @how send the constructed cascade and its interpretations to whoever owns the model's meaning, with the specific claims they should check; apply the corrections and record them; keep construction choices (which patterns, which grain) with the constructor unless the review shows they change meaning.
 @violation-signature a constructor approving its own semantic claims; review asked for "a look" without naming the claims; corrections applied silently.
 ! conclusion: The owner of the model's meaning reviews the semantic claims in a constructed cascade, and corrections are applied and recorded.

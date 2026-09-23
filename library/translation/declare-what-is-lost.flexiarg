@@ -7,7 +7,6 @@
 @status draft 2026-09-16 (claude-7; shared by contracts and pattern-interpretation)
 @references [contracts/declare-the-reductions pattern-interpretation/put-uncertainty-in-theta translation/declare-what-is-preserved]
 @see-also hygiene/settle-with-meters
-@why translation into Python loses C++'s memory layout and that is acceptable because it is known. Losses that are not declared are either invisible to the reader or rediscovered later as bugs, and conditions of agreement left implicit are violated without anyone noticing.
 @how list alongside every translation: carriers changed (reals to doubles); choices the source leaves open and the translation fixes (tie-breaks); content dropped (a pattern's BECAUSE, context and evidence; a proof's generality); and conditions under which the preserved property holds (closed-world facts). Losses found in review are added before acceptance.
 @violation-signature a contract with no reductions; an interpretation presenting a guard as "the pattern"; agreement tests that quietly fix the conditions they need.
 ! conclusion: Each translation states what it changes, fixes, drops, and requires for its equivalence to hold.

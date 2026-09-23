@@ -7,7 +7,6 @@
 @status draft 2026-09-16 (claude-7; finding F7; three worked instances, futon2 2f16128a and 0e4b7ef0)
 @references [pattern-interpretation/compile-guards-exactly translation/test-by-reproducing-behaviour contracts/every-entry-has-a-falsifier]
 @see-also hygiene/settle-with-meters
-@why a guard and effect cannot be compared to prose by hash. The available check is behavioural: run the interpreted cascade from a recorded starting state and compare what it does with what the system that follows the pattern actually did. Agreement is evidence the translation holds; disagreement names either an interpretation error or an implementation defect.
 @how take a recorded state (a state packet, a gate run, a review record), read q0 from it with sources, run the interpreted cascade under strong-Kleene enactment and under the token kernel, and compare the sequence and end state with the record. Record the comparison with the interpretation. On disagreement, decide which side is wrong and say so: the interpretation (fix it) or the implementation (file the defect against it).
 @violation-signature an interpretation admitted with no reproduction; a disagreement attributed to the model by default; a reproduction on a hand-made state presented as a recorded one.
 ! conclusion: An interpretation is checked by running it from a recorded state and comparing with the recorded behaviour, and every disagreement is attributed to the interpretation or the implementation.

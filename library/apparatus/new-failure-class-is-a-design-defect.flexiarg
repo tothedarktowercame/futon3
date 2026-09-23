@@ -7,8 +7,6 @@
 @status promoted (field trial 2026-09-08, APM repair program S1-S10; evidence: futon3c/holes/technotes/TN-apm-principle-scoring-ledger.md @ b0c36489; Joe's ruling 2026-09-08)
 @references [apparatus/evidence-to-disposition-once apparatus/replayable-not-precious]
 @see-also apparatus/loudness-is-conserved
-@why APM jit-all-open-v3: ~40 park classes seen once or twice each, most born at a process boundary and each answered with its own catch-and-park layer. Joe's ruling (2026-09-07): "rather than finding 193 new special cases, we should focus on fixing downstream writes and any other cases of apparatus failure … finding other ways to handle the latch is kind of the wrong idea." WM same night: the loop's stall-key was widened three times, one key per incident, before the one-layer-down fix (hash the whole row, futon2 e84c114e).
-@how own mechanism: the failure-class census is a closed, small, shrinking set; a new class triggers elimination one layer down, not a new handler; census size AND growth rate are reported as first-class metrics.
 @violation-signature The class census grew this wave; a handler, rescue route, or park class was added for a failure shape rather than the shape being made impossible; the same detector or classifier has been widened once per incident.
 ! conclusion: Treat every NEW failure class as a defect in the design that admitted it — eliminate it one layer down; the census of classes is closed, shrinking, and its growth rate is the reported metric.
 

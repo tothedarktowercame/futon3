@@ -1,0 +1,37 @@
+@flexiarg 象/翻译契约
+@title 翻译契约：操作者的一个回合，如何成为可执行的级联
+@keywords 翻译, 契约, 级联, 言语行为, 验收, 象2000
+@audience 操作者, 翻译回合的代理, 执行级联的代理
+@tone 分析
+@style pattern
+@status draft 2026-09-23 (claude-1；象2000 语族，尚未评审)
+@why [translation/declare-what-is-preserved translation/declare-what-is-lost translation/bind-to-the-source translation/choose-the-equivalence-check translation/test-by-reproducing-behaviour translation/route-the-untranslatable]
+@see-also [象/言即行 象/两种规格 象/象不忘 cascades/declared-skeleton proof-search/typed-hole-as-frontier]
+@provenance 出自 2026-09-23 操作者回合 turn-aWzllW：「翻译契约到底该怎么定义？」库中的 translation/ 六式已经给出契约的各款，此处只作本例的落定，不另起炉灶。
+
+! conclusion: 翻译契约共六款，逐款落定于本例：单位是片段而非回合，保的是言语行为的力与所指，弃的是余裕，凭的是源绑定，验的是行为而非文字，译不出的带类型退回。
+
+  + context: 把操作者以口述或书写给出的回合，翻译成以库中模式 id 为地址的 s-表达式级联，交由另一代理执行。
+
+  + IF:
+    需要判断一次翻译是否成立——不是它读起来是否合理，而是它是否可被接受、可被反驳、可被复核。
+
+  + HOWEVER:
+    翻译看起来总是合理的：译者同时是唯一读懂原文的人，也是唯一写出译文的人，于是「像那么回事」便成了唯一的判据。没有契约，级联只是代理对自己理解力的自述，而自述无法被证伪。
+
+  + THEN:
+    逐款落定，缺一不可。
+    + 单位与所保（translation/declare-what-is-preserved）：单位是片段——一段带言语行为力与所指的文字，不是整个回合；回合是片段的合并。跨过去必须相同的只有两样：力（请求、拒绝、授权、推迟……）与所指。措辞、语气、提及次序皆不在其内。
+    + 所弃（translation/declare-what-is-lost）：弃去余裕——冗词、情绪、人格腔。但须分清：修饰承诺强度的虚词（「大概」「我觉得」「务必」）属于力，不是余裕，不得弃。所弃之处必须可凭偏移取回，而非删去。
+    + 源绑定（translation/bind-to-the-source）：级联随身携带证据 id、精确偏移与读取时刻；源一旦移动即拒绝执行。口述转写日后可能更正，故绑定的是当时所记之文，更正以新的 as-of 出现，而非就地改写。
+    + 等价判据（translation/choose-the-equivalence-check）：译得对不对，不看与原文的相似度，而看「所声明的关系是否经行为检验」——即收到级联的代理，是否做了收到原回合的代理所做之事。
+    + 行为检验（translation/test-by-reproducing-behaviour）：以已知结局的回合为检验集，逐条比对，并把每一处不一致归到某一侧：翻译错，还是执行错。二者不得混记。
+    + 译不出的（translation/route-the-untranslatable）：不得强行就近取一个模式。写成带类型的洞（要什么、手上有什么、什么能补上），派给能写的代理，按成因计数。
+    + 交付与达成分记（象/两种规格）：级联送达不等于级联执行；验收读痕迹。
+
+  + BECAUSE:
+    契约的作用不是让翻译更准，而是让翻译可被判错。六款各自对应一种出错方式：搞错单位、偷偷丢掉力、绑错源、以文字相似冒充等价、把执行错误算作翻译错误、以近似掩盖空缺。判据一旦写明，翻译便从自述变成可被反驳的主张。
+
+    + evidence: 2026-09-23 一日之内，六种出错方式中有三种已经发生：丢掉力（把操作者的「为了分析，可以先扔掉那一簇」读成一般性同意）、绑错源（以复述的 turn-id 为键，而该字段 16,505 条中只有 6,182 个互异值、3,280 条缺失）、以近似掩盖空缺（把 1,930 条回合按聚类判为代理语域，其中 1,867 条实为 operator）。
+    + evidence: 同日的七个洞均按 route-the-untranslatable 带类型派出，由 claude-9 起草、claude-6 复核，作者与复核者相异；九份草稿的 17 处引文逐条比对原回合，无一不符。
+    + COUNTERFACTUAL: 若按本契约翻译的级联，与未声明任何一款的级联，在「收到级联者所为」与「收到原回合者所为」之间的一致率上没有差别，则契约只是仪式，应予撤回。

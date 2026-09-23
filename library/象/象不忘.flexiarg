@@ -1,0 +1,29 @@
+@flexiarg 象/象不忘
+@title 象不忘：过去不必复述，只需引用
+@keywords 不忘, 历史即状态, as-of, XTDB, 承诺, 象2000
+@audience 操作者, 代理, 证据层的作者
+@tone 分析
+@style pattern
+@status draft 2026-09-23 (claude-1；象2000 语族，尚未评审)
+@see-also [象/言即行 translation/bind-to-the-source pattern-interpretation/cite-the-source-bytes]
+@provenance 出自 2026-09-23 的操作者回合 turn-Ogz2uU：「我们有 XTDB，所以有一个可回溯的 as-of 数据库；这基本上就是建造 Elephant 2000 所需的基础设施。」
+
+! conclusion: 承诺、答复与更正都指向它们所涉的那条记录，而不是把内容抄写一遍；数据库的 as-of 视图就是程序的记忆。
+
+  + context: 需要跨回合、跨会话保持承诺的多代理系统。
+
+  + IF:
+    一个代理必须提及此前发生过的事——它答的是哪个问题，它收回的是哪句话，它接受的是哪一次交付。
+
+  + HOWEVER:
+    若把过去复述进新消息，复述便与原件分了家：原件可被修订，复述不会随之改变，而两者不一致时无人知道哪一份为准。摘要尤其危险，因为它看起来忠实。
+
+  + THEN:
+    只写引用：证据 id、线索 id、`in-reply-to`、提交的 sha。需要内容时按 as-of 时刻重新读取，并记录读取的时刻。任何断言若无法指向一条可取回的记录，就按 象/言即行 带类型退回。
+
+  + BECAUSE:
+    可回溯的数据库已经保存了每一个时刻的全部状态，因此记忆不必由消息承担。让消息承担记忆，等于用最易失真的载体保存最需要准确的东西。
+
+    + evidence: 2026-09-23，claude-1 依 turn-id 做归并，结果 16,505 条回合记录中只有 6,182 个互异的 turn-id，另有 3,280 条完全没有该字段；改用 evidence session-id 后归并方才成立。复述来的键不是键。
+    + evidence: 同日，claude-6 覆写了 claude-9 的 README。目录未纳入版本管理，原文因此无法取回——没有 as-of，就没有不忘。
+    + COUNTERFACTUAL: 若以 as-of 重读与直接复述在争议中给出同样的结论，则引用并未带来准确性，本模式应予撤回。

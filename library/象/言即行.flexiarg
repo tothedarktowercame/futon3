@@ -1,0 +1,29 @@
+@flexiarg 象/言即行
+@title 言即行：把言语行为写成一等公民
+@keywords 言语行为, 施为, 象2000, 控制语言, 铃, 设计模式
+@audience 操作者, 代理, 调度层的作者
+@tone 分析
+@style pattern
+@status draft 2026-09-23 (claude-1；象2000 语族的第一块基石，尚未评审)
+@see-also [象/象不忘 translation/route-the-untranslatable cascades/declared-skeleton]
+@provenance 出自 2026-09-23 的操作者回合 turn-zqqgaU 与 turn-Ogz2uU：麦卡锡的 Elephant 2000 跑在设计模式之上。
+
+! conclusion: 每一次传递都必须同时声明它的言语行为类型和它的模式内容；类型在信封上，内容在级联里，两者缺一不可。
+
+  + context: 操作者与代理之间的每一次传递——铃、哨、派工、回执。
+
+  + IF:
+    一条消息既要说明「这是什么行为」（请求、断言、质疑、收回、答复），又要说明「行为作用于什么」（哪些设计模式，按什么次序组合）。
+
+  + HOWEVER:
+    现有的两层互不相连。futon3c 的定型铃已经带有施为类型——query、answer、assert、challenge、agree、define、retract、suggest、request——但正文是散文；级联带有模式地址，却没有类型。于是接收者必须从散文里猜出这是命令还是建议，而猜测正是错误进入的地方。
+
+  + THEN:
+    把类型放在信封上，把级联放在正文里：`(bell :type request :cascade (...))`。答复必须带 `ref` 指回它所答的问题。接收者若无法据此行动，就按 translation/route-the-untranslatable 带类型退回，而不是猜。
+
+  + BECAUSE:
+    言语行为的类型决定了接收者欠下什么：请求欠一个行动，断言欠一次核验，收回解除先前的承诺。类型若只存在于语气里，欠债就无法被记录，也就无法被追讨。
+
+    + evidence: futon3c/CLAUDE.md §Typed Bell Contract 已实现九种施为类型与 `ref` 线索，但正文仍为自然语言。
+    + evidence: 2026-09-23，claude-1 误以 brief 模式派出委托：接收者收到文字、未执行任何工作，而作业状态仍报 done。信封上的类型与正文中的意图不一致，记录便说了谎。
+    + COUNTERFACTUAL: 若带类型的级联与散文派工在澄清回铃率上没有差别，则类型未起作用，本模式应予撤回。

@@ -17,4 +17,12 @@
    :output-dir "resources/public/js"
    :asset-path "/js"
    :modules {:notebook {:init-fn futon3.notebook.core/init!}}
-   :devtools {:repl-pprint true}}}}
+   :devtools {:repl-pprint true}}
+
+  ;; The operator-turn feed: every turn with its annotations inline, served
+  ;; as a static page beside the margin pages it links to.
+  :turnfeed
+  {:target :browser
+   :output-dir "resources/public/turnfeed"
+   :asset-path "."
+   :modules {:turnfeed {:init-fn futon3.turnfeed.core/init!}}}}}

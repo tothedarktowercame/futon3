@@ -12,7 +12,7 @@ Fountain-style markers (`!`, `+`, `?`).
 3. Run `M-x flexiarg-show-edn` to render the buffer as the EDN structure used by `compile-summary`.
 4. Copy the EDN output into the aggregate file `library/t4r/specs.edn` (it is a vector of maps).
    - If you edit multiple sections, regenerate each EDN block and replace the corresponding map.
-5. Run any of the CLI helpers, e.g. `clojure -M -m compile-summary prompt t4r/exec-summary-tree`, to
+5. Run any of the CLI helpers, e.g. `clojure -M -m compile-summary prompt t4r/exec-summary`, to
    confirm that the new data loads correctly.
 
 `compile-summary.clj` now reads from `library/t4r/specs.edn`, so updating that file (via the steps above)

@@ -36,6 +36,150 @@
   (when-let [c (intent-chip intent)]
     [:img.chip {:src (str "chips/" c ".png") :alt "" :title (str intent " · " c)}]))
 
+;; --- the IBOL legend ----------------------------------------------------------
+;; What each chip means on this page, read three ways: the ChipWits operator
+;; (the 1984 manual, chipwits-forth/docs/ChipWits_Mac_Manual.pdf), the intent
+;; label the annotator gives a span of Joe's turn, and where that turn lands in
+;; the agent's perception-action loop. The stages and R-nodes are the War
+;; Machine catalogue's (p4ng/empirics-futon/control-stages.edn); the IBOL-as-AIF
+;; readings follow futon2 holes/labs/wm-contract/NOTE-ibol-to-aif.md where it
+;; has one. Which R-node each intent lands on is claude-12's proposal
+;; (2026-09-25), not a measured fact: the test is whether turns read this way
+;; predict what the agent did next.
+
+(def loop-stages
+  [["PERCEIVE" "what the agent observes"]
+   ["BELIEVE"  "what it takes to be the case, and how sure it is"]
+   ["EVALUATE" "how it scores what could happen"]
+   ["SELECT"   "which course it commits to, and over what horizon"]
+   ["ACT"      "what it does, and who certifies it"]
+   ["ANNOTATOR" "not the agent's loop: the reading of the turn itself"]])
+
+(def legend-rows
+  [{:stage "PERCEIVE" :chip "arg-bomb" :ibol "BOMB (a Thing)"
+    :ibol-says "a Thing that damages the robot if it is zapped or run into"
+    :intents ["report-problem"] :r "R8 present-fit mismatch"
+    :aif "Joe reports that something the agent produced does not fit the world: a prediction error delivered from outside. It is a hit on the damage meter, not a new goal."}
+   {:stage "PERCEIVE" :chip "op-sing" :ibol "SING"
+    :ibol-says "sing a note; the manual's only non-behavioural output"
+    :intents ["explain" "report"] :r "R2 structured observation"
+    :aif "Joe supplies context the agent could not observe for itself. Evidence for the agent, though the chip is the robot's own voice: the note on SING (self-report is not evidence) applies to the agent singing, not to Joe."}
+   {:stage "BELIEVE" :chip "op-look-for" :ibol "LOOK (for a Thing)"
+    :ibol-says "look ahead for a named Thing; true wire if seen, false if not"
+    :intents ["clarify"] :r "R7 evidence-channel precision"
+    :aif "Joe sharpens what an earlier ask meant. The observation is the same; its precision goes up, so the agent should weight it more and its own guess less."}
+   {:stage "BELIEVE" :chip "op-num-equal" :ibol "COMPARE NUMBER: EQUAL?"
+    :ibol-says "test a value against a number; branch on the answer"
+    :intents ["qualify"] :r "R3 belief update"
+    :aif "Joe narrows a claim to where it holds. The belief is kept but its scope is cut."}
+   {:stage "BELIEVE" :chip "op-plus" :ibol "INCREMENT"
+    :ibol-says "add one to the top of the number stack"
+    :intents ["approve"] :r "R3 belief update"
+    :aif "Positive evidence on the agent's last step. In the IBOL note this is fuel: operator attention restored."}
+   {:stage "BELIEVE" :chip "op-minus" :ibol "DECREMENT"
+    :ibol-says "subtract one from the top of the number stack"
+    :intents ["disagree"] :r "R3 belief update"
+    :aif "Negative evidence: Joe holds a different belief and says so. Unlike report-problem, the disagreement is about the model, not about an output."}
+   {:stage "BELIEVE" :chip "op-pickup" :ibol "PICK UP"
+    :ibol-says "take whatever Thing is directly ahead"
+    :intents ["collect"] :r "R1 belief state"
+    :aif "Joe asks for something to be gathered into the agent's working state. The IBOL note: you can only pick up what was observed adjacent."}
+   {:stage "EVALUATE" :chip "arg-wall" :ibol "WALL (a Thing)"
+    :ibol-says "part of the room the robot cannot pass"
+    :intents ["constrain"] :r "R5 expected free energy (preferences)"
+    :aif "Joe rules out a region of outcomes. In AIF terms it changes the preferences G is scored against; in the IBOL note a wall is an invariant or refusal."}
+   {:stage "EVALUATE" :chip "op-wire" :ibol "WIRE"
+    :ibol-says "the authored edge between two chips"
+    :intents ["extend"] :r "R4 forward model"
+    :aif "Joe adds a step or link the agent's model of consequences did not have: an authored edge in the cascade."}
+   {:stage "SELECT" :chip "op-subpanel" :ibol "SUB-PANEL"
+    :ibol-says "call one of the seven sub-programs, then continue"
+    :intents ["propose"] :r "R6 candidate action space"
+    :aif "Joe offers a course of action the agent may not have generated. It enters the candidate set; it is not yet chosen."}
+   {:stage "SELECT" :chip "arg-num-stack" :ibol "NUMBER STACK"
+    :ibol-says "the ordered stack of values the robot keeps"
+    :intents ["prioritize"] :r "R14 commitment temperature"
+    :aif "Joe orders the candidates. The agent should commit more sharply to the one ranked first."}
+   {:stage "SELECT" :chip "arg-turn-right" :ibol "TURN (right)"
+    :ibol-says "rotate the robot in place"
+    :intents ["redirect"] :r "R15 hierarchy and timescale"
+    :aif "The layer above overrides the current course. Joe acting as the slower, higher layer of a hierarchical model."}
+   {:stage "SELECT" :chip "op-keypress" :ibol "KEYPRESS"
+    :ibol-says "check whether the player pressed a key; the always-checked chip"
+    :intents ["defer"] :r "R13 temporal policy depth"
+    :aif "Joe moves something to later. The horizon changes; the item stays."}
+   {:stage "SELECT" :chip "op-boomerang" :ibol "BOOMERANG"
+    :ibol-says "return from a sub-panel to the main panel"
+    :intents ["delegate"] :r "R11 hierarchical shared budget"
+    :aif "Work is handed to another agent and comes back with a value. The budget is shared across the two."}
+   {:stage "ACT" :chip "op-go" :ibol "GO"
+    :ibol-says "the GO marker: where a panel starts executing"
+    :intents ["ask-action"] :r "R16 grounded enactment"
+    :aif "Joe asks the agent to do something in the world, not to say something about it."}
+   {:stage "ACT" :chip "arg-forward" :ibol "MOVE (forward)"
+    :ibol-says "one step ahead"
+    :intents ["continue"] :r "R16 grounded enactment"
+    :aif "Keep enacting the current course."}
+   {:stage "ACT" :chip "op-qray" :ibol "Q-RAY"
+    :ibol-says "scan a square to learn what is actually there"
+    :intents ["verify"] :r "R9 no self-certification"
+    :aif "Joe asks for a check the agent's own account cannot supply. An epistemic act, and the assurance node that an agent may not certify itself."}
+   {:stage "ANNOTATOR" :chip "op-flip-coin" :ibol "COIN FLIP"
+    :ibol-says "a random choice between the true and false wires"
+    :intents ["unresolved"] :r "—"
+    :aif "The annotator could not settle an intent. In the IBOL note a coin flip is a tie recorded in the open; here it marks a span left unread, not a move by Joe."}])
+
+(defn intent-counts [turns]
+  (frequencies (for [t turns n (:notes t)] (:intent n))))
+
+(defn ibol-legend [turns]
+  (let [counts (intent-counts turns)
+        charted (set (mapcat :intents legend-rows))
+        unchipped (sort-by (comp - val) (remove (comp charted key) counts))
+        cell {:style {:padding ".35rem .6rem .35rem 0" :vertical-align "top"
+                      :border-bottom "1px solid #eee"}}]
+    [:details.ibol-legend {:style {:width "100%" :margin "0 0 2rem 0" :font-size ".78rem"
+                                   :line-height 1.45 :color "#333"}}
+     [:summary {:style {:cursor "pointer" :color "#b8431f"}}
+      "Legend: chips, intents, and what a turn does to the agent's loop"]
+     [:p {:style {:max-width "46rem"}}
+      "Each note in the margin reads one span of Joe's turn as an "
+      [:span.intent "intent"]
+      ". The chip beside it is a ChipWits IBOL operator (Doug Sharp, 1984), "
+      "kimi-2's alignment of that intent. The last two columns read the same span "
+      "from the agent's side: an operator turn is an observation arriving at one "
+      "stage of the agent's perceive–believe–evaluate–select–act loop, and the "
+      "R-node names that stage in the War Machine catalogue. The R-node for each "
+      "intent is a proposal (claude-12, 2026-09-25): it is right if turns read this "
+      "way predict what the agent did next. Counts are the notes on this page."]
+     [:table {:style {:border-collapse "collapse" :width "100%"}}
+      [:thead
+       [:tr (for [h ["" "IBOL operator" "intent · notes here" "R-node" "what the turn does, in AIF terms"]]
+              ^{:key h} [:th (assoc-in cell [:style :text-align] "left") h])]]
+      [:tbody
+       (for [[stage gloss] loop-stages
+             :let [rows (filter #(= stage (:stage %)) legend-rows)]
+             :when (seq rows)]
+         ^{:key stage}
+         [:<>
+          [:tr [:td {:col-span 5 :style {:padding ".9rem 0 .2rem 0" :font-variant "small-caps"
+                                         :letter-spacing ".05em" :color "#555"}}
+                (str (str/lower-case stage) " — " gloss)]]
+          (for [{:keys [chip ibol ibol-says intents r aif]} rows]
+            ^{:key chip}
+            [:tr
+             [:td cell [:img.chip {:src (str "chips/" chip ".png") :alt "" :title chip}]]
+             [:td cell [:b ibol] [:br] [:span {:style {:color "#777"}} ibol-says]]
+             [:td cell (for [i intents]
+                         ^{:key i} [:div [:span.intent i] " " (get counts i 0)])]
+             [:td cell r]
+             [:td cell aif]])])]]
+     (when (seq unchipped)
+       [:p {:style {:color "#777"}}
+        "Intents on this page with no chip: "
+        (str/join ", " (for [[i n] unchipped] (str i " " n)))
+        ". A missing icon is not worth a wrong one."])]))
+
 (def feed-url "feed-claude-1.json")
 (def poll-ms 10000)
 
@@ -148,6 +292,7 @@
       (if error (str "feed error: " error)
           (str "refreshed " (some-> fetched-at (.toLocaleTimeString))))
       " · polling every " (quot poll-ms 1000) "s"]
+     [ibol-legend turns]
      [:p.legend
       [:span {:class "tk-pattern"} "pattern (resolves)"]
       [:span {:class "tk-dangling"} "id with no file"]

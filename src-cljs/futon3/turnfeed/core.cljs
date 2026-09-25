@@ -133,13 +133,47 @@
 ;; note, so it carries the same small caps and colour itself.
 (def intent-style {:font-variant "small-caps" :letter-spacing ".04em" :color "#b8431f"})
 
-(defn intent-counts [turns]
-  (frequencies (for [t turns n (:notes t)] (:intent n))))
+(defn here-stats
+  "Per intent on this page: notes, and how many cite a library pattern."
+  [turns]
+  (reduce (fn [m n]
+            (-> m
+                (update-in [(:intent n) :n] (fnil inc 0))
+                (update-in [(:intent n) :with-pattern] (fnil + 0) (if (seq (:patterns n)) 1 0))))
+          {}
+          (for [t turns n (:notes t)] n)))
 
-(defn ibol-legend [turns]
-  (let [counts (intent-counts turns)
+(defn fetch-mined! []
+  ;; Written by futon3c/scripts/mined_intent_stats.py, which maps Kimi's open
+  ;; labels onto this vocabulary through resources/turnfeed/intent-crosswalk.json.
+  (-> (js/fetch (str "mined-intents.json?t=" (.now js/Date)) #js {:cache "no-store"})
+      (.then #(if (.-ok %) (.json %) (throw (js/Error. (.-status %)))))
+      (.then (fn [json] (swap! state assoc :mined (js->clj json))))
+      (.catch #(swap! state assoc :mined {:error (str %)}))))
+
+(defn pct [a b] (if (pos? b) (str (js/Math.round (* 100 (/ a b))) "%") "–"))
+
+(def grey {:color "#888"})
+
+(defn stat-cell
+  "One intent's count, its share of the section, and the share of those
+  notes that cite a pattern."
+  [{:keys [n with-pattern]} total]
+  (let [n (or n 0)]
+    [:div {:style {:white-space "nowrap"}}
+     n " · " (pct n total)
+     [:span {:style grey} " · " (if (pos? n) (pct (or with-pattern 0) n) "–") " cite"]]))
+
+(defn ibol-legend [turns mined]
+  (let [here (here-stats turns)
+        here-total (reduce + (map :n (vals here)))
+        here-cited (reduce + (map :with-pattern (vals here)))
+        mined-by (into {} (for [[k v] (get mined "by-intent")]
+                            [k {:n (get v "n") :with-pattern (get v "with-pattern")}]))
+        unmapped (get mined "unmapped")
+        mined-total (+ (reduce + (map :n (vals mined-by))) (or (get unmapped "n") 0))
         charted (set (mapcat :intents legend-rows))
-        unchipped (sort-by (comp - val) (remove (comp charted key) counts))
+        unchipped (sort-by (comp - :n val) (remove (comp charted key) here))
         cell {:style {:padding ".35rem .6rem .35rem 0" :vertical-align "top"
                       :border-bottom "1px solid #eee"}}]
     [:details.ibol-legend {:style {:width "100%" :margin "0 0 2rem 0" :font-size ".78rem"
@@ -155,10 +189,23 @@
       "stage of the agent's perceive–believe–evaluate–select–act loop, and the "
       "R-node names that stage in the War Machine catalogue. The R-node for each "
       "intent is a proposal (claude-12, 2026-09-25): it is right if turns read this "
-      "way predict what the agent did next. Counts are the notes on this page."]
+      "way predict what the agent did next."]
+     [:p {:style {:max-width "46rem"}}
+      [:b "Here"] ": the notes on this page — " (count turns) " turns, " here-total
+      " notes, " (pct here-cited here-total) " citing a library pattern. "
+      [:b "Mined"] ": Kimi's reading of earlier turns (08-22 to 09-21) — "
+      (if (get mined "turns")
+        [:<> (get mined "turns") " turns, " mined-total " notes, "
+         (pct (get mined "with-pattern") mined-total) " citing a pattern. Kimi's labels were "
+         "open; a crosswalk maps the common ones onto this page's vocabulary. "
+         (get unmapped "n") " notes (" (pct (get unmapped "n") mined-total) "), under "
+         (get unmapped "labels") " labels that fit no one intent, are left out of the rows "
+         "below but counted in the section's total."]
+        (or (:error mined) "loading…"))
+      " Each cell: notes · share of the section · share of those notes citing a pattern."]
      [:table {:style {:border-collapse "collapse" :width "100%"}}
       [:thead
-       [:tr (for [h ["IBOL operator" "intent · notes here" "R-node" "what the turn does, in AIF terms"]]
+       [:tr (for [h ["IBOL operator" "intent" "here" "mined" "R-node" "what the turn does, in AIF terms"]]
               ^{:key h} [:th (assoc-in cell [:style :text-align] "left") h])]]
       [:tbody
        (for [[stage gloss] loop-stages
@@ -166,7 +213,7 @@
              :when (seq rows)]
          ^{:key stage}
          [:<>
-          [:tr [:td {:col-span 4 :style {:padding ".9rem 0 .2rem 0" :font-variant "small-caps"
+          [:tr [:td {:col-span 6 :style {:padding ".9rem 0 .2rem 0" :font-variant "small-caps"
                                          :letter-spacing ".05em" :color "#555"}}
                 (str (str/lower-case stage) " — " gloss)]]
           (for [{:keys [chip ibol ibol-says intents r aif]} rows]
@@ -184,15 +231,26 @@
                             :style {:height "2.7em" :margin 0 :opacity 0.8}}]]
                [:div [:b ibol] [:br] [:span {:style {:color "#777"}} ibol-says]]]]
              [:td cell (for [i intents]
-                         ^{:key i} [:div [:span.intent {:style intent-style} i] " " (get counts i 0)])]
+                         ^{:key i} [:div {:style {:white-space "nowrap"}} [:span.intent {:style intent-style} i]])]
+             [:td cell (for [i intents] ^{:key i} [stat-cell (get here i) here-total])]
+             [:td cell (for [i intents] ^{:key i} [stat-cell (get mined-by i) mined-total])]
              [:td cell r]
              [:td cell aif]])])]]
      (when (seq unchipped)
        [:p {:style {:color "#777"}}
-        "Intents on this page with no chip: "
-        (interpose ", " (for [[i n] unchipped]
+        "Intents here with no chip: "
+        (interpose ", " (for [[i {:keys [n]}] unchipped]
                           ^{:key i} [:<> [:span.intent {:style intent-style} i] " " n]))
-        ". A missing icon is not worth a wrong one."])]))
+        (when-let [m (get mined-by "provide-reference")]
+          (str " (mined: provide-reference " (:n m) ")"))
+        ". A missing icon is not worth a wrong one."])
+     (when (seq (get unmapped "top"))
+       [:p {:style {:color "#777"}}
+        "Mined labels left unmapped, most frequent first: "
+        (str/join ", " (for [[l n] (get unmapped "top")] (str l " " n)))
+        ". They are evaluations whose polarity was not recorded, discourse markers, and "
+        "labels whose examples split between two intents (futon3c "
+        "resources/turnfeed/intent-crosswalk.json)."])]))
 
 (def feed-url "feed-claude-1.json")
 (def poll-ms 10000)
@@ -297,7 +355,7 @@
                      (str/lower-case needle))))
 
 (defn app []
-  (let [{:keys [turns fetched-at error lit filter]} @state
+  (let [{:keys [turns fetched-at error lit filter mined]} @state
         shown (filterv #(matches? filter %) turns)]
     [:div
      [:h1 "Operator turns"]
@@ -306,7 +364,7 @@
       (if error (str "feed error: " error)
           (str "refreshed " (some-> fetched-at (.toLocaleTimeString))))
       " · polling every " (quot poll-ms 1000) "s"]
-     [ibol-legend turns]
+     [ibol-legend turns mined]
      [:p.legend
       [:span {:class "tk-pattern"} "pattern (resolves)"]
       [:span {:class "tk-dangling"} "id with no file"]
@@ -325,4 +383,5 @@
 (defn ^:export init! []
   (rdom-client/render @root [app])
   (fetch!)
+  (fetch-mined!)
   (js/setInterval fetch! poll-ms))

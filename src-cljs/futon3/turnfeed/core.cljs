@@ -129,6 +129,10 @@
     :intents ["unresolved"] :r "—"
     :aif "The annotator could not settle an intent. In the IBOL note a coin flip is a tie recorded in the open; here it marks a span left unread, not a move by Joe."}])
 
+;; The feed's CSS styles .intent only inside a .note; the legend is not a
+;; note, so it carries the same small caps and colour itself.
+(def intent-style {:font-variant "small-caps" :letter-spacing ".04em" :color "#b8431f"})
+
 (defn intent-counts [turns]
   (frequencies (for [t turns n (:notes t)] (:intent n))))
 
@@ -144,7 +148,7 @@
       "Legend: chips, intents, and what a turn does to the agent's loop"]
      [:p {:style {:max-width "46rem"}}
       "Each note in the margin reads one span of Joe's turn as an "
-      [:span.intent "intent"]
+      [:span.intent {:style intent-style} "intent"]
       ". The chip beside it is a ChipWits IBOL operator (Doug Sharp, 1984), "
       "kimi-2's alignment of that intent. The last two columns read the same span "
       "from the agent's side: an operator turn is an observation arriving at one "
@@ -171,13 +175,14 @@
              [:td cell [:img.chip {:src (str "chips/" chip ".png") :alt "" :title chip}]]
              [:td cell [:b ibol] [:br] [:span {:style {:color "#777"}} ibol-says]]
              [:td cell (for [i intents]
-                         ^{:key i} [:div [:span.intent i] " " (get counts i 0)])]
+                         ^{:key i} [:div [:span.intent {:style intent-style} i] " " (get counts i 0)])]
              [:td cell r]
              [:td cell aif]])])]]
      (when (seq unchipped)
        [:p {:style {:color "#777"}}
         "Intents on this page with no chip: "
-        (str/join ", " (for [[i n] unchipped] (str i " " n)))
+        (interpose ", " (for [[i n] unchipped]
+                          ^{:key i} [:<> [:span.intent {:style intent-style} i] " " n]))
         ". A missing icon is not worth a wrong one."])]))
 
 (def feed-url "feed-claude-1.json")

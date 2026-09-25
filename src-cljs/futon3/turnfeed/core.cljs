@@ -172,13 +172,14 @@
           (for [{:keys [chip ibol ibol-says intents r aif]} rows]
             ^{:key chip}
             [:tr
-             ;; The dropcap the notes use: the chip spans the operator's two
-             ;; lines and its text runs beside it.
+             ;; The notes' dropcap size, but the text keeps its own column:
+             ;; a third line starts under the second, not under the chip.
              [:td cell
-              [:img.chip {:src (str "chips/" chip ".png") :alt "" :title chip
-                          :style {:float "left" :height "2.7em" :margin ".2em .5em 0 0"
-                                  :opacity 0.8}}]
-              [:b ibol] [:br] [:span {:style {:color "#777"}} ibol-says]]
+              [:div {:style {:display "flex" :align-items "flex-start"}}
+               [:img.chip {:src (str "chips/" chip ".png") :alt "" :title chip
+                           :style {:flex "none" :height "2.7em" :margin ".2em .5em 0 0"
+                                   :opacity 0.8}}]
+               [:div [:b ibol] [:br] [:span {:style {:color "#777"}} ibol-says]]]]
              [:td cell (for [i intents]
                          ^{:key i} [:div [:span.intent {:style intent-style} i] " " (get counts i 0)])]
              [:td cell r]

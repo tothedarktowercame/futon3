@@ -176,9 +176,12 @@
              ;; a third line starts under the second, not under the chip.
              [:td cell
               [:div {:style {:display "flex" :align-items "flex-start"}}
-               [:img.chip {:src (str "chips/" chip ".png") :alt "" :title chip
-                           :style {:flex "none" :height "2.7em" :margin ".2em .5em 0 0"
-                                   :opacity 0.8}}]
+               ;; One slot width for every chip, so the text lines up down
+               ;; the column: the widest chips (15x16 at 2.7em) are ~2.55em.
+               [:div {:style {:flex "none" :width "2.6em" :margin ".2em .5em 0 0"
+                              :display "flex" :justify-content "center"}}
+                [:img.chip {:src (str "chips/" chip ".png") :alt "" :title chip
+                            :style {:height "2.7em" :margin 0 :opacity 0.8}}]]
                [:div [:b ibol] [:br] [:span {:style {:color "#777"}} ibol-says]]]]
              [:td cell (for [i intents]
                          ^{:key i} [:div [:span.intent {:style intent-style} i] " " (get counts i 0)])]

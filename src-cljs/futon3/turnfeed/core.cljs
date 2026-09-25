@@ -252,18 +252,29 @@
         "labels whose examples split between two intents (futon3c "
         "resources/turnfeed/intent-crosswalk.json)."])]))
 
-(def feed-url "feed-claude-1.json")
+;; One feed file per agent, written by futon3c/scripts/turn_margin_html.py
+;; --agent <id>. claude-12's turns come from futon1b's evidence store through
+;; scripts/operator_turn_capture.py, since Joe types to it from another Emacs.
+(def feed-urls ["feed-claude-1.json" "feed-claude-12.json"])
 (def poll-ms 10000)
 
+(defn- fetch-json [url]
+  (-> (js/fetch (str url "?t=" (.now js/Date)) #js {:cache "no-store"})
+      (.then #(if (.-ok %) (.json %) (throw (js/Error. (str url " " (.-status %))))))
+      (.then #(js->clj % :keywordize-keys true))))
+
 (defn fetch! []
-  (-> (js/fetch (str feed-url "?t=" (.now js/Date)) #js {:cache "no-store"})
-      (.then #(if (.-ok %) (.json %) (throw (js/Error. (.-status %)))))
-      (.then (fn [json]
-               (swap! state assoc
-                      :turns (js->clj json :keywordize-keys true)
-                      :fetched-at (js/Date.)
-                      :error nil)))
-      (.catch #(swap! state assoc :error (str %)))))
+  ;; A feed that fails to load is named in the error line and the others
+  ;; still show; the turns are merged newest first.
+  (-> (js/Promise.allSettled (clj->js (map fetch-json feed-urls)))
+      (.then (fn [results]
+               (let [rs (js->clj results :keywordize-keys true)
+                     ok (mapcat :value (filter #(= "fulfilled" (:status %)) rs))
+                     bad (keep #(when (= "rejected" (:status %)) (str (:reason %))) rs)]
+                 (swap! state assoc
+                        :turns (vec (sort-by :at #(compare %2 %1) ok))
+                        :fetched-at (js/Date.)
+                        :error (when (seq bad) (str/join "; " bad))))))))
 
 ;; --- rendering -------------------------------------------------------------
 

@@ -158,7 +158,7 @@
       "way predict what the agent did next. Counts are the notes on this page."]
      [:table {:style {:border-collapse "collapse" :width "100%"}}
       [:thead
-       [:tr (for [h ["" "IBOL operator" "intent · notes here" "R-node" "what the turn does, in AIF terms"]]
+       [:tr (for [h ["IBOL operator" "intent · notes here" "R-node" "what the turn does, in AIF terms"]]
               ^{:key h} [:th (assoc-in cell [:style :text-align] "left") h])]]
       [:tbody
        (for [[stage gloss] loop-stages
@@ -166,14 +166,19 @@
              :when (seq rows)]
          ^{:key stage}
          [:<>
-          [:tr [:td {:col-span 5 :style {:padding ".9rem 0 .2rem 0" :font-variant "small-caps"
+          [:tr [:td {:col-span 4 :style {:padding ".9rem 0 .2rem 0" :font-variant "small-caps"
                                          :letter-spacing ".05em" :color "#555"}}
                 (str (str/lower-case stage) " — " gloss)]]
           (for [{:keys [chip ibol ibol-says intents r aif]} rows]
             ^{:key chip}
             [:tr
-             [:td cell [:img.chip {:src (str "chips/" chip ".png") :alt "" :title chip}]]
-             [:td cell [:b ibol] [:br] [:span {:style {:color "#777"}} ibol-says]]
+             ;; The dropcap the notes use: the chip spans the operator's two
+             ;; lines and its text runs beside it.
+             [:td cell
+              [:img.chip {:src (str "chips/" chip ".png") :alt "" :title chip
+                          :style {:float "left" :height "2.7em" :margin ".2em .5em 0 0"
+                                  :opacity 0.8}}]
+              [:b ibol] [:br] [:span {:style {:color "#777"}} ibol-says]]
              [:td cell (for [i intents]
                          ^{:key i} [:div [:span.intent {:style intent-style} i] " " (get counts i 0)])]
              [:td cell r]

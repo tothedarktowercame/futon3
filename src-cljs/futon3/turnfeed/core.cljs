@@ -252,10 +252,12 @@
         "labels whose examples split between two intents (futon3c "
         "resources/turnfeed/intent-crosswalk.json)."])]))
 
-;; One feed file per agent, written by futon3c/scripts/turn_margin_html.py
-;; --agent <id>. claude-12's turns come from futon1b's evidence store through
+;; One feed covering every buffer, written by futon3c/scripts/turn_margin_html.py
+;; --agent all. Capture is on in every agent buffer by default since
+;; 2026-09-26, so a per-agent list here would silently drop the rest.
+;; claude-12's turns still reach the records through
 ;; scripts/operator_turn_capture.py, since Joe types to it from another Emacs.
-(def feed-urls ["feed-claude-1.json" "feed-claude-12.json"])
+(def feed-urls ["feed-all.json"])
 (def poll-ms 10000)
 
 (defn- fetch-json [url]

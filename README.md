@@ -1,5 +1,8 @@
 # futon3 — Canon + Legacy Interface Layer
 
+> **New to FUTON? Start with [futon0/INSTALL.md](https://github.com/tothedarktowercame/futon0/blob/main/INSTALL.md)**, the single guide to
+> installing and running the stack. Needed on disk for the core install (on Agency's classpath); you don't run it separately.
+
 futon3 is the canonical home of the Futon pattern library, holes, and a large
 slice of the stack's historical interface/tooling surface. It still contains
 MUSN, HUD, Drawbridge, and the fuclaude/fucodex wrappers, but the newer

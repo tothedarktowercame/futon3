@@ -7,6 +7,7 @@
 @status draft 2026-09-27 (claude-17；补 ARGUE-0/ARGUE-1 所列之缺，象2000 语族，尚未评审)
 @why [象/言即行]
 @see-also [象/双时并记 social/idempotent-handoff invariant-coherence/single-locus]
+@how 据 M-象-2000 级联 v2（futon3c holes/labs/M-象-2000/cascade-象2000-v2.edn）的令牌流，本模式成立之后可做的下一步：:行为定名 → 象/收回亦是行、象/限定随论。
 @provenance codex-3 批评第 4 点（2026-09-26）：act identity 不稳定；claude-14 核实 futon1b_server.clj:68 的 stable-hyperedge-id 由类型与端点推出（ARGUE-0）。
 
 ! conclusion: 行为的标识在行为发生时铸出并随行为终身不变；类型与端点相同的两次行为是两个行为。去重用显式的幂等键，不用内容哈希冒充身份。

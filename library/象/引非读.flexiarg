@@ -7,6 +7,7 @@
 @status draft 2026-09-27 (claude-17；补 ARGUE-0/ARGUE-1 所列之缺，象2000 语族，尚未评审)
 @why [象/两种规格]
 @see-also [contracts/resolve-pointers-at-head contracts/every-entry-has-a-falsifier]
+@how 据 M-象-2000 级联 v2（futon3c holes/labs/M-象-2000/cascade-象2000-v2.edn）的令牌流，本模式成立之后可做的下一步：:引用分等 → 象/每段自验。
 @provenance ARGUE-0 机制 C（2026-09-26）：typed-hole-象2000 的 88 个指针 0 个悬空，没有一个被读过行为；codex-3 读了两处便看出语义。ARGUE-1 升级 U4：把收敛账本的证据等级用到洞上。
 
 ! conclusion: 对一段代码的引用分等：指针能解析是「已点名」；关于它做什么的主张需要读过（摘录其逻辑）或测过（有一个会因该行为而失败的测试）。只点名的填充不得计为部分满足。

@@ -1,0 +1,30 @@
+@flexiarg 象/行有定名
+@title 行有定名：每个行为有自己的标识，不由内容推出
+@keywords 标识, 身份, 超边, 幂等, 去重, 象2000
+@audience 证据层与超边存储的作者
+@tone 分析
+@style pattern
+@status draft 2026-09-27 (claude-17；补 ARGUE-0/ARGUE-1 所列之缺，象2000 语族，尚未评审)
+@why [象/言即行]
+@see-also [象/双时并记 social/idempotent-handoff invariant-coherence/single-locus]
+@provenance codex-3 批评第 4 点（2026-09-26）：act identity 不稳定；claude-14 核实 futon1b_server.clj:68 的 stable-hyperedge-id 由类型与端点推出（ARGUE-0）。
+
+! conclusion: 行为的标识在行为发生时铸出并随行为终身不变；类型与端点相同的两次行为是两个行为。去重用显式的幂等键，不用内容哈希冒充身份。
+
+  + context: 把言语行为、授予、撤回存为超边或证据记录，并让后来的行为以 ref 指向它们。
+
+  + IF:
+    标识由记录内容推出——类型加端点、或正文的哈希。
+
+  + HOWEVER:
+    同一个人两次对同一条规则说 constrain，是两次行为，各有时刻、各可被分别撤回；内容推出的标识把它们合成一个，第二次成了第一次的更新，第一次的时刻被覆盖。withdraw 的 ref 从此不知指向哪一次。幂等是投递层的性质（重发不应产生第二个效果），被借来当成行为层的身份，就把「重发」与「再说一遍」混为一谈。
+
+  + THEN:
+    写入时铸一个不透明的行为 id 并返回给写入者；ref 一律指这个 id。投递层另带幂等键（social/idempotent-handoff），重发同键者合一，新键者为新行为。若既有存储用内容推出 id，先测「两次同类同端点的行为」这一用例，再决定是加 id 字段还是换存储路径。
+
+  + BECAUSE:
+    撤回、限定、授予都要指向一个确定的先前行为。身份不稳，指称就不稳，而一段以 ref 相连的历史就只能被读成大意。
+
+    + evidence: futon1b_server.clj:68 的 stable-hyperedge-id 由类型与端点推出；typed-hole-象2000.edn 把这一点算作优点（「幂等」），直到 codex-3 读了代码才看出它合并同类行为。
+    + evidence: turn-commits 中用户回合与助手回合的 id 相差一位（MAP 出口第 6 条），连接要靠顺序配对——标识本身不能说明它是哪一次。
+    + COUNTERFACTUAL: 若换成铸出的 id 之后，同类同端点的行为从不需要被分别指称或撤回，则内容推出的标识已足，本模式应予撤回。

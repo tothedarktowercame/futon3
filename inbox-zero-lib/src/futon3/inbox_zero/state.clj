@@ -8,8 +8,8 @@
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str])
-  (:import [java.nio.file Files StandardCopyOption]
-           [java.nio.file.attribute FileAttribute]))
+  (:import [java.nio.file Files LinkOption StandardCopyOption]
+           [java.nio.file.attribute BasicFileAttributes FileAttribute]))
 
 (def schema-version 0)
 
@@ -172,6 +172,25 @@
 (defn record-id [record]
   (get record (get record-id-key (:record/type record))))
 
+;; Commit-cursor fork checks used to scan every record in STATE, and
+;; load-state replays the whole snapshot to validate it, so loading was
+;; quadratic: ~290k records and 3,955 cursors took minutes of CPU per load on
+;; 2026-09-28, and futon3c loads it at every turn end and every append. The
+;; index lives in metadata so the state value, its equality and its EDN are
+;; unchanged; a state without it (read from disk, built by hand) gets it
+;; computed once.
+(defn- build-cursor-index [state]
+  (reduce (fn [idx r]
+            (if (= :inbox-zero/commit-scan-cursor (:record/type r))
+              (cond-> (update idx :worktrees conj (:worktree/id r))
+                (:prior/cursor-id r) (update :priors conj (:prior/cursor-id r)))
+              idx))
+          {:worktrees #{} :priors #{}}
+          (vals (:records state))))
+
+(defn- cursor-index [state]
+  (or (::cursor-index (meta state)) (build-cursor-index state)))
+
 (defn apply-record
   "Apply one immutable record to STATE.
 
@@ -185,7 +204,8 @@
                      :expected schema-version
                      :actual (:schema/version state)})))
   (let [id (record-id record)
-        existing (get-in state [:records id])]
+        existing (get-in state [:records id])
+        idx (cursor-index state)]
     (cond
       (= existing record) state
       existing
@@ -217,13 +237,9 @@
 
       (and (= :inbox-zero/commit-scan-cursor (:record/type record))
            (or (and (nil? (:prior/cursor-id record))
-                    (some #(and (= :inbox-zero/commit-scan-cursor (:record/type %))
-                                (= (:worktree/id record) (:worktree/id %)))
-                          (vals (:records state))))
+                    (contains? (:worktrees idx) (:worktree/id record)))
                (and (:prior/cursor-id record)
-                    (some #(= (:prior/cursor-id record) (:prior/cursor-id %))
-                          (filter (comp #{:inbox-zero/commit-scan-cursor} :record/type)
-                                  (vals (:records state)))))))
+                    (contains? (:priors idx) (:prior/cursor-id record)))))
       (throw (ex-info "Commit cursor chain would fork"
                       {:error/type :inbox-zero/cursor-chain-corrupt
                        :cursor/id id :prior/cursor-id (:prior/cursor-id record)}))
@@ -258,7 +274,13 @@
       (throw (ex-info "Session-commit link path references an inconsistent claim"
                       {:error/type :inbox-zero/invalid-link-claim :link/id id}))
 
-      :else (assoc-in state [:records id] record))))
+      :else (vary-meta (assoc-in state [:records id] record)
+                       assoc ::cursor-index
+                       (if (= :inbox-zero/commit-scan-cursor (:record/type record))
+                         (cond-> (update idx :worktrees conj (:worktree/id record))
+                           (:prior/cursor-id record)
+                           (update :priors conj (:prior/cursor-id record)))
+                         idx)))))
 
 (defn replay [records]
   (reduce apply-record (empty-state) records))
@@ -270,6 +292,25 @@
        (sort-by record-id)
        vec))
 
+;; A snapshot validated (or written) by this process is reused while the
+;; file's size, modification time and file key are unchanged. The snapshot
+;; is ~190 MB, and futon3c loaded and fully re-validated it at every turn
+;; end and before every append. Any outside write changes the stamp (an
+;; atomic replace changes the file key), so it is re-read and re-validated.
+(defonce ^:private !validated (atom {}))
+
+(defn- file-stamp [file]
+  (let [attrs (Files/readAttributes (.toPath (io/file file)) BasicFileAttributes
+                                    ^"[Ljava.nio.file.LinkOption;" (make-array LinkOption 0))]
+    [(.size attrs) (.toMillis (.lastModifiedTime attrs)) (str (.fileKey attrs))]))
+
+(defn- remember! [path state]
+  (swap! !validated assoc (str (.getCanonicalPath (io/file path)))
+         {:stamp (file-stamp path) :state state})
+  state)
+
+(declare load-state*)
+
 (defn load-state
   "Read PATH, returning an empty state only when the file does not exist.
   Invalid EDN and invalid schemas propagate: corruption must never look empty."
@@ -277,7 +318,15 @@
   (let [file (io/file path)]
     (if-not (.exists file)
       (empty-state)
-      (let [state (edn/read-string (slurp file))]
+      (let [{:keys [stamp state]} (get @!validated (.getCanonicalPath file))]
+        (if (and state (= stamp (file-stamp file)))
+          state
+          (remember! path (load-state* file)))))))
+
+(defn- load-state*
+  "Read and fully validate the snapshot at PATH."
+  [path]
+  (let [state (edn/read-string (slurp (io/file path)))]
         (when-not (and (map? state) (map? (:records state)))
           (throw (ex-info "Malformed inbox-zero state"
                           {:error/type :inbox-zero/malformed-state :path (str path)})))
@@ -295,7 +344,8 @@
                           :inbox-zero/commit-observation 4
                           :inbox-zero/session-commit-link 5}
               records (:records state)
-              cursor-depth
+              !depths (volatile! {})
+              cursor-depth*
               (fn cursor-depth [cursor seen]
                 (let [id (:cursor/id cursor)]
                   (when (seen id)
@@ -311,18 +361,28 @@
                                          :cursor/id id :prior/cursor-id prior-id})))
                       (inc (cursor-depth prior (conj seen id))))
                     0)))
+              ;; Once per cursor: the key used to be recomputed on every sort
+              ;; comparison, walking the whole chain each time.
+              cursor-depth (fn [cursor seen]
+                             (let [id (:cursor/id cursor)]
+                               (or (get @!depths id)
+                                   (let [d (cursor-depth* cursor seen)]
+                                     (vswap! !depths assoc id d)
+                                     d))))
               order-key (fn [record]
                           [(get type-order (:record/type record) 99)
                            (if (= :inbox-zero/commit-scan-cursor (:record/type record))
                              (cursor-depth record #{})
                              0)
                            (record-id record)])
-              replayed (replay (sort-by order-key (vals records)))]
+              replayed (replay (map second (sort-by first (map (juxt order-key identity)
+                                                              (vals records)))))]
           (when-not (= state replayed)
             (throw (ex-info "Inbox-zero state is not canonical"
                             {:error/type :inbox-zero/noncanonical-state
                              :path (str path)})))
-          state)))))
+          ;; Equal to STATE, and carries the cursor index.
+          replayed)))
 
 (defn- atomic-write! [path value]
   (let [target (.toPath (io/file path))
@@ -336,6 +396,8 @@
                     (into-array StandardCopyOption
                                 [StandardCopyOption/ATOMIC_MOVE
                                  StandardCopyOption/REPLACE_EXISTING]))
+        ;; VALUE came from apply-record, so it is already validated.
+        (remember! path value)
         (finally
           (Files/deleteIfExists tmp))))))
 

@@ -1,6 +1,6 @@
 # Mission: Live Geometric Stack (substrate-2)
 
-**Status:** COMPLETE (2026-04-28). All seven phases delivered;
+**Status:** CLOSED — COMPLETE (2026-04-28). All seven phases delivered;
 known bugs resolved (B-1, B-2 v0, B-3 v0); cleanup-checkpoint
 items dispatched (closed or moved to follow-on missions).
 Substrate is operationally live: ~360,000 hyperedges across 16

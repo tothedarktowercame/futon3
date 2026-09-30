@@ -1,5 +1,5 @@
 # Mission: futon1a Rebuild
-Status: archived
+**Status:** CLOSED — archived
 
 A ground-up reconstruction of futon1, built as a demonstration of futonic best
 practices. The mission has two parts: the *process* (pattern-based design with

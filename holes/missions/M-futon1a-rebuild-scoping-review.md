@@ -1,5 +1,5 @@
 # Scoping Review: M-futon1a-rebuild
-Status: archived
+**Status:** CLOSED — archived
 
 Reference pattern: `library/futon-theory/mission-scoping.flexiarg`
 

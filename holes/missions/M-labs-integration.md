@@ -1,6 +1,6 @@
 # Mission: Labs Integration Improvements
 
-**Status:** COMPLETE (SUPERSEDED) — Lab capture reframed as evidence landscape in futon3c; evidence store + thread projection replace Arxana overlays (2026-03)
+**Status:** SUPERSEDED — COMPLETE (SUPERSEDED) — Lab capture reframed as evidence landscape in futon3c; evidence store + thread projection replace Arxana overlays (2026-03)
 
 ## Owner
 

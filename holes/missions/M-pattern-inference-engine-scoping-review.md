@@ -1,5 +1,5 @@
 # Scoping Review: `M-pattern-inference-engine.md`
-Status: archived
+**Status:** CLOSED — archived
 
 Date: 2026-02-08
 

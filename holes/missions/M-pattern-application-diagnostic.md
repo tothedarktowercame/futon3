@@ -1,6 +1,6 @@
 # Mission: Pattern Application Diagnostic
 
-**Status:** IDENTIFY (2026-04-27)
+**Status:** OPEN — IDENTIFY (2026-04-27)
 **Owner:** Joe
 **Parent:** `holes/missions/M-pattern-mining.md` (the IFR was articulated
 there during the activation-browser verdict on 2026-04-27; this mission
@@ -824,3 +824,11 @@ When promoted to MAP:
   central operational test for any candidate substrate: if the
   diagnostic doesn't tell you something you couldn't have
   confidently said yourself, the substrate is curlicue.
+
+## Acceptance checklist (2026-09-30)
+
+- [ ] This file defines the minimal typed-hypergraph primitives and a concrete record shape for entity, relation, evidence, role, tension, and witness.
+- [ ] `task-as-arrow.flexiarg` and four sibling patterns have been lifted into that schema with losses or awkward fits recorded.
+- [ ] The stereolithography, B→A typed graph, Arxana hypergraph, and futon3a embedding projections are mapped to the schema slots they already populate.
+- [ ] A code-domain witness procedure is specified and demonstrated on one pattern using concrete edit ranges, commits, or evidence IDs.
+- [ ] A documented diagnostic retrieval endpoint returns a non-trivial result that the existing flat artifact-retrieval path cannot produce.

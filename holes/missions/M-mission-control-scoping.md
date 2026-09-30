@@ -1,5 +1,5 @@
 # M-mission-control-scoping
-Status: archived
+**Status:** CLOSED — archived
 
 Apply mission-scoping pattern systematically across all mission docs.
 

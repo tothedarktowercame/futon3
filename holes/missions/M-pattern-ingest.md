@@ -1,6 +1,6 @@
 # Mission: Pattern Ingest — XTDB as the Authoritative Record
 
-**Status:** IDENTIFY (2026-05-26)
+**Status:** OPEN — IDENTIFY (2026-05-26)
 **Owner:** Joe
 **Drafted by:** claude (live trace + Joe's framing in conversation 2026-05-26).
 
@@ -414,3 +414,10 @@ IF / HOWEVER / THEN / BECAUSE block here once derived.)
   someone wants to query patterns *as content* (e.g. for cross-pattern
   link inference). Closing this before more patterns accrete in the
   thin state.
+
+## Acceptance checklist (2026-09-30)
+
+- [ ] Every substrate-2 `code/v05/var` of kind `flexiarg` has non-empty `:pattern/title` plus a canonical or explicitly pending sigil value, and malformed patterns produce a structured refusal rather than a partial vertex.
+- [ ] The generated pattern index contains zero literal `unknown/unknown` rationale rows; unresolved sigils appear as explicit `pending` entries.
+- [ ] Both orchestration pilot patterns carry full slot props and a witnessed `code/v05/pattern-origin` edge naming a commit and evidence ID or an operator-asserted origin.
+- [ ] The selected M-5 inference query runs against substrate-2 and produces an output unavailable from the v0 projection.

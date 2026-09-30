@@ -1,6 +1,6 @@
 # Mission: PAR as Session Punctuation
 
-**Status:** COMPLETE (SUPERSEDED) — PAR emission via futon3c peripheral/reflect.clj; detach/reattach via peripheral adapter model (2026-03)
+**Status:** SUPERSEDED — COMPLETE (SUPERSEDED) — PAR emission via futon3c peripheral/reflect.clj; detach/reattach via peripheral adapter model (2026-03)
 
 ## Owner
 

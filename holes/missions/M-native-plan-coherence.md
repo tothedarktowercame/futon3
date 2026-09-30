@@ -1,5 +1,5 @@
 # M-PLAN: Native Plan Coherence
-Status: archived
+**Status:** CLOSED — archived
 
 **Type**: Feature
 **Status**: Phase 1 Complete, Phase 2-4 Pending

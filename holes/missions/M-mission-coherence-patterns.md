@@ -1,7 +1,7 @@
 # Mission: Mission-Coherence Patterns
 
 **Date:** 2026-05-11 (HEAD authored by Joe via simulated `eoi new`)
-**Status:** HEAD complete; IDENTIFY drafted; MAP pilot run on 3-mission corpus; DERIVE and beyond pending
+**Status:** OPEN — HEAD complete; IDENTIFY drafted; MAP pilot run on 3-mission corpus; DERIVE and beyond pending
 **Cross-ref:** Excursion of `M-expressions-of-interest.md` (futon5a) — see clarity-gap in HEAD §6
 **Owner:** Joe (HEAD operator); pattern development to follow
 **Repos:** futon3 (target library: `futon3/library/mission-coherence/`)
@@ -580,3 +580,12 @@ Six turns. Joe's six paragraph-answers (Q1–Q6) appear verbatim;
 section labels and italic orienting lines are AI-written connective
 tissue per `eoi-engine.md` §Assembly invariants. No paraphrase of
 Joe's content.*
+
+## Acceptance checklist (2026-09-30)
+
+- [ ] `library/mission-coherence/` contains an initial coherent set of mission-coherence `.flexiarg` patterns rather than only pilot notes.
+- [ ] A repeatable worksheet mines roughly 10–12 rich missions and each promoted pattern cites its mission-level evidential basis.
+- [ ] A named document section distinguishes the role of `mission-lifecycle.md` from the mission-coherence pattern layer and integrates the HEAD bootstrap.
+- [ ] The internal-EoI/external-EoI relation has either a clearer formulation in this file or a named, sharply scoped follow-on mission.
+- [ ] A plain-language account explains how missions differ from prompt engineering, lightweight specifications, and generic project management.
+- [x] Follow-on tensions discovered during the pilot are explicitly retained rather than dropped. (evidence: “Technical debt carried forward” in this file)

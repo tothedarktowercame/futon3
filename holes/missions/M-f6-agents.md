@@ -1,5 +1,5 @@
 # Mission: F6 Artificial Stack Exchange
-Status: archived
+**Status:** CLOSED — archived
 
 Build agents that don't just answer mathematical questions but *ask* them.
 The Q⊢A framing: a well-posed question constrains its answer. Agents that

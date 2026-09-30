@@ -1,5 +1,5 @@
 # Mission: Fucodex Peripheral Parity
-Status: archived
+**Status:** CLOSED — archived
 
 Verify that the `fucodex-peripheral.ts` wrapper can perform the same MUSN/Arxana operations as Claude Code, proving the peripheral infrastructure supports full agent capabilities.
 

@@ -1,5 +1,5 @@
 # Mission: Forum Organization (Tags-First)
-Status: archived
+**Status:** CLOSED — archived
 
 **Status:** :greenfield  
 **Parent:** M-agency-forum (Forum layer), f3/P4 (Mission Queue & Supervisor)  

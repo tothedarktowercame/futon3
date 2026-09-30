@@ -1,5 +1,5 @@
 # Mission: Emacs Cursor Peripheral
-Status: in progress
+**Status:** OPEN — in progress
 
 **Parent:** f0/P4 (Hypertext Navigation), f3/P2 (Agent Perception)
 **Date:** 2026-05-24
@@ -403,6 +403,15 @@ companion cursor overlay remains the main missing embodiment feature.
 - `futon3c/src/futon3c/transport/protocol.clj`
 - `futon3c/test/futon3c/transport/ws_peripheral_test.clj`
 - `~/.emacs.d/lisp/crdt.el/crdt.el`
+
+## Acceptance checklist (2026-09-30)
+
+- [x] `:emacs-cursor` is registered and its runner, typed `peripheral_event`, surface projection, and structured minibuffer command paths have automated coverage. (evidence: `futon3c/resources/peripherals.edn`, `futon3c/test/futon3c/peripheral/emacs_cursor_test.clj`, and `futon3c/test/futon3c/transport/ws_peripheral_test.clj`)
+- [x] The Emacs implementation contains a distinct visible cursor and region overlay with caption and disconnect cleanup. (evidence: `futon3c/emacs/smart-cursor.el` and `futon3c/emacs/futon-agent-cursor.el`)
+- [ ] A recorded live Emacs run demonstrates connect, `follow`, `observe`, `scout`, and overlay cleanup on disconnect through the canonical WS lifecycle.
+- [ ] Named instrumentation records buffer/window transitions and correlates observed editor lag with hooks, overlays, modes, or visible-buffer size.
+- [ ] The Owner field names one accountable owner rather than `TBD`.
+- [ ] This mission states how its read-only-v0 boundary relates to the later visible typing-body design in `futon3c/holes/missions/M-smart-emacs-cursor.md`.
 
 ## Notes
 

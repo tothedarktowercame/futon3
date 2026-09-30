@@ -1,6 +1,6 @@
 # Mission: Agency + Forum Infrastructure
 
-**Status:** COMPLETE (SUPERSEDED) — Agency/Forum interfaces replaced by futon3c evidence landscape (store.clj + threads.clj) (2026-03)
+**Status:** SUPERSEDED — COMPLETE (SUPERSEDED) — Agency/Forum interfaces replaced by futon3c evidence landscape (store.clj + threads.clj) (2026-03)
 
 Unified multi-agent infrastructure enabling bot-to-bot communication, session lifecycle management, and real-time observation.
 

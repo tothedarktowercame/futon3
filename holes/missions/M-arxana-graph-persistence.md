@@ -1,5 +1,5 @@
 # M-ARXANA: Graph-Structured Persistence for Lab Notebooks
-Status: archived
+**Status:** CLOSED — archived
 
 **Type**: Integration
 **Status**: Complete (Phases 1-4)

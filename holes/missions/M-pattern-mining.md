@@ -1,6 +1,6 @@
 # Mission: Pattern Mining
 
-**Status:** MAP (entered 2026-04-27, IDENTIFY 2026-04-26).
+**Status:** OPEN — MAP (entered 2026-04-27, IDENTIFY 2026-04-26).
 **Substrate verdict (2026-04-27):** the existing futon3a MiniLM-cosine
 pipeline is **artifact, not signal** — confirmed via the activation
 browser (P-5a). Decoration on top of A→B turns rather than the
@@ -640,3 +640,10 @@ doc only).
 (invoke-factory audit) since it is the lowest-risk and closes the
 last "are we even sampling everything?" gap before any
 catchment / coverage analysis is meaningful.
+
+## Acceptance checklist (2026-09-30)
+
+- [x] The current retrieval pipeline, producer surfaces, searchable corpus, and consumer surfaces are inventoried as a typed graph. (evidence: MAP M-1 through M-4 in this file)
+- [ ] A recorded MiniLM/GloVe/FastText disconfirmation check states whether the embedding-class verdict survives and names the queries used.
+- [ ] Every consumer in MAP M-4 either reads the replacement typed-hypergraph substrate or is explicitly retired with no live caller.
+- [ ] No live surface depends on the futon3a context-retrieval substrate, and this mission records the retirement evidence required by its stated exit condition.

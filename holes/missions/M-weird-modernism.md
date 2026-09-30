@@ -1,6 +1,6 @@
 # Mission: Weird Modernism — A Futon-Theoretic Reading of PKD
 
-**Status:** IDENTIFY + MAP (2026-05-22, perpetual-projection mode — no closure phase scheduled)
+**Status:** OPEN — IDENTIFY + MAP (2026-05-22, perpetual-projection mode — no closure phase scheduled)
 **Owner:** Joe
 **Cross-refs:**
 - `library/futon-theory/wyrd.flexiarg` — pattern landed 2026-05-22;
@@ -1027,3 +1027,11 @@ the rest.
   ARGUE-phase increment is captured here; the projection-surface
   framing of the mission accommodates further ARGUE rounds when
   Tasks 2-5 and 11 land.
+
+## Acceptance checklist (2026-09-30)
+
+- [ ] `library/futon-theory/generalised-free-energy-as-substrate.flexiarg` or its named shorter replacement exists and states the three-Norn/path-integral mapping with references.
+- [ ] A written `library/aif/` audit records, for each of the sixteen patterns named here, whether the generalised-free-energy formulation changes it.
+- [ ] A named excursion records the tested mapping between M-live-geometric-stack quantities `(T, ∇, Δ, drift)` and generalised-free-energy components.
+- [ ] A written M-war-machine reading maps its sorry kinds, R3 likelihoods, EFE scorecard, and R10 schedule to the Parr–Friston structure.
+- [ ] The Operator's Foreword contains either the proposed technical footnote/annex pointer or an explicit decision not to include it.

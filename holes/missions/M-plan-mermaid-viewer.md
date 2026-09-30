@@ -1,5 +1,5 @@
 # M-Mermaid: Plan Diagram Viewer
-Status: archived
+**Status:** CLOSED — archived
 
 **Type**: Feature (Future)
 **Depends**: Plan wiring system (plan_wiring.clj), SSE notebook viewer

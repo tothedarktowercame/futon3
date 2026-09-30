@@ -1,6 +1,6 @@
 # Mission: Pattern Retrieval Calibration
 
-**Status:** DERIVE (entered 2026-05-04, MAP 2026-05-04, IDENTIFY 2026-05-04).
+**Status:** OPEN — DERIVE (entered 2026-05-04, MAP 2026-05-04, IDENTIFY 2026-05-04).
 **Owner:** Joe
 **Cross-refs:**
 - `holes/missions/M-pattern-mining.md` — established that the current
@@ -1020,3 +1020,12 @@ P-1 is complete only if all of the following hold:
    `futon0/holes/missions/M-the-futon-stack.md` is updated from
    *Doubled, unrationalised* to *Single by construction* (per
    D-7).
+
+## Acceptance checklist (2026-09-30)
+
+- [ ] `futon3a/src/futon/flexiarg/projection.clj` is the single parser and passes the heterogeneous-root, anchored-metadata, malformed-pattern, and deterministic-artifact checks in D-11.
+- [ ] `build_pattern_index.clj`, `pattern_sync.clj`, and `flexiarg_projection.clj` delegate to the shared parser and retain no parallel block or metadata parsers.
+- [ ] The hybrid candidate builder emits a deduplicated pool of at most six structured packets and is byte-identical for identical query and corpus inputs.
+- [ ] The HIT widget persists exactly one `retrieval-hit` record per submitted decision and can be adjudicated without leaving the REPL.
+- [ ] Closing a session produces exactly one retrieval-hit run plus one snapshot per active surface using the M-5 shapes.
+- [ ] A reproducible calibration artifact over at least 30 HITs reports baseline and reweighted top-three best-hit rates.

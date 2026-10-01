@@ -30,7 +30,10 @@
    ;; verify has no chip in kimi-2's table, and the extracted set has no
    ;; op-test. op-qray is the query ray -- scan a square to learn what is
    ;; actually there, which is the move.
-   "verify"     "op-qray"})
+   "verify"     "op-qray"
+   ;; Joe's choices, 2026-10-01.
+   "explore"    "op-move"         "withdraw"    "op-door"
+   "gist"       "op-loop"})
 
 (defn chip [intent]
   (when-let [c (intent-chip intent)]
@@ -140,18 +143,20 @@
     :ibol-says "a random choice between the true and false wires"
     :intents ["unresolved"] :r "—"
     :aif "The annotator could not settle an intent. In the IBOL note a coin flip is a tie recorded in the open; here it marks a span left unread, not a move by Joe."}
-   ;; The four intents below have no IBOL chip; their stage and R-node are
-   ;; claude-17's proposal (2026-10-01), on the same test as claude-12's.
+   ;; The four intents below: stage and R-node are claude-17's proposal
+   ;; (2026-10-01), on the same test as claude-12's. Chips are Joe's choice
+   ;; (2026-10-01), cut from chipwits-forth mac/graphics/IBOL_Graphics.png;
+   ;; their IBOL meanings are not yet checked against the manual.
    {:stage "BELIEVE" :chip nil :ibol "(no chip)" :ibol-says ""
     :intents ["retract"] :r "R3 belief update"
     :aif "Joe takes back something he said. An observation the agent had already used is removed, so beliefs built on it should be revised."}
-   {:stage "EVALUATE" :chip nil :ibol "(no chip)" :ibol-says ""
+   {:stage "EVALUATE" :chip "op-move" :ibol "ROLLER SKATE" :ibol-says ""
     :intents ["explore"] :r "R5 expected free energy (epistemic value)"
     :aif "Joe asks to find out rather than to get something done. In G this is the epistemic term: a course is worth taking for what it would reveal."}
-   {:stage "SELECT" :chip nil :ibol "(no chip)" :ibol-says ""
+   {:stage "SELECT" :chip "op-door" :ibol "DOOR" :ibol-says ""
     :intents ["withdraw"] :r "R6 candidate action space"
     :aif "Joe ends an earlier act of his, such as an offer or a commitment. A course that was available is taken out of the candidate set."}
-   {:stage "ANNOTATOR" :chip nil :ibol "(no chip)" :ibol-says ""
+   {:stage "ANNOTATOR" :chip "op-loop" :ibol "LOOP ARROW" :ibol-says ""
     :intents ["gist"] :r "—"
     :aif "The turn's main point, stated so it stands alone. It summarises the other notes rather than adding a move by Joe."}])
 

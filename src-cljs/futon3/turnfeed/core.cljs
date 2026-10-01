@@ -33,7 +33,7 @@
    "verify"     "op-qray"
    ;; Joe's choices, 2026-10-01.
    "explore"    "op-move"         "withdraw"    "op-door"
-   "gist"       "op-loop"})
+   "gist"       "op-loop"         "retract"     "op-x-arrow"})
 
 (defn chip [intent]
   (when-let [c (intent-chip intent)]
@@ -145,9 +145,10 @@
     :aif "The annotator could not settle an intent. In the IBOL note a coin flip is a tie recorded in the open; here it marks a span left unread, not a move by Joe."}
    ;; The four intents below: stage and R-node are claude-17's proposal
    ;; (2026-10-01), on the same test as claude-12's. Chips are Joe's choice
-   ;; (2026-10-01), cut from chipwits-forth mac/graphics/IBOL_Graphics.png;
+   ;; (2026-10-01), cut from chipwits-forth mac/graphics/IBOL_Graphics.png
+   ;; (retract's from chipwits-native data/IBOL, the game's own icon file);
    ;; their IBOL meanings are not yet checked against the manual.
-   {:stage "BELIEVE" :chip nil :ibol "(no chip)" :ibol-says ""
+   {:stage "BELIEVE" :chip "op-x-arrow" :ibol "X AND ARROW" :ibol-says ""
     :intents ["retract"] :r "R3 belief update"
     :aif "Joe takes back something he said. An observation the agent had already used is removed, so beliefs built on it should be revised."}
    {:stage "EVALUATE" :chip "op-move" :ibol "ROLLER SKATE" :ibol-says ""

@@ -51,7 +51,9 @@ To run a MUSN-guided fucodex session with live HUD in Emacs:
    clojure -M -m futon3.musn.http
    # MUSN HTTP server on 6065
    ```
-2. Start drawbridge + transport/UI (6767/5050/6060):
+2. For a standalone futon3 development JVM only, start drawbridge +
+   transport/UI (6767/5050/6060). Normal live evaluation of the canonical
+   serving JVM uses `/home/joe/code/futon3c/scripts/proof-eval.sh` on 6768:
    ```bash
    ADMIN_TOKEN=$(cat .admintoken) FUTON3_DRAWBRIDGE=1 ./scripts/dev.sh
    # Drawbridge on http://127.0.0.1:6767/repl ...

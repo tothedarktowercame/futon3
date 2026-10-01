@@ -1,4 +1,9 @@
-# Drawbridge + MUSN quickstart (hotload fixes into running server)
+# Legacy standalone Drawbridge + MUSN quickstart
+
+This guide starts a separate futon3 development JVM on port 6767. It is not
+the canonical serving process. For the one live serving JVM on port 6768, use
+`/home/joe/code/futon3c/scripts/proof-eval.sh`; do not use the query-token or
+cookie protocol below against futon3c.
 
 Steps to start both servers:
 

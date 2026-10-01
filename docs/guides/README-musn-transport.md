@@ -1,5 +1,9 @@
 # MUSN Transport Details
 
+> Port-6767 Drawbridge examples in this document are for an explicitly started
+> standalone futon3 development JVM. Canonical live evaluation uses
+> `/home/joe/code/futon3c/scripts/proof-eval.sh` against futon3c on port 6768.
+
 This document covers the MUSN transport layer, IRC bridge, and WebSocket protocol.
 For the overview and quickstart, see `README.md`.
 

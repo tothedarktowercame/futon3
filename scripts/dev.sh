@@ -28,7 +28,7 @@ err()  { printf "%b\n" "${RED}$*${RESET}" >&2; }
 #   - IRC bridge on port 6667
 #   - Forum WebSocket on port 5055
 #   - Lab WebSocket on port 5056
-#   - Drawbridge REPL on port 6767
+#   - Optional legacy standalone Drawbridge REPL on port 6767
 #   - Chat supervisor (polling)
 #   - Agency HTTP on port 7070
 #
@@ -37,7 +37,7 @@ err()  { printf "%b\n" "${RED}$*${RESET}" >&2; }
 #   FUTON3_IRC_BRIDGE=0      - disable IRC bridge
 #   FUTON3_CHAT_SUPERVISOR=0 - disable chat supervisor
 #   FUTON3_AGENCY=0          - disable Agency HTTP service
-#   FUTON3_DRAWBRIDGE=0      - disable Drawbridge REPL (enabled by default)
+#   FUTON3_DRAWBRIDGE=1      - opt in to legacy standalone Drawbridge REPL
 #   (Drawbridge sidecars removed — agents now register with the main JVM
 #    via drawbridge/core register-agent! See M-drawbridge-multi-agent.md)
 #   FUTON3_MUSN_PAGE=0        - disable MUSN chat -> Agency page bridge (enabled by default)
@@ -49,8 +49,8 @@ err()  { printf "%b\n" "${RED}$*${RESET}" >&2; }
 #   --musn-page-disable       - set FUTON3_MUSN_PAGE=0
 #   --musn-page-enable        - set FUTON3_MUSN_PAGE=1
 #
-# Drawbridge runs on port 6767 for hot-reloading code:
-#   ./scripts/repl-eval '(require '\''f2.transport :reload)'
+# Canonical hot reload targets futon3c's serving JVM on 6768 via
+# /home/joe/code/futon3c/scripts/proof-eval.sh. Port 6767 is standalone only.
 #
 # Example: run without chat supervisor (for manual fuclaude testing)
 #   FUTON3_CHAT_SUPERVISOR=0 ./scripts/dev.sh
@@ -113,8 +113,9 @@ while [[ $# -gt 0 ]]; do
 done
 set -- "${dev_args[@]}"
 
-# Enable Drawbridge by default for dev (hot-reloading on port 6767)
-export FUTON3_DRAWBRIDGE="${FUTON3_DRAWBRIDGE:-1}"
+# Retired as a default: the one serving JVM exposes futon3c Drawbridge on 6768.
+# A deliberately isolated futon3 development JVM may still opt in with 1.
+export FUTON3_DRAWBRIDGE="${FUTON3_DRAWBRIDGE:-0}"
 
 # Load ADMIN_TOKEN from .admintoken if not already set (required for Drawbridge)
 if [[ -z "${ADMIN_TOKEN:-}" && -f .admintoken ]]; then
@@ -186,7 +187,7 @@ fi
 
 # Drawbridge sidecars removed — agents now register directly with the main JVM.
 # Use (futon3.drawbridge.claude/register! "agent-id" {:session-id "..."}) via
-# repl-eval or MCP tool after the JVM starts.
+# the canonical futon3c evaluator or MCP tool after the JVM starts.
 # See holes/missions/M-drawbridge-multi-agent.md
 
 # Bridge MUSN chat -> Agency pages (enabled by default)

@@ -210,7 +210,20 @@ make test   # unit + replay tests
 
 ## Drawbridge hot reloading
 
-**IMPORTANT**: Always use hot-reloading instead of restarting the server. Drawbridge is enabled by default in `make dev` and runs on port 6767.
+**IMPORTANT**: Always use hot-reloading instead of restarting the serving
+server. The canonical serving JVM is futon3c; its Drawbridge runs on port 6768
+and authenticates with the `x-admin-token` header. Use:
+
+```bash
+cd /home/joe/code/futon3c
+./scripts/proof-eval.sh '(+ 1 2 3)'
+./scripts/proof-eval.sh '(load-file "/home/joe/code/futon3/src/f2/transport.clj")'
+```
+
+`futon3/scripts/repl-eval` is retained only as a compatibility wrapper for
+that command. It no longer implements the retired 6767 cookie/query-token
+protocol. The remaining 6767 material below applies only to a deliberately
+started standalone futon3 development JVM, never to the canonical server.
 
 ### Prerequisites
 
@@ -228,7 +241,8 @@ The `make dev` script automatically loads `.admintoken` and sets `ADMIN_TOKEN`.
 
 ### Using the repl-eval helper
 
-The `scripts/repl-eval` script is the preferred way to hot-reload code:
+The examples retain the compatibility command name; new work should call
+futon3c's `scripts/proof-eval.sh` directly:
 
 ```bash
 # Reload a file after editing (preferred - guarantees re-read from disk)

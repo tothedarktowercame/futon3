@@ -1,5 +1,9 @@
 # Drawbridge live REPL checklist (Futon3)
 
+> Legacy standalone checklist. The canonical serving JVM is futon3c on 6768;
+> use `/home/joe/code/futon3c/scripts/proof-eval.sh`. Do not apply this
+> document's 6767 cookie/query-token protocol to the serving JVM.
+
 Goal: prove that a running Futon3 instance can be safely inspected live via
 Drawbridge (HTTP REPL), using a minimal read-only query script.
 

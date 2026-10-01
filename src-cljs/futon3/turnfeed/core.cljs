@@ -47,6 +47,18 @@
 ;; (2026-09-25), not a measured fact: the test is whether turns read this way
 ;; predict what the agent did next.
 
+;; The mark each intent carries in agent replies (~/code/CLAUDE.md, "Reply
+;; proforma") and in 小象 (futon3c/emacs/xiaoxiang-preview.el, whose
+;; `xiaoxiang-preview-marks' must agree with this map). With legend-rows this
+;; makes one table: intent, mark, chip, loop stage, R-node (Joe, 2026-10-01).
+(def intent-mark
+  {"gist" "㊥" "propose" "㊭" "approve" "㊣" "disagree" "🈚" "qualify" "㊟"
+   "explain" "🈖" "clarify" "🈯" "report" "㊢" "report-problem" "㊩"
+   "verify" "㊬" "retract" "🈹" "withdraw" "🈡" "unresolved" "🈳"
+   "constrain" "🈲" "ask-action" "🈸" "delegate" "㊯" "prioritize" "㊝"
+   "collect" "㊮" "extend" "🈕" "continue" "🈰" "defer" "🈝"
+   "redirect" "🈘" "explore" "㊫"})
+
 (def loop-stages
   [["PERCEIVE" "what the agent observes"]
    ["BELIEVE"  "what it takes to be the case, and how sure it is"]
@@ -127,7 +139,21 @@
    {:stage "ANNOTATOR" :chip "op-flip-coin" :ibol "COIN FLIP"
     :ibol-says "a random choice between the true and false wires"
     :intents ["unresolved"] :r "—"
-    :aif "The annotator could not settle an intent. In the IBOL note a coin flip is a tie recorded in the open; here it marks a span left unread, not a move by Joe."}])
+    :aif "The annotator could not settle an intent. In the IBOL note a coin flip is a tie recorded in the open; here it marks a span left unread, not a move by Joe."}
+   ;; The four intents below have no IBOL chip; their stage and R-node are
+   ;; claude-17's proposal (2026-10-01), on the same test as claude-12's.
+   {:stage "BELIEVE" :chip nil :ibol "(no chip)" :ibol-says ""
+    :intents ["retract"] :r "R3 belief update"
+    :aif "Joe takes back something he said. An observation the agent had already used is removed, so beliefs built on it should be revised."}
+   {:stage "EVALUATE" :chip nil :ibol "(no chip)" :ibol-says ""
+    :intents ["explore"] :r "R5 expected free energy (epistemic value)"
+    :aif "Joe asks to find out rather than to get something done. In G this is the epistemic term: a course is worth taking for what it would reveal."}
+   {:stage "SELECT" :chip nil :ibol "(no chip)" :ibol-says ""
+    :intents ["withdraw"] :r "R6 candidate action space"
+    :aif "Joe ends an earlier act of his, such as an offer or a commitment. A course that was available is taken out of the candidate set."}
+   {:stage "ANNOTATOR" :chip nil :ibol "(no chip)" :ibol-says ""
+    :intents ["gist"] :r "—"
+    :aif "The turn's main point, stated so it stands alone. It summarises the other notes rather than adding a move by Joe."}])
 
 ;; The feed's CSS styles .intent only inside a .note; the legend is not a
 ;; note, so it carries the same small caps and colour itself.
@@ -217,7 +243,7 @@
                                          :letter-spacing ".05em" :color "#555"}}
                 (str (str/lower-case stage) " — " gloss)]]
           (for [{:keys [chip ibol ibol-says intents r aif]} rows]
-            ^{:key chip}
+            ^{:key (first intents)}
             [:tr
              ;; The notes' dropcap size, but the text keeps its own column:
              ;; a third line starts under the second, not under the chip.
@@ -227,11 +253,14 @@
                ;; the column: the widest chips (15x16 at 2.7em) are ~2.55em.
                [:div {:style {:flex "none" :width "2.6em" :margin ".2em .5em 0 0"
                               :display "flex" :justify-content "center"}}
-                [:img.chip {:src (str "chips/" chip ".png") :alt "" :title chip
-                            :style {:height "2.7em" :margin 0 :opacity 0.8}}]]
+                (when chip
+                  [:img.chip {:src (str "chips/" chip ".png") :alt "" :title chip
+                              :style {:height "2.7em" :margin 0 :opacity 0.8}}])]
                [:div [:b ibol] [:br] [:span {:style {:color "#777"}} ibol-says]]]]
              [:td cell (for [i intents]
-                         ^{:key i} [:div {:style {:white-space "nowrap"}} [:span.intent {:style intent-style} i]])]
+                         ^{:key i} [:div {:style {:white-space "nowrap"}}
+                                    (when-let [m (get intent-mark i)] (str m " "))
+                                    [:span.intent {:style intent-style} i]])]
              [:td cell (for [i intents] ^{:key i} [stat-cell (get here i) here-total])]
              [:td cell (for [i intents] ^{:key i} [stat-cell (get mined-by i) mined-total])]
              [:td cell r]

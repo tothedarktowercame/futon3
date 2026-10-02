@@ -1,0 +1,169 @@
+;; A typed outer-loop cascade. This is a policy skeleton, not a declaration of
+;; which task wins. Fillers come from the current M/E/T/A field; G is evaluated
+;; only after every required slot is bound. Tactical pattern construction is
+;; downstream of :selected-meta-policy and is deliberately absent here.
+{:schema :meta/outer-policy-cascade-v1
+ :id :meta/reason-bearing-meta-selection
+ :patterns
+ [:meta/observe-the-meta-field
+  :meta/fill-meta-policy-slots
+  :meta/injury-routes-to-self-heal
+  :meta/minimise-g-over-filled-meta-policies]
+
+ :precedence
+ [[:meta/observe-the-meta-field :meta/fill-meta-policy-slots]
+  [:meta/observe-the-meta-field :meta/injury-routes-to-self-heal]
+  [:meta/fill-meta-policy-slots :meta/minimise-g-over-filled-meta-policies]
+  [:meta/injury-routes-to-self-heal :meta/minimise-g-over-filled-meta-policies]]
+
+ :slots
+ {:task-kind
+  {:required true :type :enum :values [:mission :excursion :ticket :algorithm]}
+  :target
+  {:required true :type :current-meta-item-id
+   :source :meta-field/current-items}
+  :next-move
+  {:required true :type :enum
+   :values [:advance :unblock :close :repair :run-algorithm]}
+  :resource-envelope
+  {:required true :type :resource-envelope
+   :fields {:time-budget-ms :positive-integer
+            :token-budget :positive-integer
+            :author-seat :agent-id
+            :reviewer-seat :agent-id}}
+  :evidence-channel
+  {:required true :type :closure-or-progress-observer
+   :fields {:source :source-pin :locator :checkable-locator}}
+  :stopping-rule
+  {:required true :type :enum
+   :values [:closed :grounded-progress :typed-blocker :budget-exhausted
+            :debugger-stop]}}
+
+ :arms
+ {:ordinary-work
+  {:guard {:injury-observation {:absent :no-active-injury}}
+   :admit-task-kinds [:mission :excursion :ticket]
+   :exclude-task-kinds [:algorithm]
+   :next-moves [:advance :unblock :close]}
+
+  :self-heal
+  {:guard {:injury-observation :active
+           :requires [:injured-capability :source-pin]
+           :algorithm-match :repairs-injured-capability}
+   :admit-task-kinds [:algorithm]
+   :exclude-task-kinds [:mission :excursion :ticket]
+   :exclusion-reason :machine-injury-active
+   :next-moves [:repair :run-algorithm]
+   :rearm-slot {:required true :type :checkable-capability-observation}}}
+
+ :generative-model
+ {:outcomes
+  [:closure :grounded-progress :useful-blocker-discovery
+   :downstream-unblocking :information-gain
+   :elapsed-ms :token-use :repeated-target
+   :abstention :unreviewable-output :injury-persistence]
+  :terms
+  {:risk {:preferred [:closure :grounded-progress :downstream-unblocking]
+          :dispreferred [:elapsed-ms :token-use :repeated-target
+                         :abstention :unreviewable-output :injury-persistence]}
+   :ambiguity {:over :predicted-outcome-observations}
+   :epistemic-value {:preferred [:useful-blocker-discovery :information-gain]}}
+  :law :G=risk+ambiguity-epistemic-value
+  :missing-term-policy :refuse-not-zero}
+
+ :selection
+ {:law :argmin-G
+  :requires [:fully-filled-slots :common-outcome-vocabulary
+             :preference-source :predicted-outcomes]
+  :singleton-policy :typed-bypass
+  :receipt
+  [:field-census :typed-exclusions :candidate-slot-fillings
+   :source-pins :predicted-outcomes :g-terms :g
+   :selected-policy :nearest-alternative :selection-reason]}
+
+ :boundary
+ {:produces :selected-meta-policy
+  :then :construct-fresh-task-local-tactical-cascade
+  :forbids-as-outer-input
+  [:tactical-patterns :tactical-candidates :tactical-precedence :tactical-G]}
+
+ :executable-examples
+ [{:id :healthy-field
+   :observation {:injury-observation {:absent :no-active-injury}}
+   :candidates
+   [{:id :advance-mission
+     :slots {:task-kind :mission :target "M-example"
+             :next-move :advance
+             :resource-envelope {:time-budget-ms 600000 :token-budget 20000
+                                 :author-seat "wm-author" :reviewer-seat "wm-reviewer"}
+             :evidence-channel {:source {:path "holes/M-example.md" :sha256 "example"}
+                                :locator {:kind :checkbox :line 12}}
+             :stopping-rule :grounded-progress}
+     :g-terms {:risk 0.30M :ambiguity 0.20M :epistemic-value 0.15M}}
+    {:id :inspect-excursion
+     :slots {:task-kind :excursion :target "E-example"
+             :next-move :unblock
+             :resource-envelope {:time-budget-ms 600000 :token-budget 20000
+                                 :author-seat "wm-author" :reviewer-seat "wm-reviewer"}
+             :evidence-channel {:source {:path "holes/E-example.md" :sha256 "example"}
+                                :locator {:kind :verdict :line 20}}
+             :stopping-rule :typed-blocker}
+     :g-terms {:risk 0.45M :ambiguity 0.25M :epistemic-value 0.10M}}
+    {:id :heal-while-healthy
+     :slots {:task-kind :algorithm :target "A-repair-write-path"
+             :next-move :repair
+             :resource-envelope {:time-budget-ms 300000 :token-budget 10000
+                                 :author-seat "wm-author" :reviewer-seat "wm-reviewer"}
+             :evidence-channel {:source {:path "algorithms/A-repair-write-path.md" :sha256 "example"}
+                                :locator {:kind :capability-probe :id :substrate-write}}
+             :stopping-rule :closed}
+     :repairs-capability :substrate-write
+     :g-terms {:risk 0.10M :ambiguity 0.10M :epistemic-value 0.05M}}]
+   :expected {:arm :ordinary-work
+              :typed-exclusions {:heal-while-healthy :task-kind-not-admitted}
+              :selected :advance-mission
+              :g 0.35M}}
+
+  {:id :injured-field
+   :observation {:injury-observation :active
+                 :injured-capability :substrate-write
+                 :source-pin {:path "data/tripwires/write-path.edn" :sha256 "example"}}
+   :candidates
+   [{:id :advance-while-injured
+     :slots {:task-kind :mission :target "M-example"
+             :next-move :advance
+             :resource-envelope {:time-budget-ms 600000 :token-budget 20000
+                                 :author-seat "wm-author" :reviewer-seat "wm-reviewer"}
+             :evidence-channel {:source {:path "holes/M-example.md" :sha256 "example"}
+                                :locator {:kind :checkbox :line 12}}
+             :stopping-rule :grounded-progress}
+     :g-terms {:risk 0.05M :ambiguity 0.05M :epistemic-value 0.10M}}
+    {:id :repair-write-path
+     :slots {:task-kind :algorithm :target "A-repair-write-path"
+             :next-move :run-algorithm
+             :resource-envelope {:time-budget-ms 300000 :token-budget 10000
+                                 :author-seat "wm-author" :reviewer-seat "wm-reviewer"}
+             :evidence-channel {:source {:path "algorithms/A-repair-write-path.md" :sha256 "example"}
+                                :locator {:kind :capability-probe :id :substrate-write}}
+             :stopping-rule :debugger-stop}
+     :repairs-capability :substrate-write
+     :rearm-observation {:kind :capability-probe :id :substrate-write
+                         :expected :healthy}
+     :g-terms {:risk 0.40M :ambiguity 0.20M :epistemic-value 0.30M}}
+    {:id :repair-unrelated-capability
+     :slots {:task-kind :algorithm :target "A-repair-network"
+             :next-move :repair
+             :resource-envelope {:time-budget-ms 300000 :token-budget 10000
+                                 :author-seat "wm-author" :reviewer-seat "wm-reviewer"}
+             :evidence-channel {:source {:path "algorithms/A-repair-network.md" :sha256 "example"}
+                                :locator {:kind :capability-probe :id :network}}
+             :stopping-rule :debugger-stop}
+     :repairs-capability :network
+     :rearm-observation {:kind :capability-probe :id :network :expected :healthy}
+     :g-terms {:risk 0.10M :ambiguity 0.10M :epistemic-value 0.15M}}]
+   :expected {:arm :self-heal
+              :typed-exclusions
+              {:advance-while-injured :machine-injury-active
+               :repair-unrelated-capability :algorithm-capability-mismatch}
+              :selected :repair-write-path
+              :g 0.30M}}]}

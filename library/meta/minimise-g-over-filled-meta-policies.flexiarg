@@ -1,0 +1,42 @@
+@flexiarg meta/minimise-g-over-filled-meta-policies
+@title Minimise G Over Filled META Policies
+@sigils [💫/比]
+@keywords META, outer loop, expected free energy, G, policy, comparison, preference, epistemic value, cost
+@audience War Machine designers, AIF reviewers, certificate authors
+@tone formal-operational
+@references [meta/fill-meta-policy-slots meta/injury-routes-to-self-heal]
+@status [status[ready] "evidence[PROOF-2b G certificates; E-outer-loop-improvement; operator ruling 2026-10-02]"]
+
+! conclusion:
+  Evaluate G for every admitted, fully filled META policy under one declared
+  outcome vocabulary and select the minimum, retaining the decomposition and
+  nearest alternative as the reason for the chosen task.
+
+  + context: The outer cascade has produced concrete policy instances whose
+    slots and source evidence are complete.
+
+  + IF:
+    The generative model predicts, per policy, closure or progress, useful
+    blocker discovery, time, tokens, downstream effect, information gain,
+    repetition, abstention, and unreviewable-output risk.
+
+  + HOWEVER:
+    Comparing task labels or opaque scalar priorities is not G over policies.
+    Missing terms, different outcome vocabularies, or an unfilled resource or
+    evidence slot make the comparison meaningless.
+
+  + THEN:
+    Compute the declared risk and ambiguity terms minus epistemic value for
+    each admitted policy; keep typed absences rather than substituting zero;
+    select `argmin G`; and receipt every term, preference source, chosen slots,
+    and the nearest rejected policy. A singleton family records a typed bypass,
+    not a fictitious comparison.
+
+  + BECAUSE:
+    The selected META task is explained by the predicted consequences of a
+    concrete policy. This is the outer-loop analogue of tactical G while
+    retaining a separate policy identity, model, preferences, and certificate.
+
+  + NEXT-STEPS:
+    next[Generate deterministic and stochastic witnesses over the same filled policy family.]
+    next[Update the outer generative model from the enacted policy's time, tokens, closure, progress, blocker, and injury observations.]

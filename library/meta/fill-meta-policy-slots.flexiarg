@@ -1,0 +1,39 @@
+@flexiarg meta/fill-meta-policy-slots
+@title Fill Typed Slots to Instantiate META Policies
+@sigils [🍵/内]
+@keywords META, outer loop, slot, filler, policy, candidate, task, resource envelope, observation contract
+@audience War Machine designers, pattern-policy constructors
+@tone structural-operational
+@references [meta/observe-the-meta-field structure/hinge-entry-slots cascades/declared-skeleton]
+@status [status[ready] "evidence[E-outer-loop-improvement reason-bearing META policy; operator ruling 2026-10-02]"]
+
+! conclusion:
+  Treat an outer policy as a pattern cascade with typed holes, and instantiate
+  it only by filling every load-bearing slot from current, source-pinned
+  evidence.
+
+  + context: A META field observation exists and the machine must construct
+    candidate policies rather than rank bare task identifiers.
+
+  + IF:
+    A reusable outer-policy skeleton names the work kind, target, coarse move,
+    resource envelope, observation contract, and stopping rule.
+
+  + HOWEVER:
+    A task identifier alone is not a policy, and optional prose fields allow
+    an agent to narrate a rationale after the draw. Unfilled slots make G
+    incomparable because predicted outcomes refer to different or absent acts.
+
+  + THEN:
+    Bind `task-kind`, `target`, `next-move`, `resource-envelope`,
+    `evidence-channel`, and `stopping-rule` with typed fillers. Reject an
+    instance when a required filler is absent or violates its guard. Retain the
+    slot-to-source receipt as the identity of the instantiated policy.
+
+  + BECAUSE:
+    G is defined over policies with predicted consequences. Typed slot filling
+    turns a reusable cascade into a concrete, auditable act whose consequences
+    can be modelled and compared.
+
+  + NEXT-STEPS:
+    next[Construct at least one filled policy for each admissible arm and preserve refused fillings as typed exclusions.]

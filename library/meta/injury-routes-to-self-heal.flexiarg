@@ -1,0 +1,40 @@
+@flexiarg meta/injury-routes-to-self-heal
+@title Injury Routes META Selection to Self-Heal Algorithms
+@sigils [👹/失]
+@keywords META, injury, self-heal, algorithm, interoception, policy support, active inference
+@audience War Machine designers, runtime maintainers, operators
+@tone safety-operational
+@references [meta/observe-the-meta-field meta/fill-meta-policy-slots meta/baldwin-ratchet-defeats-darkroom]
+@status [status[ready] "evidence[operator example 2026-10-02: injured machine should leave out M/E/T and select a suitable A item]"]
+
+! conclusion:
+  When retained interoceptive evidence says ordinary work is unsafe or
+  impossible, construct the live outer-policy family from applicable A/self-
+  heal fillers and leave M/E/T instances out with the injury evidence attached.
+
+  + context: The observed META field contains a typed injury whose repair has
+    an approved algorithm and whose persistence would invalidate ordinary work.
+
+  + IF:
+    A tripwire, debugger stop, capability loss, or coherence failure identifies
+    the injured capability and an approved A item declares that capability as
+    its repair target.
+
+  + HOWEVER:
+    Merely adding a large penalty to M/E/T leaves unsafe acts in support and
+    can still select them under noise. Conversely, treating every failure as
+    injury creates a self-repair dark room that never returns to useful work.
+
+  + THEN:
+    Guard the self-heal arm by exact injury-to-algorithm capability matching.
+    Admit matching A fillers; exclude M/E/T fillers with reason
+    `:machine-injury-active`. State the re-arm observation that will restore
+    ordinary support after the repair is verified.
+
+  + BECAUSE:
+    Policy support should express what the current organism can enact. A typed,
+    reversible support change is clearer than a magic score and makes healing a
+    first-class policy rather than an exception outside the AIF loop.
+
+  + NEXT-STEPS:
+    next[After the A policy acts, observe the declared re-arm condition before restoring M/E/T support.]

@@ -1,0 +1,105 @@
+{:schema :meta/outer-predictive-authority-decision-v1
+ :version 1
+ :decided-at "2026-10-02"
+ :status :refused-insufficient-candidate-conditioned-evidence
+ :scope :meta-outer-policy
+
+ :inputs
+ {:provisional-preference-authority
+  {:repo "futon3"
+   :revision "7ba5d220892795a94b54fb4e5b36dd910058d9e2"
+   :path "library/meta/meta-outer-provisional-prior-v1.edn"
+   :sha256 "e18b3d24ec5ee1470ce78314d4d0c554a324ee63a47fe8fc7be09e7f696eef09"}
+  :outcome-dataset-producer
+  {:repo "futon2"
+   :path "src/futon2/aif/meta_outcome_dataset.clj"
+   :sha256 "983d7528c01aec5c8f83edf531f1bae028b5b296058d17b9c5fee2e4300ab10f"}
+  :candidate-adapter-producer
+  {:repo "futon2"
+   :path "src/futon2/aif/meta_adapter_discovery.clj"
+   :sha256 "773c0caf2fca5dfa4385a155b809f187d32cb839875a268f4db7129c0da11fbd"}
+  :candidate-constructor
+  {:repo "futon2"
+   :path "src/futon2/aif/meta_policy_constructor.clj"
+   :sha256 "3d388a7f6faefc9aee5124d4c8d227063291a41e6a8db5654fc94cb667a8df22"}}
+
+ :registered-run-evidence
+ {:manifest-pin "c5fc6d48c02f6921399cde6c0728f0125246fd974fe5bf2247563110da7088c7"
+  :dataset-pin "c627b5b088f303ee6ba3509ee355c15f7911b70afb473978ad0e868eb023b264"
+  :inputs 103
+  :usable 39
+  :excluded 64
+  :task-kinds {:mission 30 :ticket 9 :excursion 0 :algorithm 0}
+  :selected-identity-authority {:canonical-outer 0 :legacy-inner-fallback 39}
+  :measurement-availability {:elapsed-ms 5 :token-use 0}
+  :epistemic-status :descriptive-sparse-not-calibration-support}
+
+ :current-candidate-evidence
+ {:field-counts {:mission 163 :excursion 241 :ticket 69 :algorithm 1}
+  :checkable-adapters {:mission 162 :excursion 7 :ticket 0 :algorithm 1}
+  :available-features
+  [:task-kind :source-pin :checkable-locator :permitted-next-move
+   :stopping-rule :resource-envelope]
+  :feature-semantics
+  {:resource-envelope :permission-bound-not-expected-consumption
+   :stopping-rule :control-condition-not-predicted-outcome
+   :checkable-locator :observation-surface-not-outcome-probability}
+  :candidate-conditioned-outcome-observations :absent}
+
+ :five-channel-assessment
+ {:closure :no-candidate-conditioned-authority
+  :grounded-progress :no-candidate-conditioned-authority
+  :abstention-or-failure :no-candidate-conditioned-authority
+  :elapsed-budget-fraction
+  {:status :insufficient :reason :only-five-explicit-elapsed-measurements}
+  :token-budget-fraction
+  {:status :unsupported :reason :zero-explicit-token-measurements}}
+
+ :kind-support-constraints
+ {:mission :sparse-descriptive-history-only
+  :ticket :nine-rows-insufficient-for-kind-fit
+  :excursion :zero-rows-fit-forbidden
+  :algorithm :zero-rows-fit-forbidden}
+
+ :information-model-assessment
+ {:canonical-kernel :present
+  :candidate-specific-prior :absent
+  :policy-conditioned-Q-o-given-pi :absent
+  :posterior-by-outcome :absent
+  :decision :bayes-coherent-EIG-cannot-be-constructed}
+
+ :prohibited-substitutions
+ [:resource-budget-as-expected-consumption
+  :stopping-rule-as-outcome-prediction
+  :identical-half-probabilities-as-candidate-evidence
+  :per-kind-fit-with-zero-or-sparse-kind-support
+  :singleton-or-first-item-as-nondiscriminating-selection]
+
+ :circularity
+ {:condition "META selection is halted pending grounded predictive inputs, while new outcome evidence normally arrives only after registered clicks."
+  :resolution-requirement "Collect candidate features and outcomes under an independently authorized policy that does not use the unvalidated META model."}
+
+ :safe-acquisition-routes
+ [{:id :registered-seeded-baseline-shadow
+   :recommended true
+   :method "During separately authorized registered baseline clicks, freeze the complete META field and candidate features before the existing seeded selector acts; record the chosen candidate propensity, full run telemetry, and terminal five-channel observation. META remains shadow-only."
+   :why "It breaks the circularity without letting the unvalidated model choose work and preserves known selection propensities for later evaluation."
+   :minimum-evidence
+   [:canonical-outer-selection-receipt :complete-field-pin
+    :candidate-feature-snapshot :chosen-propensity
+    :elapsed-and-token-telemetry :terminal-outcome]}
+  {:id :operator-authorized-stratified-baseline
+   :recommended false
+   :method "Authorize a bounded registered baseline that samples across M/E/T/A strata with declared propensities after ordinary launch safety is restored."
+   :why "It can deliberately cover excursions and Algorithms, but it spends clicks and requires a separate operator decision."}
+  {:id :explicit-predictive-prior-ruling
+   :recommended false
+   :method "The operator may declare source-pinned candidate-feature likelihood priors and a latent-state model, explicitly as prior authority rather than calibration."
+   :why "This enables logical Bayes-coherent inputs without empirical support, but adds stronger assumptions than the current preference-only ruling."}]
+
+ :recommendation
+ {:route :registered-seeded-baseline-shadow
+  :action-now :retain-typed-refusal
+  :model-producer :not-implemented
+  :selection-behavior :refuse-nondiscrimination
+  :criterion-2-status :not-met}}

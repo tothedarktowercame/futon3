@@ -49,7 +49,7 @@
   :elapsed-ms-present 5 :token-use-present 0
   :calibration-status :unsupported}
 
- :outcomes
+ :historical-outcomes-at-initial-audit
  {:closure
   {:runtime-observable {:path [:run-output :outcome]
                         :domain :categorical-terminal-outcome
@@ -125,14 +125,13 @@
    :normalization :missing :preference-distribution :missing
    :candidate-predictive-distribution :missing}}
 
- :common-missing-authorities
+ :authority-status
  {:normalization
-  {:status :missing
-   :requires :one-declared-transform-per-outcome-into-one-common-domain}
+  {:status :provisional-declared
+   :source "library/meta/meta-outer-provisional-prior-v1.edn"}
   :preferences
-  {:status :missing
-   :requires [:outcome-keyed-means :positive-variances :nonnegative-weights
-              :source-pin]}
+  {:status :provisional-declared
+   :source "library/meta/meta-outer-provisional-prior-v1.edn"}
   :candidate-predictions
   {:status :missing
    :requires [:candidate-and-field-joined-means
@@ -150,6 +149,10 @@
  {:preference-input-producer :authorized
   :g-input-producer :still-not-implementable
   :reason :candidate-predictions-and-information-model-absent
+  :predictive-authority-decision
+  {:path "library/meta/meta-outer-predictive-authority-decision-v1.edn"
+   :sha256 "33ac1617f5c29538afe9709b690ba51ebedf9abd65d7f322b217f9a2cd4ff94c"
+   :status :refused-insufficient-candidate-conditioned-evidence}
   :evaluator-behavior {:missing-g-input :refuse
                        :reason :g-inputs-incomplete}
   :resolved-by-provisional-prior

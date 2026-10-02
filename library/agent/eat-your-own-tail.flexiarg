@@ -1,0 +1,59 @@
+@flexiarg agent/eat-your-own-tail
+@title Eat Your Own Tail
+@keywords ouroboros, live introspection, feedback, debugger, logs, notifier, progress measure, ratchet, self-repair
+@audience agents operating or repairing live systems, workflow designers, Futon operators
+@tone practical
+@style pattern
+@status observed across four operator-reported cases on 2026-10-02; the mechanism is established, while comparative effectiveness remains provisional
+@why [war-room/wr-16-operationalised-exploit-loops-are-first-class-observation-channels agent/trail-enables-return]
+@references [war-room/wr-27-a-loop-is-born-instrumented-for-its-gain aif/no-self-certification aif/interoceptive-tripwires]
+@violation-signature the agent waits for a live process to finish, reads only its final summary, or repairs one emitted artifact without attaching the repair loop to the signal that exposed it
+@done done when the live system exposes a named observation surface, the responsible agent reads it while the system runs, at least one observation changes the next intervention, and the resulting detector, debugger path, progress measure, or ratchet remains available for the next run
+
+! conclusion: When improving a running system, make its own live execution the observation surface for the improvement loop, and leave behind a mechanism that lets the next run expose and correct the same class of failure sooner.
+
+  + context:
+    A process is already running and emitting state: warnings, debugger frames, logs, partial products, progress counts, invariants, or other traces. An agent is responsible for operating or improving that process.
+
+  + IF:
+    The agent can observe the process while it runs and can change either the running intervention or the machinery used on subsequent runs.
+
+  + HOWEVER:
+    The usual workflow puts the agent outside the process: wait for completion, inspect a summary, repair the visible result, and declare success. This delays learning until state has gone cold and produces one-off rescues whose evidence never reaches the mechanism that failed. The first useful attempt may still be inefficient; the pattern begins when that failure is routed back into the live apparatus rather than merely remembered.
+
+  + THEN:
+    Eat the tail in four moves:
+
+    1. Name the process's native live surface: notification, debugger, log stream, progress projection, trace, or invariant trip.
+    2. Attach the responsible agent to that surface before the run ends.
+    3. Let observations from the live run change the next action: patch, probe, reclassify, resume, or stop.
+    4. Preserve the attachment as machinery for the next run, preferably with a ratchet that records the best established state and makes backsliding visible.
+
+    The tail is an observation channel, not a certificate. Keep outcome judgment independent where success could be self-manufactured; use the system's own signals to find and steer the repair, not to waive its acceptance gate.
+
+  + BECAUSE:
+    Warm execution state contains causal information that final artifacts discard. Feeding that state into the agent's next move shortens the interval between failure, diagnosis, and structural repair. Preserving the observation path makes each incident increase the system's ability to reveal itself, so later runs need less operator archaeology.
+
+    + EXAMPLE:
+      Inbox zero emitted a Reazon warning into the operator's Emacs buffer. Joe summoned the responsible agent; the warning led first to the behind-repository defect, then to the dirty-file fast-forward rule, and finally to explicit commit-or-ignore dispositions for generated output. The notifier remained installed after the repair.
+
+    + EXAMPLE:
+      Codex-10 was induced to run the target code under a debugger and debug the executing program, rather than reason only from source and post-run output.
+
+    + EXAMPLE:
+      Codex-11 attached to a remote data-mining process's logs and improved the code while mining continued, rather than waiting for the final dataset before learning from the run.
+
+    + EXAMPLE:
+      Claude-4 constructed a queryable progress measure with a ratchet, so the live process can report its present position and cannot silently present a regressed state as progress.
+
+    + COUNTERFACTUAL:
+      A dashboard nobody reads, logs inspected only after completion, a debugger attached without changing an intervention, or a progress number that may freely decrease does not eat the tail. The loop closes only when live self-observation changes action and leaves a stronger observation path behind.
+
+    + evidence:
+      Operator synthesis, Joe, 2026-10-02, names the four cases above and explicitly cautions that the pattern is not guaranteed to succeed. Inbox-zero has repository witnesses: Futon3c commits `66bb1664` (Reazon notifier), `83b9f463` (dirty-but-disjoint fast-forward), `631561f5` and `ef1a3666` (generated-artifact disposition), followed by sweeper-authored projection commits `4007d7aa` in Futon6 and `751b9b12` in Futon3c.
+
+  + NEXT-STEPS:
+    - At dispatch, ask which live surface can falsify the agent's current story before the run ends.
+    - Prefer an attachable surface over periodic prose updates: debugger state, tailed logs, typed events, or a queryable progress projection.
+    - After a useful catch, require a durable detector or ratchet before calling the repair complete.
+    - Compare future tail-eating runs with wait-for-result runs; retain the pattern only where it measurably shortens diagnosis or prevents recurrence.

@@ -1,0 +1,66 @@
+{:schema :meta/outer-provisional-prior-v1
+ :version 1
+ :status :operator-authorized-provisional-prior
+ :authority
+ {:actor "joe"
+  :date "2026-10-02"
+  :ruling "Use a transparent provisional prior; normalize elapsed time and token use against each candidate resource envelope; state closure, progress, and failure preferences explicitly; use wide positive variances and equal initial weights; revise only from registered-run evidence."
+  :epistemic-status :declared-prior-not-empirical-calibration}
+
+ :outcome-vocabulary
+ [:closure :grounded-progress :abstention-or-failure
+  :elapsed-budget-fraction :token-budget-fraction]
+
+ :channels
+ [{:outcome :closure
+   :observable {:path [:run-output :outcome]
+                :domain [:grounded-change :already-satisfied :other]}
+   :normalization {:function :indicator-membership
+                   :members [:grounded-change :already-satisfied]
+                   :codomain [0.0 1.0]}
+   :preference {:mean 1.0 :variance 4.0 :weight 1.0}}
+  {:outcome :grounded-progress
+   :observable {:path [:run-output :outcome]
+                :domain [:grounded-progress :other]}
+   :normalization {:function :indicator-equality
+                   :value :grounded-progress :codomain [0.0 1.0]}
+   :preference {:mean 1.0 :variance 4.0 :weight 1.0}}
+  {:outcome :abstention-or-failure
+   :observable {:path [:terminal-outcome :class]
+                :domain [:abstention-or-failure :other]}
+   :normalization {:function :indicator-equality
+                   :value :abstention-or-failure :codomain [0.0 1.0]}
+   :preference {:mean 0.0 :variance 4.0 :weight 1.0}}
+  {:outcome :elapsed-budget-fraction
+   :observable {:path [:registered-run/timing :wall-clock-ms]
+                :unit :milliseconds :domain :nonnegative-integer}
+   :normalization {:function :clamped-resource-fraction
+                   :denominator [:candidate :resource-envelope :time-budget-ms]
+                   :formula "min(1,max(0,wall-clock-ms/time-budget-ms))"
+                   :codomain [0.0 1.0]
+                   :missing-policy :refuse}
+   :preference {:mean 0.0 :variance 4.0 :weight 1.0}}
+  {:outcome :token-budget-fraction
+   :observable {:path [:registered-run/model-usage :total-tokens]
+                :unit :tokens :domain :nonnegative-integer}
+   :normalization {:function :clamped-resource-fraction
+                   :denominator [:candidate :resource-envelope :token-budget]
+                   :formula "min(1,max(0,total-tokens/token-budget))"
+                   :codomain [0.0 1.0]
+                   :missing-policy :refuse}
+   :preference {:mean 0.0 :variance 4.0 :weight 1.0}}]
+
+ :excluded-outcomes
+ {:useful-blocker-discovery :usefulness-not-canonically-observed
+  :downstream-unblocking :source-pinned-downstream-transition-unavailable
+  :information-gain :candidate-specific-bayes-model-unavailable
+  :repeated-target :normalization-and-preference-semantics-unresolved
+  :unreviewable-output :canonical-terminal-domain-unavailable
+  :injury-persistence :source-pinned-before-after-observation-unavailable}
+
+ :update-rule
+ {:allowed-source :registered-run-evidence-only
+  :required [:source-pinned-run-manifest :reconstructively-verified-dataset
+             :declared-update-procedure :version-increment]
+  :forbidden [:silent-retuning :sample-content :unregistered-runs]
+  :current-calibration-claim :none}}

@@ -1,6 +1,6 @@
 {:schema :meta/g-input-authority-audit-v1
  :audited-at "2026-10-02"
- :status :blocked-missing-numeric-authority
+ :status :provisional-prior-declared-predictions-missing
  :scope :meta-outer-policy
 
  :sources
@@ -35,8 +35,12 @@
    :slow-or-expensive-is-not-success
    :repetition-no-op-and-abstention-are-bad
    :blocker-discovery-and-information-can-be-useful]
-  :numeric-authority :absent
-  :prohibited-inference :equal-or-hand-chosen-numeric-weights}
+  :numeric-authority
+  {:status :operator-authorized-provisional-prior
+   :declaration "library/meta/meta-outer-provisional-prior-v1.edn"
+   :sha256 "e18b3d24ec5ee1470ce78314d4d0c554a324ee63a47fe8fc7be09e7f696eef09"
+   :epistemic-status :declared-prior-not-empirical-calibration}
+  :historical-finding :numeric-authority-was-absent-at-audit-time}
 
  :historical-support
  {:manifest-pin "c5fc6d48c02f6921399cde6c0728f0125246fd974fe5bf2247563110da7088c7"
@@ -143,12 +147,14 @@
   :statement "Time and token budgets bound permitted use; they do not state expected consumption."}
 
  :implementation-decision
- {:g-input-producer :not-implemented
-  :reason :numeric-authorities-absent
+ {:preference-input-producer :authorized
+  :g-input-producer :still-not-implementable
+  :reason :candidate-predictions-and-information-model-absent
   :evaluator-behavior {:missing-g-input :refuse
                        :reason :g-inputs-incomplete}
-  :minimum-next-declarations
+  :resolved-by-provisional-prior
   [:outcome-normalization-contract
-   :numeric-preference-distribution-with-provenance
-   :candidate-predictive-model-with-training-or-prior-authority
+   :numeric-preference-distribution-with-provenance]
+  :remaining-declarations
+  [:candidate-predictive-model-with-training-or-prior-authority
    :candidate-specific-bayes-coherent-information-model]}}

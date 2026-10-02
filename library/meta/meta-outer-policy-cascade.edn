@@ -54,7 +54,11 @@
    :exclude-task-kinds [:mission :excursion :ticket]
    :exclusion-reason :machine-injury-active
    :next-moves [:repair :run-algorithm]
-   :rearm-slot {:required true :type :checkable-capability-observation}}}
+   :rearm-slot {:required true :type :checkable-capability-observation}
+   :no-matching-algorithm
+   {:result :abstain
+    :reason :no-matching-self-heal-algorithm
+    :ordinary-support :remains-excluded}}}
 
  :generative-model
  {:outcomes
@@ -126,8 +130,11 @@
 
   {:id :injured-field
    :observation {:injury-observation :active
-                 :injured-capability :substrate-write
-                 :source-pin {:path "data/tripwires/write-path.edn" :sha256 "example"}}
+                 :injured-capability :wm-click-completes-with-reviewable-receipts
+                 :source-pin
+                 {:run-id "2026-10-02-afd0e890-46e7-4152-a0e6-68b78759e248"
+                  :click-id "wm-click-72d1881d-4c21-4ca3-8774-49d757e9e8a4"
+                  :attempt "attempt-002"}}
    :candidates
    [{:id :advance-while-injured
      :slots {:task-kind :mission :target "M-example"
@@ -138,17 +145,24 @@
                                 :locator {:kind :checkbox :line 12}}
              :stopping-rule :grounded-progress}
      :g-terms {:risk 0.05M :ambiguity 0.05M :epistemic-value 0.10M}}
-    {:id :repair-write-path
-     :slots {:task-kind :algorithm :target "A-repair-write-path"
+    {:id :run-self-heal
+     :slots {:task-kind :algorithm :target "A-self-heal"
              :next-move :run-algorithm
              :resource-envelope {:time-budget-ms 300000 :token-budget 10000
-                                 :author-seat "wm-author" :reviewer-seat "wm-reviewer"}
-             :evidence-channel {:source {:path "algorithms/A-repair-write-path.md" :sha256 "example"}
-                                :locator {:kind :capability-probe :id :substrate-write}}
+                                 :author-seat "codex-16" :reviewer-seat "codex-10"}
+             :evidence-channel
+             {:source {:path "holes/labs/A-self-heal.md"
+                       :repository "futon2"}
+              :locator {:kind :debugger-stop-and-terminal-run-record}}
              :stopping-rule :debugger-stop}
-     :repairs-capability :substrate-write
-     :rearm-observation {:kind :capability-probe :id :substrate-write
-                         :expected :healthy}
+     :repairs-capability :wm-click-completes-with-reviewable-receipts
+     :rearm-observation
+     {:kind :counted-controlled-click :count 1
+      :requires [:terminal-outcome :outer-task-selection-present
+                 :selection-receipt-present
+                 :loop-nodes-present-or-reasoned-bypass
+                 :selected-enacted-identity-present :trace-written
+                 :terminal-output-summary-present]}
      :g-terms {:risk 0.40M :ambiguity 0.20M :epistemic-value 0.30M}}
     {:id :repair-unrelated-capability
      :slots {:task-kind :algorithm :target "A-repair-network"
@@ -165,5 +179,5 @@
               :typed-exclusions
               {:advance-while-injured :machine-injury-active
                :repair-unrelated-capability :algorithm-capability-mismatch}
-              :selected :repair-write-path
+              :selected :run-self-heal
               :g 0.30M}}]}

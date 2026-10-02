@@ -91,6 +91,11 @@
   :forbids-as-outer-input
   [:tactical-patterns :tactical-candidates :tactical-precedence :tactical-G]}
 
+ :executable-examples-authority
+ {:status :illustrative-not-admissible-g-authority
+  :reason :numeric-preferences-normalization-and-candidate-predictions-are-undeclared
+  :must-not-feed [:production-selection :calibration :model-fitting]}
+
  :executable-examples
  [{:id :healthy-field
    :observation {:injury-observation {:absent :no-active-injury}}

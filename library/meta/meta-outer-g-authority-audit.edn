@@ -1,0 +1,154 @@
+{:schema :meta/g-input-authority-audit-v1
+ :audited-at "2026-10-02"
+ :status :blocked-missing-numeric-authority
+ :scope :meta-outer-policy
+
+ :sources
+ {:contract {:repo "futon3"
+             :revision "a044d286e4f390a7415e5ca45c896772177d2fcb"
+             :path "library/meta/meta-outer-policy-cascade.edn"
+             :sha256-before-audit-flag
+             "ba6fa7097f2e77bb2184a5254a2d45379c5fbbeda1f2c001abc8084d0b62bcbb"
+             :sha256-after-audit-flag
+             "b1eaaa09a7f16fff9e4ac1c8e43e584b7d187ce348a25458237549983ddb6b86"}
+  :evaluator {:repo "futon2"
+              :revision "18014badafe6faf816f14e8fcc1a201dbc10b63a"
+              :path "src/futon2/aif/meta_outer_policy.clj"
+              :sha256 "e9a916a5f45b3c02e85ebe68b86de7a97b1dc60a80a25a88097e1d6fa01cf61b"}
+  :gaussian-efe {:repo "futon2"
+                 :revision "18014badafe6faf816f14e8fcc1a201dbc10b63a"
+                 :path "src/futon2/aif/core_efe.clj"
+                 :sha256 "519c8983328d17e5a3adacb405f9b4d7851e170340d693959c2c5854bdbbe6e3"}
+  :eig-kernel {:repo "futon2"
+               :revision "18014badafe6faf816f14e8fcc1a201dbc10b63a"
+               :path "src/futon2/aif/epistemic_value.clj"
+               :sha256 "0df62893adfdce64189c99724a4e1fb80ff0d0a07f84c74a5acf780cc370b690"}
+  :historical-dataset-producer
+  {:repo "futon2" :revision "18014badafe6faf816f14e8fcc1a201dbc10b63a"
+   :path "src/futon2/aif/meta_outcome_dataset.clj"
+   :sha256 "983d7528c01aec5c8f83edf531f1bae028b5b296058d17b9c5fee2e4300ab10f"}}
+
+ :qualitative-authority
+ {:authority "Joe/operator ruling, 2026-10-02"
+  :ordered-claims
+  [:closure-and-grounded-progress-are-useful
+   :slow-or-expensive-is-not-success
+   :repetition-no-op-and-abstention-are-bad
+   :blocker-discovery-and-information-can-be-useful]
+  :numeric-authority :absent
+  :prohibited-inference :equal-or-hand-chosen-numeric-weights}
+
+ :historical-support
+ {:manifest-pin "c5fc6d48c02f6921399cde6c0728f0125246fd974fe5bf2247563110da7088c7"
+  :dataset-pin "c627b5b088f303ee6ba3509ee355c15f7911b70afb473978ad0e868eb023b264"
+  :usable-rows 39 :mission-rows 30 :ticket-rows 9 :excursion-rows 0
+  :elapsed-ms-present 5 :token-use-present 0
+  :calibration-status :unsupported}
+
+ :outcomes
+ {:closure
+  {:runtime-observable {:path [:run-output :outcome]
+                        :domain :categorical-terminal-outcome
+                        :values [:grounded-change :already-satisfied]}
+   :normalization :missing :preference-distribution :missing
+   :candidate-predictive-distribution :missing}
+  :grounded-progress
+  {:runtime-observable {:path [:run-output :outcome]
+                        :domain :categorical-terminal-outcome
+                        :value :grounded-progress}
+   :normalization :missing :preference-distribution :missing
+   :candidate-predictive-distribution :missing}
+  :useful-blocker-discovery
+  {:runtime-observable {:path [:terminal-outcome :class]
+                        :domain :categorical
+                        :available-value :typed-blocker}
+   :semantic-gap :usefulness-is-not-observed-by-the-terminal-keyword
+   :normalization :missing :preference-distribution :missing
+   :candidate-predictive-distribution :missing}
+  :downstream-unblocking
+  {:runtime-observable :missing
+   :missing-contract :source-pinned-downstream-state-transition
+   :normalization :missing :preference-distribution :missing
+   :candidate-predictive-distribution :missing}
+  :information-gain
+  {:runtime-observable :missing
+   :unit :nats
+   :kernel-authority :eig-kernel
+   :missing-contract [:candidate-specific-prior
+                      :policy-conditioned-observation-distribution
+                      :bayes-coherent-posteriors
+                      :held-out-realised-information-observation]
+   :normalization :missing :preference-distribution :missing
+   :candidate-predictive-distribution :missing}
+  :elapsed-ms
+  {:runtime-observable {:path [:registered-run/timing :wall-clock-ms]
+                        :unit :milliseconds :domain :positive-integer
+                        :clock :monotonic}
+   :normalization :missing
+   :missing-contract :declared-scale-or-transform-to-common-outcome-domain
+   :preference-distribution :missing
+   :candidate-predictive-distribution :missing}
+  :token-use
+  {:runtime-observable {:path [:registered-run/model-usage :total-tokens]
+                        :unit :tokens :domain :nonnegative-integer
+                        :authority :wm-run-local-agency-ledger}
+   :historical-support :none
+   :normalization :missing
+   :missing-contract :declared-scale-or-transform-to-common-outcome-domain
+   :preference-distribution :missing
+   :candidate-predictive-distribution :missing}
+  :repeated-target
+  {:runtime-observable {:path [:repetition :prior-occurrences]
+                        :unit :count :domain :nonnegative-integer
+                        :chronology :canonical-start-instant}
+   :normalization :missing :preference-distribution :missing
+   :candidate-predictive-distribution :missing}
+  :abstention
+  {:runtime-observable {:path [:terminal-outcome :class]
+                        :domain :categorical
+                        :value :abstention-or-failure}
+   :semantic-gap :abstention-is-currently-coarsened-with-other-failures
+   :normalization :missing :preference-distribution :missing
+   :candidate-predictive-distribution :missing}
+  :unreviewable-output
+  {:runtime-observable :missing
+   :missing-contract :canonical-terminal-projection-and-domain
+   :normalization :missing :preference-distribution :missing
+   :candidate-predictive-distribution :missing}
+  :injury-persistence
+  {:runtime-observable :missing
+   :missing-contract :source-pinned-before-and-after-capability-observation
+   :normalization :missing :preference-distribution :missing
+   :candidate-predictive-distribution :missing}}
+
+ :common-missing-authorities
+ {:normalization
+  {:status :missing
+   :requires :one-declared-transform-per-outcome-into-one-common-domain}
+  :preferences
+  {:status :missing
+   :requires [:outcome-keyed-means :positive-variances :nonnegative-weights
+              :source-pin]}
+  :candidate-predictions
+  {:status :missing
+   :requires [:candidate-and-field-joined-means
+              :positive-variances :model-source-pin]}
+  :information-model
+  {:status :kernel-present-model-missing
+   :requires [:candidate-specific-Q-o-given-policy
+              :prior-state-distribution :posterior-by-outcome]}}
+
+ :resource-budget-ruling
+ {:status :not-a-prediction
+  :statement "Time and token budgets bound permitted use; they do not state expected consumption."}
+
+ :implementation-decision
+ {:g-input-producer :not-implemented
+  :reason :numeric-authorities-absent
+  :evaluator-behavior {:missing-g-input :refuse
+                       :reason :g-inputs-incomplete}
+  :minimum-next-declarations
+  [:outcome-normalization-contract
+   :numeric-preference-distribution-with-provenance
+   :candidate-predictive-model-with-training-or-prior-authority
+   :candidate-specific-bayes-coherent-information-model]}}

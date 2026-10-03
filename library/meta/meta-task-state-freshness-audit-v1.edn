@@ -1,0 +1,98 @@
+{:schema :meta/task-state-freshness-audit-v1
+ :version 1
+ :observed-at "2026-10-03"
+ :status :producer-refused-stale-or-unpinned-inputs
+ :operator-ruling
+ {:source {:repo "futon2" :revision "e370990302c889193c1e63a8dbf45991b276e145"
+           :path "holes/E-outer-loop-improvement.md"}
+  :policy [:prefer-current-centrality
+           :prefer-present-automated-progress-surface
+           :level-set-zero-is-retirement-review-candidate
+           :old-high-pressure-is-museum-work
+           :classification-never-mutates-lifecycle]}
+
+ :age-authority
+ {:days 90
+  :basis [{:repo "futon0" :path "analysis/audits/tornhill.py"
+           :sha256 "b7e1885a83bc32328d3e7a671ac70967b1d216b156c6ce230705eb78aa93a287"
+           :field :window_days}
+          {:repo "futon6" :path "scripts/mission_activity_carpet.py"
+           :sha256 "f8cd1b185fefb61c235292658a9f9ce7e4702159bf0b50eebc06c4ba6f92c1b9"
+           :declaration "alive L>=60, no activity in 90 days"}]
+  :boundary "age-days < 90 is recent; age-days >= 90 is stale"
+  :note "This is an existing report/activity boundary, not a newly chosen duration."}
+
+ :sources
+ {:efe-level-set
+  {:repo "futon6" :revision "4007d7aa53cea375e33c5d2388f77e667f12e1d7"
+   :producer {:path "scripts/mission_efe_field.py"
+              :sha256 "205aa1981c68beec606c52bcb68017ff54f222157bdecf2c1fe9a5d9628d2899"}
+   :band-helper {:path "scripts/efe_carpet_controls.py"
+                 :sha256 "dae87d1c7652dcf57219865e3672026b6d9f0ab8946654d227b0e142ab0647"}
+   :domain {:bands [0 1 2 3 4 5 6]
+            :formula "min(6, int(cell-field/fmax*7))"
+            :metric "Gaussian-blurred weighted scope density at the mission hub"}
+   :level-zero :lowest-field-band
+   :warning "The renderer itself says band is density, not mission value. The operator ruling authorizes only a retirement-review candidate, never automatic retirement."
+   :freshness :unavailable
+   :reason :no-independent-generated-band-snapshot-with-source-identities}
+
+  :salingaros
+  {:repo "futon6" :revision "4007d7aa53cea375e33c5d2388f77e667f12e1d7"
+   :producer {:path "scripts/mission_wholeness.py"
+              :sha256 "aad43ac81a326f72df6856924c11bb7cc937ecb7fde1915302d3218581e5420a"}
+   :units {:T "sum of five 0/1/2 differentiation components, range 0..10"
+           :H "cross-centre concept-thread percentage scaled to 0..10"
+           :L "T*H, range 0..100"
+           :C "T*(10-H), range 0..100"
+           :class [:alive :mess :pipeline :stub]}
+   :artifact {:path "data/mission-wholeness.edn"
+              :observed-sha256 "7e0c665454dea6ffc29531d70bb331cc16877ce5ecddf9b35a1b1924771029ed"
+              :working-tree-state :modified-by-another-seat}
+   :freshness :refused
+   :reason :artifact-has-no-generated-at-input-pins-or-clean-commit-identity}
+
+  :tornhill
+  {:producer {:repo "futon0" :path "analysis/audits/tornhill.py"
+              :sha256 "b7e1885a83bc32328d3e7a671ac70967b1d216b156c6ce230705eb78aa93a287"}
+   :report {:path "~/.local/share/futon-audits/tornhill/tornhill-2026-09-26.json"
+            :sha256 "813a756316ec69d25ed6bb8213ecb7418823c23dbdc2ea353ed57f3792225bd8"
+            :generated "2026-09-26T00:48:42+00:00" :window-days 90}
+   :units {:revs :commit-count :hotspot :revs-times-indentation-complexity-total
+           :trend-ratio :latest-complexity-divided-by-earliest-complexity
+           :age-days :days-since-last-contact}
+   :freshness :refused
+   :reason :all-embedded-repository-heads-have-drifted}
+
+  :mission-to-files-and-contact
+  {:repo "futon6" :revision "4007d7aa53cea375e33c5d2388f77e667f12e1d7"
+   :producer {:path "scripts/mission_activity.py"
+              :sha256 "24b5d09fb8c4f81b22c2a5b981ae3330960a36414cde661f7256b841c1721356"}
+   :artifact {:path "data/mission-activity.json"
+              :sha256 "adc10400e010d78701c26fbe958cbe7bf6ae25b2d52c289a23a07c50572beb1e"}
+   :last-contact {:field :doc_last_commit :unit :calendar-date :source :git-log}
+   :coverage :mission-only
+   :freshness :stale-snapshot}}
+
+ :required-classification
+ {:current-signal "source current and last contact younger than 90 days"
+  :museum-work "high historical Tornhill or C signal with age-days >= 90"
+  :retirement-review-candidate "current, verified EFE band exactly 0; review only"
+  :unknown-or-missing "kind or channel lacks an authoritative join"
+  :stale-source-refusal "artifact/source identity is stale, dirty, or unpinned"
+  :pairwise-rule "compare only when both candidates share at least one current channel"
+  :lifecycle-effects []}
+
+ :coverage
+ {:mission :potential-only-until-snapshots-regenerated-and-pinned
+  :excursion :typed-absent
+  :ticket :typed-absent
+  :algorithm :typed-absent}
+
+ :implementation-disposition
+ {:classifier :not-implemented
+  :reason "Implementing classification now would turn mutable/stale render artifacts into authority."
+  :next-mechanical-step "Extract deterministic EFE-band and wholeness snapshot producers that emit generated-at, complete input pins, source revision, and a canonical digest; regenerate Tornhill and mission-activity against current repository heads."
+  :operator-question nil
+  :forbidden [:automatic-retirement :automatic-close :automatic-delete :live-selector-wiring
+              :terminal-forecast :gaussian-noise :nonzero-eig]}}

@@ -1,0 +1,147 @@
+{:schema :meta/outer-task-state-channel-decision-v1
+ :version 1
+ :decided-at "2026-10-03"
+ :status :design-valid-preference-ruling-required
+ :scope :meta-outer-policy
+
+ :question
+ {:id :task-state-preference-policy
+  :text "How should deterministic task-state channels affect META choice, and what should happen to kinds without an authoritative value?"
+  :options
+  [{:id :categorical-support-filter-and-ranked-preferences
+    :recommended true
+    :rule "Keep explicit automated infeasibility as a support exclusion. Compare admitted candidates by separately declared categorical/ordinal preferences for current centrality and Tornhill proxy states; exclude only the missing channel from that candidate's comparison and require at least one common preferred channel against the nearest alternative."
+    :why "This preserves feasibility as admission, avoids inventing observation noise, and never treats missing E/T/A measurements as zero."}
+   {:id :finite-observation-noise-gaussian
+    :recommended false
+    :rule "Declare a strictly positive observation variance and numeric preference mean/weight for each normalized task-state channel, then use the existing Gaussian EFE port; candidates missing a declared channel are typed exclusions from that comparison."
+    :why "This reuses the current evaluator but requires new numeric noise, direction, and relative-weight authority that no source currently supplies."}
+   {:id :receipt-only-until-terminal-model-learned
+    :recommended false
+    :rule "Retain centrality, feasibility, and Tornhill only as reason-bearing receipt fields; do not let them affect G until registered evidence supports the existing terminal/resource channels."
+    :why "This adds no new preference assumptions, but leaves the current field nondiscriminating."}]}
+
+ :operator-authority
+ {:actor "joe"
+  :date "2026-10-03"
+  :ruling "For the early proof-of-concept, use already-computed Tornhill signals from M-the-perfect-crime as a reasonable stand-in for more complex morphogenesis geometry. This is proxy authority, not identity with morphogenesis."
+  :limits [:not-terminal-success-forecast
+           :not-morphogenesis-identity
+           :not-a-probability-without-declared-mapping
+           :missing-coverage-is-absence]}
+
+ :source-authorities
+ {:current-field
+  {:repo "futon2"
+   :revision "007d60953b7691168c089ab589d81f66ebd3ff40"
+   :producer {:path "src/futon2/aif/meta_field_observation.clj"
+              :sha256 "488e6d258dcdd4ee3d6dc51476f4d473e4c95efd42e2ac9bd30df8a37e02b392"}
+   :snapshot-pin "1fda1d8e7e05c9181c16dfac0592fec8bc8e754aedd71fdeaeaa50b2275f11a5"
+   :counts {:mission 163 :excursion 241 :ticket 69 :algorithm 0}}
+  :automated-progress-surface
+  {:repo "futon2"
+   :revision "007d60953b7691168c089ab589d81f66ebd3ff40"
+   :producer {:path "src/futon2/aif/meta_adapter_discovery.clj"
+              :sha256 "773c0caf2fca5dfa4385a155b809f187d32cb839875a268f4db7129c0da11fbd"}
+   :receipt-pin "420127ba7c0727210c2b9ecbe8ef7802172018eaad551b5f6b805cf556c7c6db"
+   :semantics "A source-pinned current false C4 observation plus an explicit :advance move is positive evidence of an automatable progress surface. Absence is unknown, not infeasible."
+   :coverage {:mission {:present 162 :absent 1}
+              :excursion {:present 7 :absent 234}
+              :ticket {:present 0 :absent 69}
+              :algorithm {:present 0 :absent 0}}}
+  :centrality
+  {:repo "futon7"
+   :producer-revision "56c1f9683f14601ce399fa1b1ab2bfbd81dc43bf"
+   :producer {:path "holes/M-futon-forward-model.centrality.py"
+              :sha256 "b6f27ed8847479b0e9077ef1f1d26c58cda014775c14612bd1df61eb54b517ef"}
+   :report {:path "holes/M-futon-forward-model.centrality.json"
+            :sha256 "7b930c01cff396860213dc4f415bdcd605f644b7d02357fe30da3eb1858d05e0"}
+   :semantics :mean-cosine-mission-to-mission-and-pattern-embedding-manifold
+   :coverage {:mission {:joined 75 :field 163}
+              :excursion {:joined 0 :field 241}
+              :ticket {:joined 0 :field 69}
+              :algorithm {:joined 0 :field 0}}
+   :freshness {:status :stale-for-current-network
+               :reason "The report was produced from the 2026-06 mission/pattern embedding population, not the current verified META field. Joined values are potential coverage only and are not admitted until regenerated and pinned against the current network."}}
+  :tornhill
+  {:producer {:repo "futon0"
+              :revision "fa0546b591bc119cdee968e4d574024ce913279a"
+              :path "analysis/audits/tornhill.py"
+              :sha256 "b7e1885a83bc32328d3e7a671ac70967b1d216b156c6ce230705eb78aa93a287"}
+   :aggregation-contract
+   {:repo "futon3c"
+    :path "holes/HANDOFF-tornhill-next-2026-09-26.md"
+    :sha256 "b30463f58bbf439ead0dd54b327bd9f02dcc4a05fcf4a8c663a4686503b16cc4"
+    :features [:sum-revs :sum-hotspot :top-files :trend-ratio]
+    :hotspot-definition :revisions-times-indentation-complexity-total}
+   :task-to-files
+   {:repo "futon6"
+    :revision "174a45622ba40c27b1628e3bcd2b3011fa6b1f92"
+    :path "data/mission-activity.json"
+    :sha256 "adc10400e010d78701c26fbe958cbe7bf6ae25b2d52c289a23a07c50572beb1e"}
+   :report
+   {:path "~/.local/share/futon-audits/tornhill/tornhill-2026-09-26.json"
+    :sha256 "813a756316ec69d25ed6bb8213ecb7418823c23dbdc2ea353ed57f3792225bd8"
+    :generated "2026-09-26T00:48:42+00:00"
+    :window-days 90
+    :freshness :stale-all-embedded-repository-heads-drifted}
+   :coverage
+   {:mission {:task-file-links 3 :measured-in-stale-report 1 :currently-admissible 0}
+    :excursion {:currently-admissible 0 :reason :mission-only-aggregation-contract}
+    :ticket {:currently-admissible 0 :reason :mission-only-aggregation-contract}
+    :algorithm {:currently-admissible 0 :reason :mission-only-aggregation-contract}}
+   :missing-semantics :typed-absence-not-zero}}
+
+ :canonical-math-assessment
+ {:gaussian-efe
+  {:source {:repo "futon2"
+            :revision "007d60953b7691168c089ab589d81f66ebd3ff40"
+            :path "src/futon2/aif/core_efe.clj"
+            :sha256 "519c8983328d17e5a3adacb405f9b4d7851e170340d693959c2c5854bdbbe6e3"}
+   :decision :exact-deterministic-channel-not-represented
+   :evidence "The kernel floors zero variance at 1e-9, while META validation requires strictly positive predictive variance. Treating a computed value as Gaussian therefore requires a declared observation-noise variance; otherwise entropy and KL include an invented finite-noise term."}
+  :categorical-eig
+  {:source {:repo "futon2"
+            :revision "007d60953b7691168c089ab589d81f66ebd3ff40"
+            :path "src/futon2/aif/epistemic_value.clj"
+            :sha256 "0df62893adfdce64189c99724a4e1fb80ff0d0a07f84c74a5acf780cc370b690"}
+   :decision :coherent-zero-information
+   :model {:prior {:known-task-state 1.0}
+           :predicted-observations {:retained-value 1.0}
+           :posteriors {:retained-value {:known-task-state 1.0}}}
+   :eig-nats 0.0
+   :reason "Selection exposes a value already computed from pinned current sources. It does not update uncertainty about a declared latent state. Nonzero EIG would require a separate latent state and observation likelihood."}}
+
+ :channel-design
+ {:classification :policy-conditioned-current-task-observations
+  :not [:terminal-outcome-predictions :resource-consumption-predictions]
+  :candidate-channels
+  [{:id :normalized-structural-centrality
+    :domain [0.0 1.0]
+    :availability :stale-mission-only-source
+    :missing :typed-absence}
+   {:id :automated-progress-surface
+    :domain [:present :unknown]
+    :availability :current-source-pinned
+    :warning "Unknown is not infeasible; no current negative feasibility authority exists."
+    :missing :typed-absence}
+   {:id :tornhill-development-proxy
+    :domain :aggregate-record
+    :availability :stale-mission-only-source
+    :features [:sum-revs :sum-hotspot :top-files :trend-ratio]
+    :directionality :undeclared
+    :missing :typed-absence}]
+  :existing-five-channel-disposition
+  {:status :preference-authorized-prediction-missing
+   :action :retain-refusal
+   :reason "Task-state observations neither predict nor replace closure, grounded progress, abstention/failure, elapsed-budget fraction, or token-budget fraction."}}
+
+ :implementation-disposition
+ {:producer :not-implemented
+  :live-wiring :forbidden-in-this-link
+  :selection :still-refused
+  :reasons [:centrality-source-stale
+            :tornhill-source-stale
+            :preference-direction-and-relative-weight-unruled
+            :unsupported-kind-policy-unruled]
+  :next "Answer the single :task-state-preference-policy question, regenerate and externally pin the chosen source snapshots, then implement the corresponding pure vocabulary extension."}}

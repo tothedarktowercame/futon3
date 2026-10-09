@@ -850,3 +850,10 @@ Four candidate-new patterns surfaced in this annotation pass. Each is named in k
 ### `structural-style-inconsistency` (Thread 31)
 **Gloss.** Headings, sub-headings, and run-in bold labels mix multiple formatting conventions within the same document, so that a reader scanning the table of contents or skim-reading cannot infer hierarchy. This is downstream of journal-style ambiguity but it materially affects argument legibility independently of the journal target. Distinct from `subheading-without-paragraph` (which is about whether the subheading is *discharged* by its body) — here the body is fine but the *form* of the subheading drifts. Composition: choose one heading-level convention per logical depth, normalise punctuation and capitalisation, and audit the file from top to bottom in one pass.
 
+## Closure criteria (provisional, 2026-10-09)
+
+_Drafted from this document's own stated goals during the War Machine status classification (zai-5, high confidence); not yet confirmed by the author._
+
+- [ ] Joe (JC) signs off each thread entry (accept / reject / rewrite) in the comment-response sheet
+- [ ] Apply the approved edits to a fresh .docx for upload
+- [ ] Joe decides promotion of the four candidate-new writing-coherence patterns to library/writing-coherence/

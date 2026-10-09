@@ -231,3 +231,10 @@ This § will populate when that comparison is run.
   scalar that mark3 should compute as a batch-level invariant.
 - [GitHub futon6 #46](https://github.com/tothedarktowercame/futon6/issues/46)
   — the eprint-default sub-issue F₂ empirically motivates.
+
+## Closure criteria (provisional, 2026-10-09)
+
+_Drafted from this document's own stated goals during the War Machine status classification (zai-5, high confidence); not yet confirmed by the author._
+
+- [ ] Write §4: re-tag the 25 hand-tagged papers with the patched pipeline; report family-level and leaf-level agreement
+- [ ] Record whether family-level agreement meets M-superpod-mark3's ≥60% criterion

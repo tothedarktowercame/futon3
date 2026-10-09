@@ -592,3 +592,11 @@ preserves the I1 semantics.
    invariant sibling** in futon3c. With the in-JVM watcher
    running, the invariant lives in the same process as the
    thing it watchdogs.
+
+## Closure criteria (provisional, 2026-10-09)
+
+_Drafted from this document's own stated goals during the War Machine status classification (zai-3, medium confidence); not yet confirmed by the author._
+
+- [ ] Commit coverage becomes live (watcher/in-process), not manual-batch ingest
+- [ ] Land the reachable-from-boot/substrate-2-commit-coverage invariant sibling in futon3c
+- [ ] Backfill :source-file onto pre-B-4 var-vertices as a separate task

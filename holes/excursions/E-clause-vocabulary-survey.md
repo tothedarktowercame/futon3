@@ -1,5 +1,7 @@
 # Excursion: Clause-Vocabulary Survey of `library/`
 
+**VERDICT (2026-10-09, provisional):** DONE — Read-only survey whose stated output (curated EDN seed + implications for phase-2) is recorded as produced. _(WM status classification by zai-4, medium confidence; not yet confirmed by the author.)_
+
 **Date:** 2026-05-04
 **Owner:** Joe (delegated to claude-4)
 **Type:** Read-only evidence-gathering excursion.

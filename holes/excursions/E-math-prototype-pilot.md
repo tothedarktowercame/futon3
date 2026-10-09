@@ -1,5 +1,7 @@
 # Excursion: Math Prototype Pilot — Hand-Tagging + First Geometry
 
+**VERDICT (2026-10-09, provisional):** DONE — The pilot delivered its outcome — first concrete operational evidence that prototype 2's substrate is usable — and was committed as such. _(WM status classification by zai-3, medium confidence; not yet confirmed by the author.)_
+
 **Date opened:** 2026-04-27
 **Owner mission:** `holes/missions/M-pattern-application-diagnostic.md`
 **Entry point:** §"Prototype 2 — math corpus, substrate-half-built" §"What this means for sequencing" item 2 (math-side slot validation) + item 3 (witness-check spike), running ahead of Rob's R-1..R-4 patches because the substrate is rich enough to do useful work without the patched pipeline.

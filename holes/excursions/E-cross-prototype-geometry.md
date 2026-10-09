@@ -6,6 +6,8 @@
   (this excursion is open-question item 4 from there).
 **Implementation:** `futon3/scripts/v0_codebase_hypergraph.clj` (babashka).
 
+**VERDICT (2026-10-09, provisional):** DONE — Bounded v0 test ran: codebase hypergraph script implemented and first-pass run completed, which was the stated goal ('v0 first-pass run'). _(WM status classification by zai-1, low confidence; not yet confirmed by the author.)_
+
 ## Goal
 
 Test the prototype-1-as-instance-of-a-series claim

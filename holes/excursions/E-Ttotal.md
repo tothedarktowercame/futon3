@@ -8,6 +8,8 @@
   demo for Rob; the geometry-artifact stage of mark3 can adopt the script
   this excursion produced verbatim).
 
+**VERDICT (2026-10-09, provisional):** DONE — v0 goal met: tension scalar computed over three result batches with script and outputs listed. _(WM status classification by zai-1, medium confidence; not yet confirmed by the author.)_
+
 ## Goal
 
 Compute a paper-level tension scalar over a results batch and see

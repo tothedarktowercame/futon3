@@ -9,6 +9,8 @@
   (out-of-scope for mark3 v0; candidate post-INSTANTIATE follow-on
   if vintage gap matters for downstream consumers).
 
+**VERDICT (2026-10-09, provisional):** ABANDONED — Self-declared stub parked since 2026-04-27 with no stated outcome (>90 days). _(WM status classification by zai-5, high confidence; not yet confirmed by the author.)_
+
 ## Goal
 
 Close some of the **F₂ paper-vintage gap** between regular and mfuton

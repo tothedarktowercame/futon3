@@ -1,0 +1,27 @@
+@flexiarg parsing/check-output-with-the-real-parser
+@title Check Output With The Real Parser, Not A Model Of It
+@keywords round-trip, printer, reparse, grammar-model, losslessness, vacuous-check
+@audience agents writing printers, serialisers, code generators
+@tone technical
+@style pattern
+@status draft 2026-10-11 (claude-11)
+@why translation/test-by-reproducing-behaviour
+@see-also parsing/a-comparator-points-at-its-own-rehosting
+@violation-signature generated text judged by a grammar model, a table of rules or a pretty-printer's own guarantee rather than by the parser that will read it; a derived rule set no real parse has falsified.
+! conclusion: Judge generated source by parsing it with the real parser and comparing the result, and treat every model of the grammar as a hypothesis that reparsing tests.
+
+  + context: A printer turns structured objects back into source text that a real parser must read.
+
+  + IF:
+    The printer's correctness depends on facts about the grammar (where whitespace is forbidden, where layout matters).
+
+  + HOWEVER:
+    Those facts are available second-hand, from hand tables, schemas derived from the grammar, or an existing pretty-printer, and each is a model that can be wrong without saying so.
+
+  + THEN:
+    Run the real parser on the printed text and compare what it builds with what was printed, as typed objects, independent of layout. Use grammar models only to choose what to print, and accept a model's facts only once reparsing has failed to falsify them. Make sure the objects being printed hold no source text, so a pass cannot be a copy.
+
+  + BECAUSE:
+    Only the parser knows what it accepts; and a check that compares structures fails loudly, where a model of the grammar fails silently.
+
+  + evidence: Lean 4's own pretty-printer, used to print parsed source back out, reproduced the same syntax tree for 55 of 80 sampled files from a large library, and could not print an antiquotation as the left operand of an infix operator at all (leanprover/lean4#15614, public). Grammar facts derived from parser definitions marked function application as taking no spaces between its children, the opposite of the truth; the cause was a vacuous all-check over an empty list, which held for every one of the 381 kinds it marked. Reparsing caught both. A printer checked only by reparsing reached 63 of 63 files on its development sample and 53 of 63 on an unseen one, with every failure reported as a reparse error or a structural difference.

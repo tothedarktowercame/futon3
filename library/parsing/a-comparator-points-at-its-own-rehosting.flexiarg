@@ -1,0 +1,27 @@
+@flexiarg parsing/a-comparator-points-at-its-own-rehosting
+@title A Comparator Points At Its Own Rehosting
+@keywords comparator, oracle, differential-testing, mechanical-repair, simulacra
+@audience agents running diff-against-reference repair loops
+@tone technical
+@style pattern
+@status draft 2026-10-11 (claude-11; from Joe's observation that the comparator made everything look mechanical, "a precession of simulacra for the real solution")
+@why translation/test-by-reproducing-behaviour
+@see-also parsing/run-the-reference-before-modelling-it
+@violation-signature a diff-fix-repeat loop against a reference that could itself be executed; a progress metric that counts how far a copy has converged on the oracle.
+! conclusion: Once a reference oracle defines correctness, ask whether the oracle itself can become the implementation before building a loop that converges a copy toward it.
+
+  + context: A reference implementation has been found and wired up as a comparator: every output of the new system is diffed against it.
+
+  + IF:
+    The comparator makes the remaining work look mechanical: find a difference, fix it, repeat.
+
+  + HOWEVER:
+    The loop still produces a copy. Each fix moves the copy toward the oracle, so the loop's natural limit is the oracle itself, reached slowly and never quite.
+
+  + THEN:
+    Treat a working comparator as a pointer: whatever the comparator runs is already the answer the loop is converging on. Check whether that code can run in the new host, and if it can, run it there and keep the comparator as the check on the rehosting (runtime, initialisation, ABI), not as a loop driving a copy.
+
+  + BECAUSE:
+    The cheapest artifact guaranteed to agree with an oracle is the oracle. The stages run map, then copy checked against the original, then the original itself; each sheds a layer of representation, and the last has nothing left to converge.
+
+  + evidence: The private port above went through all three stages. Map: a wiring diagram of the implementation's compiler passes, to decide what had to be reproduced. Comparator: the native implementation as oracle, with a fixed list of the declarations a minimal case needs and one repair job per failing group; about a fifth of the list was compiled after several days. The implementation itself: its own compiled code executed in the new host, with the native binary kept as the check on the runtime and on initialisation; the minimal case passed that day. The same arc recurred when printing source back out: hand-written spacing tables and grammar-derived hints (models of the parser), then the language's own pretty-printer (a copy of the parser's inverse), then the parser itself as the check.

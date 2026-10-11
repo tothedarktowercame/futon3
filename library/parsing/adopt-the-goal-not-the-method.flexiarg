@@ -1,0 +1,27 @@
+@flexiarg parsing/adopt-the-goal-not-the-method
+@title Adopt The Requester's Goal, Not Their Method
+@keywords goal, method, requester, route, target-system, framing
+@audience agents and operators taking over or joining someone else's approach
+@tone technical
+@style pattern
+@status draft 2026-10-11 (claude-11; Joe's correction of an earlier draft: the requester knew what they wanted, and we started by adopting their method)
+@why translation/declare-what-is-preserved
+@see-also coordination/intent-to-mission-binding parsing/run-the-reference-before-modelling-it
+@violation-signature a route rejected because it does not use the requester's method; work items defined as "what the method needs" rather than "what the target does"; the target system's own structure studied only through the method's questions.
+! conclusion: Take the requester's goal as fixed and their method as one hypothesis, and derive the route from how the target system works rather than from how to adapt the method.
+
+  + context: Someone with a clear goal hands over work together with the method they have been using to reach it.
+
+  + IF:
+    The method is reasonable and already partly built, so continuing it looks like the respectful and efficient start.
+
+  + HOWEVER:
+    Questions asked inside the method ("how do we adapt this approach?") produce work items for the method, even when the measurements behind them come from the target; the question "how does the target work?", which might show a shorter route, never gets asked on its own terms.
+
+  + THEN:
+    Separate the goal from the method on the first day. Keep the goal and the requester's acceptance test. Then study the target directly and ask what route its own structure offers, with the requester's method as one candidate among them. When a measurement of the target is made, ask it more than one question: what the method needs, and what the target already provides.
+
+  + BECAUSE:
+    A method encodes its author's earlier constraints; the target does not change to fit it, and its structure is where shortcuts live.
+
+  + evidence: The private port above. The requester's goal was clear and stayed fixed: typed objects for every construct of the language, printed back to source, with the round trip as proof that nothing is lost. Their method was a source-to-source compiler, held to account with causal (Book of Why) reasoning, and we adopted it and added our own causal layer around it. The curriculum of declarations a minimal case needed came from a native trace of the implementation, so it was a measurement of the target, but it was framed as the work the port had to reproduce. A route review late in the period rejected executing the implementation's compiled code because it would not produce the stated compiler. The same kind of trace, asked instead which functions already existed in compiled form, gave the route that worked within a day. Neither method was wrong; adapting the inherited one was the slow way to the same goal.

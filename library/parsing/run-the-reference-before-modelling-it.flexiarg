@@ -1,0 +1,30 @@
+@flexiarg parsing/run-the-reference-before-modelling-it
+@title Run The Reference Before Modelling It
+@keywords reference-implementation, oracle, rehosting, compiled-form, identity, route
+@audience agents porting or re-implementing an existing system; operators choosing a route
+@tone technical
+@style pattern
+@status draft 2026-10-11 (claude-11; postmortem with Joe)
+@why translation/choose-the-equivalence-check
+@see-also parsing/a-comparator-points-at-its-own-rehosting parsing/audit-the-route-not-only-the-repairs
+@violation-signature a model, map or hand port of a system whose own executable form was available and never tried; "we cannot run X here" asserted rather than tested.
+! conclusion: When the definition of correct is an existing system, first try to execute that system's own compiled form in the new setting, and model it only for the parts that cannot be run.
+
+  + context: A system must be made to behave, in a new host, exactly as an existing one does.
+
+  + IF:
+    The existing system is the authority on what correct means, and some executable form of it exists (binary, bytecode, IR, compiled output).
+
+  + HOWEVER:
+    Its source looks like the thing to port, and modelling it feels like progress: maps, inventories and per-construct fixes produce steady, countable output while the direct route goes untested.
+
+  + THEN:
+    Before any model, ask whether the reference's executable form can be run in the new host, and spend the first discovery on that question: trace what the reference actually executes, and check how much of it already exists in an executable form. Re-host what can be run; write a model only for the residue (here, the C/C++ runtime underneath), each piece checked against the reference.
+
+  + BECAUSE:
+    Re-hosting the reference changes the crossing from a translation, which needs a declared relation tested by behaviour, to a move, which is judged by identity. Everything the reference does comes along, including behaviour nobody knew to model.
+
+  + evidence: A private port of a language implementation into another host language (2026-09/10). For ten days the work drove a source-to-source compiler through the implementation's startup code fix by fix, about two thousand commits, and never completed the simplest end-to-end case (parsing an empty file). Then a trace of the native binary showed that 85% of the functions it executes already existed in the toolchain in a compiled intermediate form, the rest derivable. Executing that compiled form on a transcribed runtime completed the empty-file case the same day and matched the native implementation on a substantial library proof the next morning.
+
+  + NEXT-STEPS:
+    - Three generations are needed before this is a shared pattern; this is the first.

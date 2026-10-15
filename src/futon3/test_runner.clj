@@ -5,7 +5,7 @@
             [clojure.java.shell :as shell]
             [clojure.string :as str]))
 
-(def ^:private batch-size 8)
+(def ^:private batch-size 1)
 
 (defn- test-namespaces []
   (->> (file-seq (io/file "test"))

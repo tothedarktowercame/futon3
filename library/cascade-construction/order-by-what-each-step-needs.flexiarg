@@ -10,7 +10,7 @@
 @done done when every guard's needs are produced by an earlier effect, observed at q0, or listed as a check candidate. Precedence then follows from those dependencies.
 @references [cascade-construction/choose-the-grain-where-state-lives pattern-interpretation/compile-guards-exactly hygiene/receipt-then-gate]
 @see-also cascades/declared-skeleton
-@how for each pattern, write what it needs as its guard (classify needs the observation; act needs the receipt and the gate; route needs the classification) and what it establishes as its effect; take precedence from those dependencies (for hygiene cascades this gives observe → classify → exempt → propose → gate/act → route → settle); where two patterns need nothing from each other, say so and do not invent an order.
+  + mechanism: For each pattern, write what it needs as its guard (classify needs the observation; act needs the receipt and the gate; route needs the classification) and what it establishes as its effect. Take precedence from those dependencies (for hygiene cascades this gives observe → classify → exempt → propose → gate/act → route → settle). Where two patterns need nothing from each other, say so and do not invent an order.
 @violation-signature an act whose guard does not mention the receipt it depends on, so it fires out of order when the list changes; precedence copied from a document's section order; a blocked step hidden by ordering it last.
 ! conclusion: Put each step's needs in its guard and its contributions in its effect, and let precedence follow from those dependencies.
 

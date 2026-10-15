@@ -56,12 +56,12 @@
                 :stands-on {0 #{1} 1 #{2} 2 #{3}}
                 :edges #{[0 1] [1 2] [2 3]}}))))
 
-(deftest recorded-snatch-row-now-uses-the-ruled-edge-set
+(deftest recorded-snatch-row-reflects-the-current-ruled-edge-set
   (let [repo (fo/read-repository "library" [:snatch])
         fixture (clojure.edn/read-string (slurp "checks/snatch-cascade.edn"))
         row (first (filter #(= [:g4 :snatcher] (:scenario %))
                            (fo/cascade-diff-table fixture repo)))]
-    (is (= #{[:snatch/re-enter-after-observed-repair
-              :snatch/consult-the-remedy-before-exiting]}
-           (:edges row)))
+    ;; The rationale-backfill repair removed the prose-valued @why that had
+    ;; been misread as this edge. The ruled reader must not resurrect it.
+    (is (= #{} (:edges row)))
     (is (fo/o3-fast-forward row))))

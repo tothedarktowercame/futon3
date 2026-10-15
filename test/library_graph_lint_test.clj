@@ -226,8 +226,8 @@
     ;; 86 -> 92 and :patterns-in-why-graph 97 -> 104. Their edges take the
     ;; author-written exempt path in the baseline, not an attestation (decision
     ;; :authored-edge-attestation-path), which is why the section still passes.
-    (is (= 92 (get-in report [:summary :edges-by-kind :why])))
-    (is (= 104 (get-in report [:summary :patterns-in-why-graph])))
+    (is (= 94 (get-in report [:summary :edges-by-kind :why])))
+    (is (= 133 (get-in report [:summary :patterns-in-why-graph])))
     (is (zero? (get-in report [:summary :unresolved-targets])))
     (is (zero? (get-in report [:summary :why-cycles])))))
 

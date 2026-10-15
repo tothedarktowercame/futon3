@@ -1,8 +1,8 @@
 (ns futon3.test-runner
   "Run the suite in bounded JVM cohorts so namespace-global executors and
   sleeping futures are reaped between cohorts."
+  (:refer-clojure :exclude [test])
   (:require [clojure.java.io :as io]
-            [clojure.java.shell :as shell]
             [clojure.string :as str]))
 
 (def ^:private batch-size 1)
@@ -23,11 +23,10 @@
 
 (defn- run-batch! [index namespaces]
   (println (format "\nFuton3 test batch %d: %d namespaces" index (count namespaces)))
-  (let [{:keys [exit out err]}
-        (apply shell/sh "clojure" "-M:test-batch" "-m" "cognitect.test-runner"
-               (mapcat (fn [ns] ["-n" (str ns)]) namespaces))]
-    (print out)
-    (binding [*out* *err*] (print err))
+  (let [command (into ["clojure" "-M:test-batch" "-m" "cognitect.test-runner"]
+                      (mapcat (fn [ns] ["-n" (str ns)]) namespaces))
+        process (-> (ProcessBuilder. command) .inheritIO .start)
+        exit (.waitFor process)]
     (when-not (zero? exit)
       (throw (ex-info "Futon3 test batch failed"
                       {:batch index :namespaces namespaces :exit exit})))))

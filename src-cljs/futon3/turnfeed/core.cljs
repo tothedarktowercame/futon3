@@ -295,23 +295,40 @@
 (def feed-urls ["feed-all.json"])
 (def poll-ms 10000)
 
+(def fetch-timeout-ms 8000)
+
 (defn- fetch-json [url]
-  (-> (js/fetch (str url "?t=" (.now js/Date)) #js {:cache "no-store"})
-      (.then #(if (.-ok %) (.json %) (throw (js/Error. (str url " " (.-status %))))))
-      (.then #(js->clj % :keywordize-keys true))))
+  ;; A conditional request, not a cache-buster: Caddy answers 304 with no
+  ;; body while the file is unchanged, and the full ~80 KB only when the
+  ;; generator wrote a new one. On 2026-10-15 the ?t= form pulled the full
+  ;; file every 10 s and piled six 60 s transfers onto a stalled mobile link,
+  ;; so the rest of the site hung behind them. The abort keeps one slow
+  ;; poll from outliving the next.
+  (let [ctl (js/AbortController.)
+        timer (js/setTimeout #(.abort ctl) fetch-timeout-ms)]
+    (-> (js/fetch url #js {:cache "no-cache" :signal (.-signal ctl)})
+        (.then #(if (.-ok %) (.json %) (throw (js/Error. (str url " " (.-status %))))))
+        (.then #(js->clj % :keywordize-keys true))
+        (.finally #(js/clearTimeout timer)))))
+
+(defonce in-flight? (atom false))
 
 (defn fetch! []
   ;; A feed that fails to load is named in the error line and the others
-  ;; still show; the turns are merged newest first.
-  (-> (js/Promise.allSettled (clj->js (map fetch-json feed-urls)))
-      (.then (fn [results]
-               (let [rs (js->clj results :keywordize-keys true)
-                     ok (mapcat :value (filter #(= "fulfilled" (:status %)) rs))
-                     bad (keep #(when (= "rejected" (:status %)) (str (:reason %))) rs)]
-                 (swap! state assoc
-                        :turns (vec (sort-by :at #(compare %2 %1) ok))
-                        :fetched-at (js/Date.)
-                        :error (when (seq bad) (str/join "; " bad))))))))
+  ;; still show; the turns are merged newest first. A poll that is still
+  ;; running when the next tick comes is left alone rather than doubled.
+  (when-not @in-flight?
+    (reset! in-flight? true)
+    (-> (js/Promise.allSettled (clj->js (map fetch-json feed-urls)))
+        (.then (fn [results]
+                 (let [rs (js->clj results :keywordize-keys true)
+                       ok (mapcat :value (filter #(= "fulfilled" (:status %)) rs))
+                       bad (keep #(when (= "rejected" (:status %)) (str (:reason %))) rs)]
+                   (swap! state assoc
+                          :turns (vec (sort-by :at #(compare %2 %1) ok))
+                          :fetched-at (js/Date.)
+                          :error (when (seq bad) (str/join "; " bad))))))
+        (.finally #(reset! in-flight? false)))))
 
 ;; --- rendering -------------------------------------------------------------
 

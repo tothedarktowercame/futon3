@@ -85,8 +85,10 @@ Labels are **case-insensitive** (`+ IF:` and `+ if:` are the same relation).
 `! summary:` is an accepted alias for `! conclusion:`.
 
 `+ NEXT-STEPS:` is a recognised top-level component but is **not** one of the
-required five — steps that would strengthen the pattern, written as bullets or
-`next[...]` lines.
+required five — a plan for revising the pattern itself so that it gains
+salience, written as bullets or `next[...]` lines. It is not a to-do list for
+the system the pattern describes. A retired pattern (see the 2026-10-17 ruling
+in §9) has `+ NEXT-STEPS: none`.
 
 **A pattern missing one of the five is incomplete.** An importer meeting one
 should report it as a finding, not drop it and not fail silently.
@@ -436,6 +438,21 @@ less than that nothing tells you when they differ.
 
 - **2026-08-17, Joe:** content that looks like metadata belongs in the pattern
   body as a sub-block (`+governance:` under `+THEN:`), not in a directive.
+
+- **2026-10-17, Joe:** a pattern is **retired in place**, never moved or
+  deleted: it keeps its path and gets a status line,
+  `@status retired (<date>; <reason>; superseded-by <pattern-id or none>)`, and
+  its `+ NEXT-STEPS:` becomes `none`, since NEXT-STEPS is a plan for revising
+  the pattern to raise its salience and a retired pattern has no such plan.
+  Every citation of a pattern (`@why`, `@see-also`, War Machine receipts, the
+  mined graph) is a path, so the file is its own tombstone. No pattern had been
+  retired before this ruling; the library's `@status` values up to then were
+  sketch, draft, proposed, specified, ready, staged, promoted, registered and
+  blocked. Retrieval and flight selection filter on the status; that filter is
+  follow-up work. This refines the 2026-08-17 ruling above that workflow state
+  does not belong in the pattern text: in practice `@status` has been carried in
+  the files since then (apparatus/ promoted 2026-09-08, cascade-construction/
+  drafts, the 象2000 drafts), and retirement follows that practice.
 
 - **2026-08-17, Joe:** the map is not the route. The declared edges are terrain;
   a *cascade* is a reading of that terrain assembled for a task, and is not

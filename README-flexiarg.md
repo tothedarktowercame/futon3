@@ -454,6 +454,18 @@ less than that nothing tells you when they differ.
   the files since then (apparatus/ promoted 2026-09-08, cascade-construction/
   drafts, the 象2000 drafts), and retirement follows that practice.
 
+- **2026-10-17, Joe (same day, refining the above):** a pattern that no working
+  implementation has yet exercised is **unattested**, not retired. The status
+  line is `@status unattested (<date>; <what has not happened>)`, and the
+  pattern keeps its `+ NEXT-STEPS:`. Joe's words: the unbuilt cascades patterns
+  "aren't necessarily 'retired' but 'unattested', I'm not yet sure if they are
+  really on their way out or not because we haven't seen enough *working*
+  implementations that have some of the patterns to know which ones actually
+  are worth hanging onto." Retirement is a judgment that needs attestation to
+  argue against; a pattern nobody has tried cannot be retired for want of use.
+  The first two: cascades/edges-earn-permanence and
+  cascades/the-slice-is-the-unit-of-use. No pattern is retired as of this entry.
+
 - **2026-08-17, Joe:** the map is not the route. The declared edges are terrain;
   a *cascade* is a reading of that terrain assembled for a task, and is not
   declared in the files. The War Machine's `:cascade` argument — a vector of

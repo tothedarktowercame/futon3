@@ -1,0 +1,32 @@
+@flexiarg apparatus/special-flow-is-a-path-not-a-trail-of-exceptions
+@title A Special Flow Is A Dedicated Path, Not A Trail Of Gate Exceptions
+@keywords boundary, bypass, gates, invariants, special-case, self-heal, dedicated-path, one-frontier-at-a-time
+@audience apparatus builders, campaign designers, futon developers
+@tone technical
+@style pattern
+@grade principle
+@status proposed (2026-10-19; authored by claude-5 from the META self-heal consultation to codex-68; promotion gate: the self-heal path exists without any of the three gate bypasses and completes in the harness of apparatus/recorded-failures-before-live-runs)
+@why apparatus/new-failure-class-is-a-design-defect
+@see-also apparatus/one-authority-per-question apparatus/default-to-the-cheap-error apparatus/recorded-failures-before-live-runs
+@violation-signature A gate in the ordinary pipeline gains an `if special? bypass` branch keyed on a field the decision itself carries; each run of the special flow fails one gate further along; an authority is satisfied for the special case by giving it empty inputs; a change to the special flow requires editing the ordinary pipeline's files.
+! conclusion: A flow whose purpose differs from the ordinary pipeline's gets its own path with its own small authority, and re-enters the ordinary pipeline only at a named boundary; it is never modelled as an ordinary unit with an exception carved at each gate it fails.
+
+  + context: A pipeline of gates and authorities (selection, loop-node exercise, construction, dispatch authority) exists for ordinary units of work, and a new kind of flow — a repair, a rollback, a consultation — needs to run through the apparatus.
+
+  + IF:
+    The new flow is modelled as a special kind of ordinary unit, so that it enters the ordinary pipeline at the top and meets every gate.
+
+  + HOWEVER:
+    Each gate was written for ordinary units and refuses the special one for an ordinary reason. The cheapest fix at each gate is an exception keyed on a marker the special unit carries, so the exceptions accumulate one gate per run, and each one weakens the invariant the gate stood for: the bypass admits anything that carries the marker, and an authority handed empty inputs passes vacuously. The pipeline has N gates, so the flow is discovered in N runs and the invariants end up N exceptions weaker.
+
+  + THEN:
+    Give the flow its own path. Decide up front what it consumes (for a repair: the pinned failing record as its acceptance test, the diagnosis evidence, the sessions to use) and what small authority governs it (the pinned injury, the patch sha, the reviewer verdict, the reload receipt). Dispatch to participants over the transport the apparatus already uses, and re-enter the ordinary pipeline at exactly one named point (for a repair: the retry). Remove the gate exceptions once the path exists. Boundary test: if a change to the special flow requires editing a gate's file, the boundary is in the wrong place.
+
+  + BECAUSE:
+    The gates encode what an ordinary unit must satisfy, and the special flow does not satisfy them because it is not an ordinary unit, not because the gates have missing cases. An exception at a gate converts a true refusal into a false pass. A marker-keyed bypass is forgeable by any decision that sets the marker, and an authority with empty inputs is an authority switched off while reporting a pass — absence read as a value.
+
+    + evidence: WM META self-heal, futon2 2026-10-19: 97eab2ee8 bypasses R6/R13/R14/CTAU-CLASS for any decision whose `:selection-law :applied` is `:meta-algorithm-selection`; fa43dd757 relabels ordinary fold holes as algorithm obligations so construction accepts them; 42bfb4bb5 gives the D-task authority an empty token universe and carries `:candidate-to-minted-join :not-established` as acceptable. Each was the fix for one click's failure, and the next click failed at the next gate.
+
+  + NEXT-STEPS:
+    - When the dedicated self-heal path lands, list here which gate exceptions were removed; the count of remaining `special?` branches in gate files is the measure.
+    - Look for the same shape in other flows that carry a marker through ordinary gates (compaction turns, park resumes) and record whether they have a named boundary.

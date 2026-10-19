@@ -1,0 +1,32 @@
+@flexiarg apparatus/open-conditions-live-in-a-ledger
+@title An Open Condition Is A Ledger Entry, Not A Projection Of The Latest Record
+@keywords ledger, append-only, injury, persistence, projection, discharge, state-machine, HEAD-overwrite
+@audience apparatus builders, campaign designers, futon developers
+@tone technical
+@style pattern
+@grade principle
+@status proposed (2026-10-19; authored by claude-5 from the META self-heal consultation to codex-68; promotion gate: the injury ledger exists and the property "no run-record append reduces open injuries without a discharge" is a passing test)
+@why apparatus/one-authority-per-question
+@see-also apparatus/evidence-to-disposition-once apparatus/repairs-name-defects-not-neighborhoods apparatus/special-flow-is-a-path-not-a-trail-of-exceptions
+@violation-signature A condition that should persist until resolved is computed from the newest record only; a later unrelated or absent observation makes the condition disappear; the classifier that detects the condition is a growing list of stages, widened once per incident.
+! conclusion: A condition that must outlive the observation that raised it (an injury, an obligation, an open hole) is an append-only ledger entry with an id and typed transitions, and a later record can add a transition to it but can never delete or downgrade it.
+
+  + context: An apparatus observes its own runs and must act on conditions that span several runs — a machine injury that a repair must discharge, an obligation that a later unit must honour.
+
+  + IF:
+    The condition is derived afresh each time from the latest run record, as a projection: present when the newest record matches a shape, absent otherwise.
+
+  + HOWEVER:
+    The next run ends differently — an ordinary abstention, a timeout, a success on unrelated work — and the projection reads absent. The condition has been forgotten without anyone resolving it. Each new way of ending that should still count as "open" is added to the classifier's stage list after it is seen once, so the list grows one incident at a time and the default is always "not open".
+
+  + THEN:
+    Keep a ledger separate from run records. Each condition has an id, the pin of the record that raised it, and transitions: open → claimed → authored → reviewed → enacted → discharged, with reopened and abandoned as the typed alternatives. A run record contributes an open or reopened entry when it fails, and a discharged entry only when it succeeds and names the condition it was retrying. The observation reads the ledger and reports open entries. Invert the classifier's default: a terminal failure of the special flow at any stage is open unless an explicit non-condition reason says otherwise. Invariants to test: no sequence of record appends reduces the count of open entries without a discharge; an entry leaves open only through a transition that names the retry and the repair; while any entry is open the selector admits only the repair flow, as a rule and not as a scored candidate.
+
+  + BECAUSE:
+    A projection has no memory, so it cannot represent "unresolved"; it can only represent "the latest record looks like this". The ledger makes the condition's lifetime explicit and auditable, makes the retry attributable to the repair it tests, and turns the classifier from a reactive allowlist into a producer of entries with a safe default.
+
+    + evidence: WM META, futon2 `meta_injury_observation.clj` at 95145f093: `produce` derives "the one currently declared META injury" from a single run record's bytes, with `active?` a conjunction over the record's stage, output status and trace flag; 5a5b421bc and 95145f093 each widened the stage set after a click forgot its injury, and the remaining conjuncts (run-output `:absent`, trace-written false) are the next way to forget it.
+
+  + NEXT-STEPS:
+    - Record the ledger's path and the discharge rule once they exist, so the pattern can cite the running thing rather than the plan.
+    - Check whether PROOF-2a holes and WM obligations are projections or ledger entries, and add the finding as evidence either way.

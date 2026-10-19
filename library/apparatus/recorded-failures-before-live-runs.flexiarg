@@ -23,8 +23,8 @@
     Build the proof in this order, and only then ask for a live run.
     1. A fixture corpus: every recorded failure from the campaign, as pinned bytes, in a table-driven test that states what each one must classify as.
     2. A pure state machine for the route with property tests over its transitions.
-    3. Fake participants: register the seats the route dispatches to (author, reviewer, repair reviewer) as local functions in a test registry that return canned results on a throwaway branch, and run the whole route in its own process with a failure injected at each stage in turn.
-    4. A replay of one real recorded run from its inputs, with the trace diffed against the harness trace.
+    3. Fake participants: register the seats the route dispatches to (author, reviewer, repair reviewer) as local functions that return canned results on a throwaway branch, and run the whole route in the serving process, with the debugger attached and no click spent, with a failure injected at each stage in turn. The serving process is the only one with the production data loaded; a fresh test JVM without that data proves nothing about the route (Joe, 2026-10-19).
+    4. A replay of one real recorded run from its inputs, in the same serving process, with the trace diffed against the harness trace.
     5. One live run, with scheduling still disarmed, whose trace is compared to the replay's.
     The fake participants prove the route's shape, not the participants' competence; the live run proves the latter, and only after the shape is proved.
 
@@ -32,6 +32,8 @@
     Live runs are the scarce resource and the slowest signal: one gate per outing, at the cost of a budget unit, with the operator waiting. Recorded failures are free, exact, and already pinned, so a harness built on them exercises every stage per second instead of one stage per click. Separating the shape of the route from the competence of its participants also makes the first live failure attributable: a shape failure is a harness gap, a competence failure is the seat's.
 
     + evidence: WM META self-heal, 2026-10-19: a five-click campaign reached one gate per click (loop-node gate, construction fold, injury persistence, author dispatch, injury classification) and ended at 106/106 budget with no end-to-end repair; futon2 97eab2ee8, fa43dd757, 5a5b421bc, 42bfb4bb5, 95145f093 are the five single-gate patches. Earlier, claude-4's 2026-10-18 review of the WM readiness campaign to codex-68 (Agency job invoke-1792360592468-16667-7ab8a8bf) named the click-3 production-boundary replay as the first completion of the post-selection route, and asked for replay evidence before further live work.
+
+    + evidence: Joe, 2026-10-19 (futon2 holes/labs/wm-contract/RULING-frontier-is-measured-not-pass-fail-2026-10-19.md): "the only machine that is properly configured to run on production is one that's actually been running on production the whole time, so just running in test JVMs that don't have all the data loaded won't work"; the first draft of this pattern said "in its own process" and was corrected.
 
   + NEXT-STEPS:
     - When the self-heal harness lands, record here whether its first live click matched the replay trace; that is the promotion evidence.

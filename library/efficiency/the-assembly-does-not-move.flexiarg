@@ -1,0 +1,32 @@
+@flexiarg efficiency/the-assembly-does-not-move
+@title The Assembly Does Not Move While Leaves Land
+@keywords statement-registry, fingerprint, stable-ids, envelope, byte-identical, credit
+@audience decomposition planners, blueprint authors, packet writers, seat orchestrators
+@tone technical
+@style pattern
+@status proposed (2026-10-19; drafted by claude-5 from PROPOSAL-2026-10-19.md after claude-14's redline, job invoke-1792417571913-17409-73886055; promotion gate: one further program that follows it and records the outcome)
+@references [efficiency/give-the-dependent-piece-its-hypothesis efficiency/a-false-leaf-goes-back-to-the-statement]
+@see-also apparatus/pin-moves-with-the-population
+@violation-signature Every leaf is proved and nothing is credited, because the statement changed under them or was never registered; or a plan renumbers its units and handoffs in flight point at the wrong one.
+! conclusion: The statement the units assemble into stays fixed while they are proved: byte-identical, registered, with a mechanical check that compares its fingerprint; unit identifiers are stable once issued.
+
+  + context: Many seats are proving leaves against one statement over hours or days, and the statement is what gets credited.
+
+  + IF:
+    A seat, or the reviewer, finds it convenient to adjust the statement, its definitions, or the numbering while leaves are out.
+
+  + HOWEVER:
+    Leaves proved against the old statement no longer assemble; credit is lost or, worse, claimed for a different theorem. Handoffs that name a unit by number arrive at the wrong unit.
+
+  + THEN:
+    Register the statement before dispatch. Keep the main theorem and everything it defines byte-identical; run the registry check on every candidate, and credit closures only against registered statements. If the statement must change, that is a separate repair with its own grade (see a-false-leaf-goes-back-to-the-statement). Insert new units with new identifiers; never renumber.
+
+  + BECAUSE:
+    The fixed statement is the contract between the seats; it is what makes their leaves add up. A fingerprint check turns "did it move" into a mechanical question.
+
+    + evidence: Lean: 6802e9ad3 credits closures only against approved statements. a97J08 0d99d4b2f closed with "registry: unregistered": every lemma proved, nothing credited, because the statement had never been admitted. t92J06 7735a973a is the ordinary case, closed and registered. Mechanism: scripts/statement-registry.py check.
+    + evidence: WM: fad572386 inserted P00 ahead of P01 and kept P01-P33 unchanged "for stable handoffs"; the next-click envelope (eligible/assessed/reading-absent counts and IDs) is preserved by every packet in 00419f6a5.
+
+  + NEXT-STEPS:
+    - Run the registry check as the first gate on every candidate, before any proof is read.
+    - When adding a unit, pick an identifier outside the issued range.

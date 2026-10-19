@@ -1,0 +1,32 @@
+@flexiarg efficiency/cover-every-row-or-say-why-not
+@title Cover Every Row Or Say Why It Needs Nothing
+@keywords coverage-ledger, already-landed, no-redispatch, audit-rows, completeness
+@audience decomposition planners, blueprint authors, packet writers, seat orchestrators
+@tone technical
+@style pattern
+@status proposed (2026-10-19; drafted by claude-5 from PROPOSAL-2026-10-19.md after claude-14's redline, job invoke-1792417571913-17409-73886055; promotion gate: one further program that follows it and records the outcome)
+@references [efficiency/order-by-what-it-unlocks efficiency/search-before-declaring-a-foundation-missing]
+@see-also efficiency/review-the-decomposition-before-dispatch
+@violation-signature A seat is dispatched to repair something already landed; an audit row has no unit and no reason; the plan's coverage is asserted, not tabulated.
+! conclusion: The decomposition carries a ledger with one line per row of its source: the unit that covers it, or the landed commit that already did, or the reason it needs none.
+
+  + context: The source of the decomposition is an audit, a sorry list, or a correlation table with a known number of rows, and the plan is being judged for completeness.
+
+  + IF:
+    The planner covers the rows they understand and leaves the rest implicit.
+
+  + HOWEVER:
+    Rows with no unit are found later, one at a time, by the live run. Rows already repaired get a second seat, which either duplicates the fix or undoes it.
+
+  + THEN:
+    Tabulate: every source row, its disposition. Already-landed rows list the commit and the remaining claim limit. Excluded rows name who excluded them. Rows that need nothing say why. The table is part of the plan and is reviewed with it.
+
+  + BECAUSE:
+    The ledger is what turns "we think it is covered" into a thing a reviewer can check row by row, and it is the only place a double dispatch is visible before it happens.
+
+    + evidence: Lean: m97A06 47baec4c6, "drop the copy of the already-closed Main.lean": the blueprint found the problem already sorry-free, recorded it in BLUEPRINT.md, and dispatched nothing.
+    + evidence: WM: 00419f6a5 coverage ledger, correlation rows 1-11 and the consumers' five sites, with an "Already landed: do not dispatch these repairs again" table naming 149dc9b30, 59a6d5ea8 and 1de600e2c with their remaining claim limits; row 11 marked excluded by Joe with a pointer.
+
+  + NEXT-STEPS:
+    - Count the source rows and the ledger rows; they are equal or the plan is incomplete.
+    - For each already-landed row, write what the landed commit does not prove.

@@ -1,0 +1,32 @@
+@flexiarg efficiency/search-before-declaring-a-foundation-missing
+@title Search Before Declaring A Foundation Missing
+@keywords discovery, existing-producer, library-promotion, rewire-consumers, split-discovery-from-build
+@audience decomposition planners, blueprint authors, packet writers, seat orchestrators
+@tone technical
+@style pattern
+@status proposed (2026-10-19; drafted by claude-5 from PROPOSAL-2026-10-19.md after claude-14's redline, job invoke-1792417571913-17409-73886055; promotion gate: one further program that follows it and records the outcome)
+@references [efficiency/name-the-piece-that-is-not-one-turn efficiency/cover-every-row-or-say-why-not]
+@see-also cascade-construction/read-what-exists-first
+@violation-signature A program is started to build something that already exists sorry-free in another module; a packet writes a new producer beside an unwired one.
+! conclusion: Before marking a piece LIBRARY or building a shared library, run discovery as its own unit: look for an existing producer, and if one exists, wire it rather than build it.
+
+  + context: A decomposition has found a piece that looks like a missing foundation.
+
+  + IF:
+    The missing piece is handed straight to a build program.
+
+  + HOWEVER:
+    Large codebases and proof libraries already contain the thing under another name, proved for another consumer. Building it again spends a program; wiring it spends an import.
+
+  + THEN:
+    Issue discovery as a separate unit with a reading result: found at this path, or not found after these searches. Only then build. When one shared piece is found or built, promote it to the library once and rewire every consumer to it.
+
+  + BECAUSE:
+    Discovery and build have different costs and different acceptance bars; joining them ships the build before the question "does it exist" was asked.
+
+    + evidence: Lean: t96J05 a8d67c103 marked Sard LIBRARY; the 2026-10-18 discovery (~/notes/packets/blueprints/t96J05-sard-discovery.md) found T93A04ManifoldWork.null_critical already sorry-free; the fix was an import, f89b3d9ca, and the problem closed in 263a434fc. Shared-library case: TFT promoted in 2d65976cf and m98J02 rewired to it.
+    + evidence: WM: P02 in 00419f6a5, "make the existing authoring producer reachable": occurrence_square_authoring.clj existed and was unwired from pre-choice needs; P08: pin! existed at pattern_graph_pin.clj with no production caller. Both packets wire, neither builds a second producer.
+
+  + NEXT-STEPS:
+    - Before any LIBRARY marker, one search unit with a written result and the search terms used.
+    - After a shared piece lands, list its consumers and the import each one needs.

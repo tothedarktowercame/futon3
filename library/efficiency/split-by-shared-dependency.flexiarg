@@ -1,0 +1,32 @@
+@flexiarg efficiency/split-by-shared-dependency
+@title Split By Shared Dependency, Not By Conclusion
+@keywords decomposition, parallel-seats, shared-lemma, blueprint, packet-plan, duplication
+@audience decomposition planners, blueprint authors, packet writers, seat orchestrators
+@tone technical
+@style pattern
+@status proposed (2026-10-19; drafted by claude-5 from PROPOSAL-2026-10-19.md after claude-14's redline, job invoke-1792417571913-17409-73886055; promotion gate: one further program that follows it and records the outcome)
+@references [efficiency/give-the-dependent-piece-its-hypothesis efficiency/order-by-what-it-unlocks]
+@see-also efficiency/seat-sized-units
+@violation-signature Two seats each prove the same technical fact inside their own leaf; the "parallel" layer takes as long as the serial one and the shared fact is proved twice, possibly differently.
+! conclusion: Split a body of work by the facts its pieces would each have to establish, not by the conclusions they reach; each shared fact becomes its own unit that the others depend on.
+
+  + context: A theorem, repair plan or audit is too large for one seat and is being cut into units that separate seats will take in parallel.
+
+  + IF:
+    The natural cut is by conclusion: one leaf per part of the theorem, one packet per symptom in the audit.
+
+  + HOWEVER:
+    Several conclusions rest on the same technical fact (a Wirtinger inequality, a record reader that partitions valid from drifted bytes). Cut by conclusion, each leaf re-establishes that fact, so the seats duplicate work and the fact has as many proofs as consumers.
+
+  + THEN:
+    Before cutting, list the facts every conclusion needs. State each shared fact as its own unit. Cut the conclusions so that they assemble from those units. The shared units go out first; the conclusions become assembly.
+
+  + BECAUSE:
+    Parallel throughput comes from the units being disjoint. A fact proved in two leaves is a serial dependency hidden as duplication, and when the two proofs differ the assembly has to reconcile them.
+
+    + evidence: Lean: m98A06 blueprint 741f407d6 split seven conclusions by conclusion; 586502d13 re-split by the four shared facts (du Bois-Reymond, Wirtinger, weak FTC, sine computations) and the seven conclusions assemble from them. m98A04 73d157e1a is the same move. Review note in apm-lean holes/labs/blueprints/README.md.
+    + evidence: WM: futon2 PACKETS-2026-10-19.md (00419f6a5): P03, the one record reader that partitions valid, absent and drifted learning records, is stated once; P04, P14 and P33 each depend on it instead of each reading the manifest their own way.
+
+  + NEXT-STEPS:
+    - For each proposed unit, write the facts it needs; any fact that appears twice is a unit of its own.
+    - Check the dependency graph after the cut: a shared fact with no unit of its own is the duplication.

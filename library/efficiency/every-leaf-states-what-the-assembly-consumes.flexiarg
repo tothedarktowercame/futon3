@@ -1,0 +1,32 @@
+@flexiarg efficiency/every-leaf-states-what-the-assembly-consumes
+@title Every Leaf States What The Assembly Consumes
+@keywords placeholder, vacuous, overloaded, computed-not-chosen, manufactured-evidence, compiles-but-proves-nothing
+@audience decomposition planners, blueprint authors, packet writers, seat orchestrators
+@tone technical
+@style pattern
+@status proposed (2026-10-19; drafted by claude-5 from PROPOSAL-2026-10-19.md after claude-14's redline, job invoke-1792417571913-17409-73886055; promotion gate: one further program that follows it and records the outcome)
+@references [efficiency/seat-sized-units efficiency/review-the-decomposition-before-dispatch]
+@see-also apparatus/success-must-not-resemble-failure
+@violation-signature The tree compiles and the assembly is sorry-free, yet the theorem is not proved: a leaf is True, restates its hypothesis, carries the whole argument, defines its hypothesis as its conclusion, or chooses a value that should be computed.
+! conclusion: Each leaf states the actual claim the assembly consumes from it; no leaf is a placeholder, a restatement, a carrier of the whole argument, a self-defined hypothesis, or chosen data standing in for a computed value.
+
+  + context: A decomposition is being written or reviewed, and the checks available are mechanical: it compiles, the axioms are listed, the assembly closes.
+
+  + IF:
+    The author wants the tree to compile and the assembly to be sorry-free.
+
+  + HOWEVER:
+    Five shapes satisfy both checks and prove nothing: a leaf stated as True to mark a step; a vacuous leaf that restates its own hypothesis; an overloaded leaf that silently carries the whole argument; a hypothesis predicate defined as the lemma's conclusion; a data field that is chosen when it should be computed. The repair-plan form of the same failure is an absent measurement filled with a manufactured zero, posterior, witness or successful execution.
+
+  + THEN:
+    For each leaf, write what the assembly consumes from it and check the statement says exactly that. Compute data that stands for a computed quantity. Where an input is absent, the leaf records absence; it does not mint a value.
+
+  + BECAUSE:
+    The mechanical checks see the tree, not the claims. Only a statement that names the consumed fact lets a reviewer, or a later reader, see that the leaf is the proof and not a shape of one.
+
+    + evidence: Lean: a97J08 6b2eb4a9f (v2) defined IsOrientedGridBoundary as "sum of windings = 1", so the hypothesis was the conclusion, and the winding data were chosen rather than computed; v1 had both a vacuous and an overloaded lemma. 5170b2b93 (v3) computes the winding by angle steps. The rule against True placeholders went into library-split-preamble.md on 2026-10-15 without a named problem.
+    + evidence: WM: Joe's ruling 3bc41ccc1 (2026-10-19): "never manufacture a zero, posterior, witness, authority or successful execution to fill an absent field"; P04 in 00419f6a5, "do not call an unknown score zero".
+
+  + NEXT-STEPS:
+    - For each leaf, write one line: what the assembly uses from it. If the line is empty or the same as the hypothesis, the leaf is wrong.
+    - Grep for True as a lemma statement and for fields set by hand that a function could compute.

@@ -1,0 +1,32 @@
+@flexiarg efficiency/a-false-leaf-goes-back-to-the-statement
+@title A False Leaf Goes Back To The Statement
+@keywords false-lemma, statement-repair, outside-grade, stand-in, premise-correction, ruling
+@audience decomposition planners, blueprint authors, packet writers, seat orchestrators
+@tone technical
+@style pattern
+@status proposed (2026-10-19; drafted by claude-5 from PROPOSAL-2026-10-19.md after claude-14's redline, job invoke-1792417571913-17409-73886055; promotion gate: one further program that follows it and records the outcome)
+@references [efficiency/review-the-decomposition-before-dispatch efficiency/the-assembly-does-not-move]
+@see-also apparatus/repairs-name-defects-not-neighborhoods
+@violation-signature A narrower leaf is substituted so the tree compiles while the statement that produced the false leaf is left standing; the statement is changed by the queue that depends on it.
+! conclusion: When review finds a leaf false, look at the statement it came from, not only the leaf; a statement fix is graded by someone outside the queue and reported separately, and the plan is rewritten against the corrected statement.
+
+  + context: Review of a decomposition has found a leaf that is not true as stated.
+
+  + IF:
+    The quick fix is to narrow the leaf until the tree compiles.
+
+  + HOWEVER:
+    A leaf that was false usually came from a statement that is false, or from a premise the plan took as universal. The narrowed leaf is a stand-in: the tree closes and the theorem, or the repair, is not the one that was wanted.
+
+  + THEN:
+    Trace the false leaf to the statement or premise that produced it. If that is wrong, repair it as a separate unit, graded by someone outside the queue that depends on it, and record the grade. Then re-derive the affected units from the corrected statement.
+
+  + BECAUSE:
+    The queue has an interest in the statement being provable; an outside grade is what keeps "provable" from being bought by weakening. The record of the correction is what later readers need to see which theorem was actually proved.
+
+    + evidence: Lean: m98J02 as in review-the-decomposition-before-dispatch; statement part (d) reopened in b69f81f3c and admitted under outside grade in 98dacf0c8. a7dd67d58 corrected five false or vacuous statements (t01J05, t03J05, t94A06, t95J05, t93A03) found the same way.
+    + evidence: WM (nearest instance, flagged by claude-5): the audit rows stated several inputs as universal prerequisites (700 readings before progress; universal binding, consumers row 28). Joe's ruling 3bc41ccc1 corrected the premise from outside the repair queue: missing inputs are measurements, not prerequisites. 00419f6a5 was then written against the ruling and marks row 28 obsolete as a universal veto.
+
+  + NEXT-STEPS:
+    - For each rejected leaf, write which statement or premise produced it and whether that statement survives.
+    - Name the outside grader for every statement change before the change is admitted.

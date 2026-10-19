@@ -1,0 +1,32 @@
+@flexiarg efficiency/seat-sized-units
+@title A Unit Is What One Seat Can Replace Whole
+@keywords unit-size, one-turn, sorry-body, packet, checkpoint, handoff
+@audience decomposition planners, blueprint authors, packet writers, seat orchestrators
+@tone technical
+@style pattern
+@status proposed (2026-10-19; drafted by claude-5 from PROPOSAL-2026-10-19.md after claude-14's redline, job invoke-1792417571913-17409-73886055; promotion gate: one further program that follows it and records the outcome)
+@references [efficiency/every-leaf-states-what-the-assembly-consumes efficiency/name-the-piece-that-is-not-one-turn]
+@see-also efficiency/split-the-partial-not-retry-it
+@violation-signature A unit's goal joins two nouns with "and"; a seat returns a partial after a long run; a sorry sits inside a definition or statement so no seat can replace it.
+! conclusion: Cut units to what one seat can replace whole in one turn: in Lean, a sorry that is the entire body of a top-level lemma, 30 to 150 lines of proof; in a repair plan, one behaviour, one file set, one bad-case test.
+
+  + context: Units are being written for seats that get one signal at the end of their run and no checkpoint in the middle.
+
+  + IF:
+    The decomposition is cut by shared dependency and the units are being sized.
+
+  + HOWEVER:
+    A unit that is too big runs long and opaque, and a wrong premise inside it ships unchallenged because there is no gate in the middle. A sorry inside a definition makes every lemma about that definition unprovable, since a seat can only replace a whole lemma body.
+
+  + THEN:
+    Size each unit to a single replaceable body. Lean: every sorry is the whole body of a top-level lemma; never a definition or statement containing sorry; 30 to 150 lines of proof, split again down to where Mathlib has the tool, and name those Mathlib lemmas in the blueprint. Repair plan: one turn, one behaviour, within one phase or across one named producer/consumer interface, with its focused test named.
+
+  + BECAUSE:
+    The seat's output is accepted or rejected whole. A unit the seat can replace whole has a clean accept; anything larger returns as a partial that the reviewer must splice by hand.
+
+    + evidence: Lean: a97J08 5170b2b93, blueprint v3 with 15 parallel lemmas and a proved assembly, closed in 0d99d4b2f the same day (2026-10-13), where one 300-600 line boundary had stalled. TFT 102f3a366 (v2, 17 lemmas whose only sorry is the whole body) replaced v1, whose sorry'd definition made every lemma about it unprovable.
+    + evidence: WM: handoff contract in 00419f6a5, "each numbered packet is one turn, one reviewable behaviour"; 34 packets, 128 commits landed in one morning (fad572386..f3e718d35). CLAUDE.md workspace rule: a goal with "and" between two nouns is three handoffs.
+
+  + NEXT-STEPS:
+    - Grep the blueprint for sorry outside a lemma body; each is a unit no seat can take.
+    - Read each unit's goal for "and" between nouns and split there.

@@ -1,0 +1,32 @@
+@flexiarg efficiency/split-the-partial-not-retry-it
+@title Split The Partial, Do Not Retry It
+@keywords partial-proof, bank-the-proved, aux-lemmas, re-split, no-redo, half-landed
+@audience decomposition planners, blueprint authors, packet writers, seat orchestrators
+@tone technical
+@style pattern
+@status proposed (2026-10-19; drafted by claude-5 from PROPOSAL-2026-10-19.md after claude-14's redline, job invoke-1792417571913-17409-73886055; promotion gate: one further program that follows it and records the outcome)
+@references [efficiency/seat-sized-units efficiency/give-the-dependent-piece-its-hypothesis]
+@see-also test-registry/rerun-when-the-warrant-fails
+@violation-signature The same whole lemma goes out to a second seat after the first returned a partial; a landed half-fix is reopened instead of extended.
+! conclusion: When a seat returns a partial, bank the proved part, prove the assembly from new aux lemmas, and queue only the open aux lemmas; never send the whole unit out again. The reviewer resizes at run time, recursively, and compiles the partial before splicing it in.
+
+  + context: A unit came back with some of its work done and a remainder the seat could not finish.
+
+  + IF:
+    The simple move is to re-dispatch the unit unchanged, perhaps to a stronger seat.
+
+  + HOWEVER:
+    The second seat redoes the proved part and stalls on the same remainder, with the same chance of the same partial. Nothing learned from the first run is kept.
+
+  + THEN:
+    Compile the partial. Commit the proved part. Write the assembly as a proof from new aux lemmas that state exactly the open remainder. Queue the aux lemmas as the next round's units. Repeat until the aux lemmas are seat-sized and close. On the repair side: commit the landed part and issue the remainder as a new unit with its own identifier.
+
+  + BECAUSE:
+    A partial is information about where the size was. Splitting there turns the next round into smaller units; retrying throws the information away.
+
+    + evidence: Lean: the m98J02 chain on 2026-10-18, ff741a48b, 498c174b4, 4320c1651 and on to the close 1d20d65dd, each step "split X (lemma-N partial): aux banked, assembly proved; aux open". The CT.WedgePermutationCover PARTIAL splits 3f49711f4 to a2659d442 follow the same pattern.
+    + evidence: WM: 149dc9b30 landed retention for the selected path; the review found the abstained path uncovered and the remainder was issued as P00 (fad572386), a new packet with its own identifier, not a reopening of 149dc9b30. P29 landed with its known test failure recorded in 6d5a3bf7d rather than the packet held open.
+
+  + NEXT-STEPS:
+    - On every partial: compile, bank, write the aux statements, and check that each aux is smaller than the unit it came from.
+    - Record the chain of splits in the queue so the next reviewer sees the size history.

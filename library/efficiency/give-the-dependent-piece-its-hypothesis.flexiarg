@@ -1,0 +1,32 @@
+@flexiarg efficiency/give-the-dependent-piece-its-hypothesis
+@title Give The Dependent Piece Its Predecessor's Conclusion As A Hypothesis
+@keywords decomposition, parallel-seats, hypothesis, dependency-order, sorry-axioms, scope-creep
+@audience decomposition planners, blueprint authors, packet writers, seat orchestrators
+@tone technical
+@style pattern
+@status proposed (2026-10-19; drafted by claude-5 from PROPOSAL-2026-10-19.md after claude-14's redline, job invoke-1792417571913-17409-73886055; promotion gate: one further program that follows it and records the outcome)
+@references [efficiency/split-by-shared-dependency efficiency/the-assembly-does-not-move]
+@see-also efficiency/split-the-partial-not-retry-it
+@violation-signature A unit cannot start until its predecessor lands; or a unit's axioms include another unit's sorry; or a packet grows to repair the consumer that refused its output.
+! conclusion: Where unit B needs unit A's conclusion, B takes that conclusion as an explicit hypothesis, so B can be completed before A lands and neither unit's scope depends on the other's progress.
+
+  + context: The decomposition is cut (see split-by-shared-dependency) and some units need what other units will establish.
+
+  + IF:
+    Seats are to work in parallel, and the dependency graph is not empty.
+
+  + HOWEVER:
+    If B refers to A by name, B blocks on A, and a checker sees A's sorry in B's axioms. If B absorbs A's work to unblock itself, A is duplicated and B outgrows its seat. On the repair side, a packet whose output a later consumer refuses tends to grow until it has repaired the consumer too.
+
+  + THEN:
+    State A's conclusion as a hypothesis of B. B is then provable on its own and its axioms are clean. Assembly discharges the hypothesis with A once A lands. A packet names what it depends on and stops at its own boundary: a refusal from the next consumer is the next packet's fault, not a reason to expand.
+
+  + BECAUSE:
+    The dependency is still there, but it is now a line in the assembly rather than a wait in the schedule. Units that stand alone can also be reviewed alone.
+
+    + evidence: Lean: m99A02 ebb5c24b7 split a partial bridge_2 into five independent line-route lemmas with the hdir hypothesis standing in for the unproved fact; closed in 1b1c7a860 the same day. m98A04 73d157e1a: "consumers take them as hypotheses". The checker rejects a lemma whose axioms include another lemma's sorry (library-split-preamble.md).
+    + evidence: WM: handoff contract in 00419f6a5, "scope cannot expand because a later consumer refuses"; each packet names "depends P03" or "independent". P05 was tested through a partial objective consumer, 3657e1586, before P06 landed.
+
+  + NEXT-STEPS:
+    - For each dependency edge, write the predecessor's conclusion as a hypothesis in the dependent unit and check that the dependent unit no longer names the predecessor.
+    - When a unit's acceptance test fails at the next consumer, file the consumer's fault as a separate unit.

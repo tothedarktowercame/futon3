@@ -319,3 +319,73 @@
       (is (some #(= "untracked.txt" (:path %))
                 (vals (projection/current-observations (:state result))))
           "the healthy root is still observed"))))
+
+(deftest commit-merged-back-after-rewrite-is-observed-once
+  ;; The bad case of 2026-10-14: a commit observed on one line, rebaselined
+  ;; away by a history rewrite, then merged back into HEAD's line. Its record
+  ;; already exists under the same [worktree sha] id; re-emitting it with a
+  ;; new :observed-at made apply-record refuse the whole cycle, every cycle.
+  (let [repo (init-repo)
+        root {:path (.getPath repo) :label "fixture"}
+        base (str/trim (:out (git! repo "rev-parse" "HEAD")))
+        state0 (state/replay (watcher/observe-commits (state/empty-state) root
+                                                      (java.util.Date. 1000)))]
+    (spit (io/file repo "a.txt") "a\n")
+    (git! repo "add" "a.txt")
+    (git! repo "commit" "-q" "-m" "commit A")
+    (let [a-sha (str/trim (:out (git! repo "rev-parse" "HEAD")))
+          records-a (watcher/observe-commits state0 root (java.util.Date. 2000))
+          state1 (reduce state/apply-record state0 records-a)]
+      (is (= [a-sha] (mapv :commit/sha (filter :commit/sha records-a))))
+      ;; history rewrite: HEAD moves to a line that does not contain A
+      (git! repo "reset" "-q" "--hard" base)
+      (spit (io/file repo "b.txt") "b\n")
+      (git! repo "add" "b.txt")
+      (git! repo "commit" "-q" "-m" "commit B")
+      (let [records-b (watcher/observe-commits state1 root (java.util.Date. 3000))
+            state2 (reduce state/apply-record state1 records-b)]
+        (is (= [:rebaseline-rewrite] (mapv :cursor/reason records-b)))
+        ;; A comes back into HEAD's line by a merge
+        (git! repo "merge" "-q" "--no-edit" a-sha)
+        (let [merge-sha (str/trim (:out (git! repo "rev-parse" "HEAD")))
+              records-m (watcher/observe-commits state2 root (java.util.Date. 4000))
+              state3 (reduce state/apply-record state2 records-m)]
+          (is (= [merge-sha] (mapv :commit/sha (filter :commit/sha records-m)))
+              "the merge commit is new; A is already observed and is not re-emitted")
+          (is (= merge-sha
+                 (:cursor/sha (get (projection/current-commit-cursors state3)
+                                   (watcher/worktree-id (.getPath repo)))))
+              "the cursor advances past the merged-back commit"))))))
+
+(deftest record-conflict-in-one-root-is-skipped-with-reason-and-cycle-completes
+  (let [repo-a (init-repo)
+        repo-b (init-repo)
+        state-file (io/file (temp-dir "inbox-zero-state") "state.edn")
+        roots [{:path (.getPath repo-a) :label "conflicting"}
+               {:path (.getPath repo-b) :label "healthy"}]
+        first-run (watcher/run-cycle! {:state-path (.getPath state-file) :roots roots})
+        worktree-a (watcher/worktree-id (.getPath repo-a))
+        stored-cursor (->> (state/records-of-type (:state first-run)
+                                                  :inbox-zero/commit-scan-cursor)
+                           (filter #(= worktree-a (:worktree/id %)))
+                           first)
+        ;; same id as a stored record, different content: what the store refuses
+        conflicting (assoc stored-cursor :observed-at (java.util.Date. 999))
+        original watcher/observe-commits]
+    (is (map? stored-cursor))
+    (spit (io/file repo-b "untracked.txt") "dirt\n")
+    (with-redefs [watcher/observe-commits
+                  (fn [store root now]
+                    (if (= (.getPath repo-a) (:path root))
+                      [conflicting]
+                      (original store root now)))]
+      (let [result (watcher/run-cycle! {:state-path (.getPath state-file) :roots roots})
+            [skip :as skips] (:skipped-roots result)]
+        (is (= 1 (count skips)))
+        (is (= [:record-conflict (.getPath repo-a)] [(:reason skip) (:root skip)]))
+        (is (= :inbox-zero/id-conflict (get-in skip [:detail :error/type])))
+        (is (= (:cursor/id stored-cursor) (get-in skip [:detail :record/id]))
+            "the skip names the refused record")
+        (is (some #(= "untracked.txt" (:path %))
+                  (vals (projection/current-observations (:state result))))
+            "the healthy root is still observed and persisted")))))

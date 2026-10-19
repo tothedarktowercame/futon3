@@ -59,7 +59,7 @@
     error (assoc :detail
                  (let [data (ex-data error)]
                    (cond-> {:message (.getMessage ^Throwable error)}
-                     data (merge (select-keys data [:error/type :args :exit]))
+                     data (merge (select-keys data [:error/type :args :exit :record/id]))
                      (:stderr data)
                      (assoc :stderr (let [s (str (:stderr data))]
                                       (subs s 0 (min 500 (count s))))))))))
@@ -112,6 +112,17 @@
      :observed-at observed-at
      :source :git}))
 
+(defn- observed-commit?
+  "Has SHA already been observed in WORKTREE? A commit observation is keyed by
+  [worktree sha] and its content is fixed by the commit, so a sha that reaches
+  HEAD's line a second time (observed on one line, rebaselined away, merged
+  back later) is the same record; emitting it again with a new :observed-at
+  made apply-record refuse the cycle for every root (futon2 08ad7a74e,
+  2026-10-14 to 2026-10-19)."
+  [store worktree sha]
+  (contains? (:records store)
+             (str "commit-observation:" (subs (sha-256-value [worktree sha]) 7))))
+
 (defn observe-commits
   "Return immutable cursor and commit records for one repository.
 
@@ -134,8 +145,10 @@
       (nil? current)
       (let [baseline (first-run-baseline repo-root head commit-lookback)
             first-cursor (cursor-record worktree baseline :baseline nil observed-at)
-            shas (git-lines repo-root "rev-list" "--reverse"
-                            (str baseline ".." head))
+            shas (->> (git-lines repo-root "rev-list" "--reverse"
+                                 (str baseline ".." head))
+                      (remove #(observed-commit? store worktree %))
+                      vec)
             observations (mapv #(commit-observation repo-root label worktree % observed-at)
                                shas)]
         (cond-> [first-cursor]
@@ -150,8 +163,9 @@
       (= (:cursor/sha current) head) []
 
       :else
-      (let [shas (git-lines repo-root "rev-list" "--reverse"
-                            (str (:cursor/sha current) ".." head))]
+      (let [shas (->> (git-lines repo-root "rev-list" "--reverse"
+                                 (str (:cursor/sha current) ".." head))
+                      (remove #(observed-commit? store worktree %)))]
         (into (mapv #(commit-observation repo-root label worktree % observed-at) shas)
               [(cursor-record worktree head :advance
                               (:cursor/id current) observed-at)])))))
@@ -309,19 +323,29 @@
         [commit-records commit-skips]
         (loop [stored with-witnesses rs usable records [] skips []]
           (if-let [root (first rs)]
-            (let [{:keys [batch skip]}
+            ;; Applying the batch is inside the try on purpose: a record one
+            ;; root produces that the store refuses (an id conflict) is that
+            ;; root's fault for this cycle, named in its skip, and must not
+            ;; abort the cycle for every other root.
+            (let [{:keys [batch applied skip]}
                   (try
-                    {:batch (observe-commits stored
-                                             (cond-> root
-                                               (some? commit-lookback)
-                                               (assoc :commit-lookback commit-lookback))
-                                             now)}
+                    (let [batch (observe-commits stored
+                                                 (cond-> root
+                                                   (some? commit-lookback)
+                                                   (assoc :commit-lookback commit-lookback))
+                                                 now)]
+                      {:batch batch
+                       :applied (reduce state/apply-record stored batch)})
                     (catch Exception error
-                      {:skip (root-skip root :git-error error)}))]
+                      {:skip (root-skip root
+                                        (if (= :inbox-zero/id-conflict
+                                               (:error/type (ex-data error)))
+                                          :record-conflict
+                                          :git-error)
+                                        error)}))]
               (if skip
                 (recur stored (next rs) records (conj skips skip))
-                (recur (reduce state/apply-record stored batch)
-                       (next rs) (into records batch) skips)))
+                (recur applied (next rs) (into records batch) skips)))
             [records skips]))
         failed-paths (into #{} (map :root) commit-skips)
         with-commits (reduce state/apply-record with-witnesses commit-records)

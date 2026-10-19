@@ -24,7 +24,7 @@
   + BECAUSE:
     The queue has an interest in the statement being provable; an outside grade is what keeps "provable" from being bought by weakening. The record of the correction is what later readers need to see which theorem was actually proved.
 
-    + evidence: Lean: m98J02 as in review-the-decomposition-before-dispatch; statement part (d) reopened in b69f81f3c and admitted under outside grade in 98dacf0c8. a7dd67d58 corrected five false or vacuous statements (t01J05, t03J05, t94A06, t95J05, t93A03) found the same way.
+    + evidence: Lean: m98J02 as in review-the-decomposition-before-dispatch; statement part (d) reopened in b69f81f3c and admitted under outside grade in 98dacf0c8. a7dd67d58 corrected five false or vacuous statements (t01J05, t03J05, t94A06, t95J05, t93A03). They were found by statement triage rather than through a leaf, but they were repaired the same way: by a blueprint seat, graded faithful by an outside read-only grader (statement-registry/repair-grades-1.md), and committed separately. m98J02 is the one instance of the leaf-to-statement route; a7dd67d58 is evidence for the outside grade only.
     + evidence: WM (nearest instance, flagged by claude-5): the audit rows stated several inputs as universal prerequisites (700 readings before progress; universal binding, consumers row 28). Joe's ruling 3bc41ccc1 corrected the premise from outside the repair queue: missing inputs are measurements, not prerequisites. 00419f6a5 was then written against the ruling and marks row 28 obsolete as a universal veto.
 
   + NEXT-STEPS:

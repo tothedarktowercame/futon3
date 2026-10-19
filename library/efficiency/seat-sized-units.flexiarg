@@ -24,7 +24,7 @@
   + BECAUSE:
     The seat's output is accepted or rejected whole. A unit the seat can replace whole has a clean accept; anything larger returns as a partial that the reviewer must splice by hand.
 
-    + evidence: Lean: a97J08 5170b2b93, blueprint v3 with 15 parallel lemmas and a proved assembly, closed in 0d99d4b2f the same day (2026-10-13), where one 300-600 line boundary had stalled. TFT 102f3a366 (v2, 17 lemmas whose only sorry is the whole body) replaced v1, whose sorry'd definition made every lemma about it unprovable.
+    + evidence: Lean: a97J08 5170b2b93, blueprint v3: one 300-600-line boundary lemma became 15 parallel leaves of 30-150 lines with a proved assembly, all closed in 0d99d4b2f the same day (2026-10-13). TFT 102f3a366 (v2, 17 lemmas whose only sorry is the whole body) replaced v1, whose sorry'd definition made every lemma about it unprovable.
     + evidence: WM: handoff contract in 00419f6a5, "each numbered packet is one turn, one reviewable behaviour"; 34 packets, 128 commits landed in one morning (fad572386..f3e718d35). CLAUDE.md workspace rule: a goal with "and" between two nouns is three handoffs.
 
   + NEXT-STEPS:

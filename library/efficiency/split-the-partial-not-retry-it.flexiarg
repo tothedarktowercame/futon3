@@ -25,7 +25,7 @@
     A partial is information about where the size was. Splitting there turns the next round into smaller units; retrying throws the information away.
 
     + evidence: Lean: the m98J02 chain on 2026-10-18, ff741a48b, 498c174b4, 4320c1651 and on to the close 1d20d65dd, each step "split X (lemma-N partial): aux banked, assembly proved; aux open". The CT.WedgePermutationCover PARTIAL splits 3f49711f4 to a2659d442 follow the same pattern.
-    + evidence: WM: 149dc9b30 landed retention for the selected path; the review found the abstained path uncovered and the remainder was issued as P00 (fad572386), a new packet with its own identifier, not a reopening of 149dc9b30. P29 landed with its known test failure recorded in 6d5a3bf7d rather than the packet held open.
+    + evidence: WM: 149dc9b30 landed retention for the selected path; the review found the abstained path uncovered and the remainder was issued as P00 (fad572386), a new packet with its own identifier, not a reopening of 149dc9b30.
 
   + NEXT-STEPS:
     - On every partial: compile, bank, write the aux statements, and check that each aux is smaller than the unit it came from.

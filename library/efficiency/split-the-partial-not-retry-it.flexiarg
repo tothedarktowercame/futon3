@@ -6,7 +6,7 @@
 @style pattern
 @status proposed (2026-10-19; drafted by claude-5 from PROPOSAL-2026-10-19.md after claude-14's redline, job invoke-1792417571913-17409-73886055; promotion gate: one further program that follows it and records the outcome)
 @references [efficiency/seat-sized-units efficiency/give-the-dependent-piece-its-hypothesis]
-@see-also test-registry/rerun-when-the-warrant-fails
+@see-also test-registry/rerun-when-the-warrant-fails agent/eat-your-own-tail
 @violation-signature The same whole lemma goes out to a second seat after the first returned a partial; a landed half-fix is reopened instead of extended.
 ! conclusion: When a seat returns a partial, bank the proved part, prove the assembly from new aux lemmas, and queue only the open aux lemmas; never send the whole unit out again. The reviewer resizes at run time, recursively, and compiles the partial before splicing it in.
 

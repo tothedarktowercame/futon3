@@ -6,7 +6,7 @@
 @style pattern
 @status proposed (2026-10-19; drafted by claude-5 from PROPOSAL-2026-10-19.md after claude-14's redline, job invoke-1792417571913-17409-73886055; promotion gate: one further program that follows it and records the outcome)
 @references [efficiency/every-leaf-states-what-the-assembly-consumes efficiency/a-false-leaf-goes-back-to-the-statement]
-@see-also apparatus/recorded-failures-before-live-runs
+@see-also apparatus/recorded-failures-before-live-runs agent/eat-your-own-tail
 @violation-signature A seat runs on a false leaf; a packet's "wrong" line cites a function body nobody read; the decomposition's author is its only reviewer and the first independent check is the live run.
 ! conclusion: Spend reviewer judgment on the decomposition, once, before any seat runs: are the statements true, is it split by dependency, is any leaf vacuous or overloaded? Leaves are then accepted by mechanical checks, and the decomposition is reviewed by someone other than its author.
 
@@ -25,7 +25,7 @@
     One review of the decomposition covers every leaf under it. Leaf proofs that pass the mechanical gates need no further judgment, because the judgment was spent where it multiplies.
 
     + evidence: Lean: m98J02 blueprint b1697bf45; review found apm_m98J02_regular_convolution_is_C2 false (T not hypoelliptic; adding h with Th=0 gives another fundamental solution for which the claim fails), and statement part (d) fell with it. Repaired b69f81f3c/98dacf0c8, closed 1d20d65dd (2026-10-18). No seat ever ran on the false lemma.
-    + evidence: WM: claude-5's premise check of 00419f6a5 against current source before any dispatch (~/notes/codex-1-abstention-review/packets-review-2026-10-19.md) held for six sampled packets and found the Q2 guard that became P00 (fad572386). Gap recorded: codex-1 wrote and reviewed its own 128 commits (e.g. 6d5a3bf7d), so the first independent check of that decomposition is the five live clicks, which check the result, not the tree.
+    + evidence: WM: the chain kept author and reviewer apart at both levels. claude-5 wrote the audit (correlation.md and the logic model); codex-1 wrote the decomposition (00419f6a5); claude-5, not its author, checked its premises against current source before any dispatch (~/notes/codex-1-abstention-review/packets-review-2026-10-19.md), held for six sampled packets, and found the Q2 guard that became P00 (fad572386). The leaves were then implemented by Terra seats codex-2, codex-3, codex-4, codex-5 and codex-7 with codex-1 dispatching, and reviewed by codex-1 (Agent-Id and Dispatched-By trailers, fad572386..f3e718d35). Correction 2026-10-19: an earlier draft of this line called the batch self-reviewed from the subject lines; the trailers show otherwise.
 
   + NEXT-STEPS:
     - Before dispatch, for each leaf: one line on why it is true, including the degenerate case; for each packet: the cited line read at the current HEAD.

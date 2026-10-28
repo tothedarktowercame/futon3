@@ -1,0 +1,35 @@
+@flexiarg task-selection/hold-with-a-rearm-condition
+@title Hold With A Re-Arm Condition
+@keywords held, deferred, parked, ripeness, blocker moved, resume
+@audience agents and the War Machine selecting the next task
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, witnesses K3, K15)
+@role source
+@guard needs: held items with their stated reason and re-arm condition (Cascade Live .held[]), and current observations that bear on each condition.
+@effect a held item whose re-arm condition now holds re-enters the field as a candidate; items whose condition does not hold stay out and are not re-asked.
+@predicts a resumed item does not hit the block it was held for.
+@references [task-selection/only-what-can-start-now task-selection/write-it-down-instead]
+! conclusion: Hold blocked work with the condition that would re-arm it, and select it again when that condition changes; do not re-raise it before then.
+
+  + context: Work was parked because it was blocked, premature, or chasing a moving target.
+
+  + IF:
+    A held item's blocker has moved, or the ingredients it lacked now exist.
+
+  + HOWEVER:
+    Held items without a re-arm condition are either forgotten or re-asked in every report. Held items whose condition has quietly been met wait for someone to notice.
+
+  + THEN:
+    Record each hold with its reason and a checkable re-arm condition (a threshold, an artefact, a working core). At selection, check the conditions and bring back the items whose condition holds; leave the rest out of reports.
+
+  + BECAUSE:
+    Ripeness is often why work becomes worth selecting: the same item that failed before can now succeed because of what changed around it.
+
+  + evidence:
+    - futon2/holes/E-gflownets-fold.md:1-3,13-16: "reopened on executable reward ... (Joe: we have the empirical data that was blocking that before)".
+    - futon3c/holes/missions/M-象-2000.md:557 (Joe 2026-09-28): "we can wait until we see the core system working ... They are reopened once P12 works end to end."
+    - Cascade Live .held[] diagramprover: "Phase 1 requires Pass 1 ≥200 problems (currently ~76)"; agency-hardening-datapoints: "Deferred behind the drainer fix."
+    - futon3c/holes/missions/M-war-machine-pilot.md:31-37 (Joe 2026-05-24): "We have all the right ingredients now".
+    - futon0/holes/missions/M-usage-hacking.md:21-22: "Only on 2026-07-13 did Claude usage become accurate enough to contemplate this comparison."
+    - futon0/holes/E-post-commit-hooks-for-web.md:10: "deferred until the invoked tooling stops moving" (not yet resumed).

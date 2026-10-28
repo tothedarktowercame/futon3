@@ -1,0 +1,31 @@
+@flexiarg task-selection/a-portfolio-not-a-winner
+@title A Portfolio, Not A Winner
+@keywords portfolio, mixture, move classes, quick wins and deep dives, composition
+@audience War Machine builders; agents selecting several tasks
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, cross-cutting witness)
+@role compose
+@guard needs: the other selection patterns' orderings, and how much capacity there is this round.
+@effect fills capacity from several orderings (cheap wins, a hard one, close-outs, repairs) instead of taking the top of one ordering.
+@predicts the round's closures include several move classes, as the operator's own picks do.
+@references [task-selection/take-the-cheap-win task-selection/take-the-hard-one-to-learn task-selection/finish-what-is-nearly-done task-selection/repair-goes-to-the-front]
+! conclusion: Real selections mix kinds: some quick wins, some deeper dives, some close-outs. When more than one task is chosen, fill the round from several orderings, not from the top of one.
+
+  + context: A round of selection picks several tasks for several seats.
+
+  + IF:
+    One score is used to rank everything.
+
+  + HOWEVER:
+    A single score prices one move class (advancing) and cannot reproduce how work was actually chosen; taking several selection patterns at once seems to give up the clarity of one winner.
+
+  + THEN:
+    Give each active ordering a share of the round and say which ordering each pick came from, so the evidence for each can be counted.
+
+  + BECAUSE:
+    The operator's measured picks are portfolio-shaped, and a scorer that only prices advancing moves was shown not to reproduce them.
+
+  + evidence:
+    - futon2/holes/M-action-vocabulary.md:24-27: "operator gold is portfolio-shaped (quick wins and some deeper dives + close-outs of saturated missions), while every score in the stack prices only the ADVANCE move class."
+    - futon2/holes/E-live-loop-3.md:1202,1598: the same finding from live-loop data.

@@ -112,15 +112,15 @@ discovery should check it line by line before anything is built.
 
 ## Scoring a repair cascade (proposed, not built)
 
-As for selection: a cascade's prediction is the conjunction of its
-patterns' `@predicts` for this injury. A repair-level model would have
-hidden states such as "producer located", "check correct", "witness
-discriminates", "fix loaded", and observations from the steps' before/after
-checks. Pragmatic value: the injury leaves the effective set, the next click
-does not repeat the failure. Epistemic value: cascades that reproduce and
-locate first are worth more when the discovery is uncertain. Cost: clicks
-and seats. Habit: counts of each cascade's predictions holding, which the
-closing introduce step starts to supply.
+Joe, 2026-10-28: "we should exercise our normal G-over-cascades mechanism
+rather than set up a fixed pipeline". So there is no repair-level model or
+scorer of its own. Each repair cascade fills the `:self-heal` arm of
+`meta/meta-outer-policy-cascade` as one candidate policy, and the G that
+scores filled META policies (`:meta/minimise-g-over-filled-meta-policies`)
+chooses among them; a cascade's prediction is the conjunction of its
+patterns' `@predicts` for this injury. The closing patterns are part of the
+cascades G scores, not a tail added by code. Criteria:
+`futon2/holes/labs/wm-contract/E-self-heal-cascade.md`.
 
 ## Open
 

@@ -1,0 +1,34 @@
+@flexiarg task-selection/the-operator-asked
+@title The Operator Asked
+@keywords operator want, charter, Joe's words, request
+@audience agents and the War Machine selecting the next task
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, witnesses K10)
+@role source
+@guard needs: the operator's words, dated, with where they were said.
+@effect adds the want to the field as a candidate whose charter is the quoted words; it is then gated and ordered like any other candidate.
+@predicts what is delivered is recognised by the operator as what was asked, or the record shows why it could not be.
+@references [task-selection/write-it-down-instead task-selection/offer-a-menu-with-a-default]
+! conclusion: An operator want enters selection as a candidate chartered by the operator's own words; it still passes the gates, and if it cannot be done the record of why is the deliverable.
+
+  + context: Most new work starts as something Joe says he wants.
+
+  + IF:
+    The operator asks for something.
+
+  + HOWEVER:
+    Doing every ask at once bypasses readiness and repair; paraphrasing the ask loses what was wanted; and an ask can turn out to be impossible.
+
+  + THEN:
+    Quote the ask as the charter, with date and source. Put it in the selectable pool. If it cannot be done, the inventory of why becomes the result. "Wanted for its own sake" in the record almost always arrives this way.
+
+  + BECAUSE:
+    The quoted words are the only check of whether the delivered thing is the wanted thing.
+
+  + evidence:
+    - futon1b/holes/E-xtdb-types-cleanup.md:5-7 (Joe 2026-08-17): "it is worth doing the cleanup and logging our work in a note" -> "the cleanup was NOT performed, because there is no code path that can perform it."
+    - futon3c/holes/missions/M-turns-first.md:13-17 (Joe 2026-09-14): "I want an agent-first notebook", "I don't want a sidebar".
+    - futon2/holes/E-cascade-sampler-four-2026-08-26.md:3-6 (Joe 2026-08-26): "create a reasonable selection of cascades".
+    - futon7/holes/M-interim-director.md:53: operator want with operator timebox.
+    - futon2/holes/tickets/T-outer-target-g-policy-prior.md:67-68: an ask routed into the pool.

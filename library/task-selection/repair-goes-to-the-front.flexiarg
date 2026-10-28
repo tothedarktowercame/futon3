@@ -1,0 +1,36 @@
+@flexiarg task-selection/repair-goes-to-the-front
+@title Repair Goes To The Front Of Ordinary Selection
+@keywords stop-the-line, repair, defect, obligation, queue precedence
+@audience agents and the War Machine selecting the next task
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, from ~/notes/selection-patterns/witnesses-2026-10-28.md K2, K17)
+@role gate
+@guard needs: the open repair obligations (machine-raised tickets, stop-the-line findings) with the work they sit under.
+@effect if a repair obligation is open on the path of the next candidate, that repair is the candidate; otherwise the field passes through unchanged.
+@predicts the next task does not repeat the last failure; work built after it is not later retracted.
+@references [futon-theory/stop-the-line task-selection/only-what-can-start-now cascades/select-tasks-from-cascade-live]
+! conclusion: When something already built is wrong, or the next task would repeat the last failure, the repair is selected first, inside ordinary selection, not by pausing selection.
+
+  + context: Work is being selected from a field that includes machine-raised repair tickets and findings that earlier work was wrong.
+
+  + IF:
+    A defect sits on the path of the work that would be selected next.
+
+  + HOWEVER:
+    Throughput pulls toward the next new item, and building on the defect looks like progress until the result has to be retracted. The opposite mistake also happens: stopping the line is read as "pause everything until the repair queue is drained", which stops selection altogether.
+
+  + THEN:
+    Put the repair at the front of the same queue the other work is selected from, and select it without asking for permission. Where errors do not invalidate what follows (a harness that queues bugs and carries on), the rule for that context can say so; that is a ruling about the context, not an exception to the pattern.
+
+  + BECAUSE:
+    A result built on a defect costs its own work plus the retraction. Selection that cannot pick repair has to be stopped from outside to get repairs done.
+
+  + evidence:
+    - futon2/holes/M-fold-ansatz.md:533-541, Joe 2026-07-01: "STOP-THE-LINE ... f1 was on the WRONG graph ... the f1-v1 ... result is RETRACTED". Chosen: retract and redo on the real graph.
+    - futon2/holes/M-G-over-cascades.md:762-764: "This is a real stop-the-line: don't INSTANTIATE the coupled G until at least one is closed."
+    - memory repair-is-ordinary-selection-first (Joe 2026-09-22): "there should be no distinction between ordinary selection and repair, but repair should go to the front of the queue."
+    - memory repair-before-the-next-click (Joe 2026-09-30): if the next click would repeat the last failure, repair first.
+    - Cascade Live: 573 of 2,616 tickets are machine-raised T-repair-occ; the most-dispatched lineage target is an outage excursion (35 of 197); stop-the-line is the most-cited pattern (48 missions).
+
+  + counter-evidence: futon2/holes/M-zaif-harness.md:950, "errors NEVER stop the line (cache-to-queue, per Joe)": in that harness errors go to a queue and work continues.

@@ -1,0 +1,33 @@
+@flexiarg task-selection/finish-what-is-nearly-done
+@title Finish What Is Nearly Done
+@keywords close-out, saturation, resolvedness, overflow, closure
+@audience agents and the War Machine selecting the next task
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, witnesses K14)
+@role order
+@guard needs: per candidate, how much of it is resolved (checked exit criteria, open holes left) and what remains.
+@effect raises nearly-resolved items regardless of their structural importance; overflow that would keep an item open is moved to follow-on items.
+@predicts the item closes, and the count of open items falls.
+@references [task-selection/write-it-down-instead task-selection/a-portfolio-not-a-winner]
+! conclusion: Close nearly finished work even when it is structurally unimportant, and move the overflow out so it can close.
+
+  + context: Some open items are almost resolved but would not rank high on leverage or importance.
+
+  + IF:
+    An item is close to its exit criteria.
+
+  + HOWEVER:
+    Scores built on structural importance (curvature, cone, unblocking) price these items low, and staged work that grew beyond the item's scope keeps it open indefinitely.
+
+  + THEN:
+    Select close-outs on resolvedness. Spin overflow into follow-on items so the parent can close when what remains is well described.
+
+  + BECAUSE:
+    Open items that are nearly done cost attention at every selection, and the operator's own picks include close-outs that an importance score would never make.
+
+  + evidence:
+    - futon2/holes/E-live-loop-3.md:1598-1602: "the operator values close-outs of low-curvature saturated missions, but v1's κ-weighted intensity prices low-curvature targets low regardless of move class."
+    - futon2/holes/M-action-vocabulary.md:24-27: operator gold includes "close-outs of saturated missions".
+    - futon7/holes/M-interim-director.md:171: overflow "that exceeds the parent mission's 10-day net design window" moved out so the mission closes.
+    - Cascade Live: all 176 recorded arrows are :close-hole moves.

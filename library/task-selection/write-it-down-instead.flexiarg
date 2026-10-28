@@ -1,0 +1,33 @@
+@flexiarg task-selection/write-it-down-instead
+@title Write It Down Instead
+@keywords ledger, capture, follow-on, candidate, not now
+@audience agents and the War Machine selecting the next task
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, witnesses K18)
+@role reshape
+@guard needs: a candidate that is worth keeping but not worth doing now.
+@effect replaces doing the candidate by recording it as a selectable item (a ledger entry or ticket) with its source.
+@predicts the item is later found and selected from the pool, not lost.
+@references [task-selection/hold-with-a-rearm-condition task-selection/the-operator-asked]
+! conclusion: When a follow-on is worth keeping but not worth doing now, the task selected is to record it where selection will find it.
+
+  + context: Work in progress throws up follow-ons and candidates that do not belong to the current scope.
+
+  + IF:
+    A follow-on would be lost if not recorded, and doing it now would widen the current item.
+
+  + HOWEVER:
+    Doing it now breaks scope; not doing it lets it evaporate; writing a whole mission for it is too much.
+
+  + THEN:
+    Record it as a ledger entry or ticket, small enough not to need a mission, and give it its own note only when it grows. Write operator asks as tickets so the War Machine can select them.
+
+  + BECAUSE:
+    Selection can only choose from what has been recorded.
+
+  + evidence:
+    - futon2/holes/E-aif-post-mission-mining.md:3,6-7: "Status: LEDGER (so the follow-ons don't evaporate — Joe's ask)." "Each is small enough to not need a mission".
+    - futon2/holes/tickets/T-outer-target-g-policy-prior.md:67-68: "Written as a ticket at Joe's request so the War Machine may select it."
+    - Cascade Live .held[] writing-ethics: "filed as candidate for a future mission if the WP's argument space needs it downstream."
+    - Cascade Live .held[] points-de-fuite: "Candidate follow-on ... Recorded here as the realisation; not built."

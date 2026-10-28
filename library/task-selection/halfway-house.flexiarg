@@ -1,0 +1,34 @@
+@flexiarg task-selection/halfway-house
+@title Halfway House
+@keywords interim, stepping-stone, v1 before v2, smaller version, successor
+@audience agents and the War Machine selecting the next task
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, witnesses K7)
+@role reshape
+@guard needs: a wanted target that is too hard, too costly or not yet ready, and a smaller version that would be useful now.
+@effect replaces the target in the field by the smaller version, with the target recorded as its successor and a ruling on whether the smaller version can close the target.
+@predicts the smaller version is used now, and what is learned from it changes the target's design.
+@references [task-selection/find-out-before-building task-selection/end-in-something-shown task-selection/bound-the-bet]
+! conclusion: When the wanted thing cannot be built yet, build the smaller thing that meets today's need, name the wanted thing as its successor, and say whether the smaller thing may close it.
+
+  + context: The target is clear but depends on things that are unready or would commit design choices too early.
+
+  + IF:
+    "I'd really like this, but that's hard": a smaller version would serve now.
+
+  + HOWEVER:
+    The halfway house can quietly become the destination and close the target by default; or the target is built first and commits shapes before anyone knows which matter.
+
+  + THEN:
+    Select the smaller version, record the target as its successor, and record whether the halfway house is allowed to close the target. Where the target depends on a machine that is not ready, name the fallback route for the later stages.
+
+  + BECAUSE:
+    The smaller version delivers now and shows which parts of the target matter.
+
+  + evidence:
+    - futon7/holes/M-self-documenting-stack.md:48-52: "LC1 v1 minimum stays a hand-grep + TF-IDF + recency ranking (the simplest thing that resolves the felt need today)"; then :148, Joe 2026-05-20, "BOTH as closure bar": v1 may not close the mission.
+    - futon2/holes/M-aif2.md:668-672: "policy selection explicitly deferred ... The single-step loop was the honest interim".
+    - futon1b/holes/M-xtdb-22x-benchmarking.md:252-255: "small-scale numbers must not be trusted, so we build the instrument that measures the curve instead."
+    - futon3c/holes/missions/M-giraffe.md:300 (Joe 2026-10-27): "build stages 1 and 2, then decide ... If not, packages are pre-ranked another way".
+    - futon0/holes/missions/M-capability-star-map.md:1114: "today's F1 gap-reader is the stepping-stone, not the destination".

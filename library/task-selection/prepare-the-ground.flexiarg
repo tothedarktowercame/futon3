@@ -1,0 +1,35 @@
+@flexiarg task-selection/prepare-the-ground
+@title Prepare The Ground
+@keywords groundwork, scaffolding, cone, de-risking, later build
+@audience agents and the War Machine selecting the next task
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, witnesses K13; Giraffe pilot 2)
+@role order
+@guard needs: a named later build item, and what the candidate would change about it (the candidate's cone: everything downstream of it, not only what it frees at once).
+@effect raises candidates with a large cone and a stated effect on a named later item, even when they free nothing at once.
+@predicts the later item, when built, uses or is reshaped by this work.
+@references [task-selection/what-others-wait-on-first task-selection/find-out-before-building]
+! conclusion: Some work is selected not for its own output but because it shapes a later build; select it under that name, and say which later item it serves.
+
+  + context: A larger build is planned, and some work would change what that build has to do.
+
+  + IF:
+    A candidate's value lies in what it lets a later item get right.
+
+  + HOWEVER:
+    Groundwork frees nothing at once, so ordering by immediate unblocking ranks it low; and a day of groundwork reported as output overstates it. Giraffe pilot 2 measured the split: two items had cones of 14 but unblocked nothing alone.
+
+  + THEN:
+    Select groundwork by its cone and by a named later item, record it as groundwork for that item and not as the item, and pin the definition the later item will need.
+
+  + BECAUSE:
+    Without the name of the item it serves, groundwork cannot be checked, and is easily reported as more than it is.
+
+  + evidence:
+    - futon3c/holes/excursions/E-cascade-assembly.md:459-461: "This excursion is groundwork for build item 1, not item 1. But Part 3 changed what item 1 has to record, so the definition is worth pinning before it is built."
+    - futon7/holes/M-descriptive-essay-of-the-stack.md:9 (Joe 2026-05-17): "today's salting-down sprint produced groundwork, not output. Locked here so the next-session pickup is honest".
+    - futon3c/holes/missions/M-pilot-appearance.md:60: "the scaffolding for pilot-appearance instrumentation, not its completion."
+    - futon4/holes/missions/M-web-arxana-ui-improvements.md:79: "We have laid the groundwork for importing Missions and REPL turns into XTDB, but we haven't integrated them yet".
+
+  + data: Giraffe cone, futon3c/src/futon3c/giraffe/pass.clj:134-148. Whether a cone predicts what was started next is untested (M-giraffe, still open).

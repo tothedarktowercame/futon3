@@ -1,0 +1,35 @@
+@flexiarg task-selection/the-date-decides
+@title The Date Decides
+@keywords deadline, calendar, runway, contract end, workshop
+@audience agents and the War Machine selecting the next task
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, witnesses K16)
+@role order
+@guard needs: an external dated event (paper due, workshop, contract end, runway floor) and which candidates it bears on.
+@effect raises candidates the date bears on and narrows their scope to what can be true by the date.
+@predicts what is due on the date exists on the date.
+@references [task-selection/end-in-something-shown task-selection/halfway-house]
+! conclusion: An external date reorders the field and shrinks scopes to what can be made true by then.
+
+  + context: An external event is dated, and some candidates feed it.
+
+  + IF:
+    A date is near enough that ordinary ordering would miss it.
+
+  + HOWEVER:
+    Deadline work displaces work with more leverage, and scope pressure invites claims that will not hold.
+
+  + THEN:
+    Raise what the date needs, cut scope to verification of what must be true by then, and record what was displaced. Most closure conditions have no deadline; do not invent one.
+
+  + BECAUSE:
+    A date is the one cost that rises with no action at all.
+
+  + evidence:
+    - futon2/holes/tickets/T-wm-excessive-guardrails-19092026.md:107-108: "undoing the layer costs more, against a 2-day deadline."
+    - memory wm-closure-strategy-zai-owners (Joe 2026-09-16): "Paper due 2026-09-20; Joe withdraws it if the machine isn't done."
+    - futon7/holes/M-futon-forward-model.md:319: "calendar pressure: runway depletes, OBU contract ends 2026-08-31 ... EFE shifts toward the hedge".
+    - futon3c/holes/E-futon-workshop-demo.md:7-13: the workshop bounds scope to "assurance work"; feature work out of scope.
+
+  + counter-evidence: futon7/holes/M-interim-director-proxy-metric-inventory.md:1306, "No closure-condition deadlines anywhere."

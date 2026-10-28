@@ -1,0 +1,34 @@
+@flexiarg task-selection/work-that-pays
+@title Work That Pays
+@keywords customer, consulting, revenue, pilot, budget, demonstration of value
+@audience agents and the War Machine selecting the next task
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, witnesses K11)
+@role source
+@guard needs: a paying or prospective customer, committed money, or a pitch, and the artefact the buyer would see.
+@effect adds candidates that earn money or produce the artefact an offer points at, held against the budget.
+@predicts the artefact is shown to a buyer, or money is invoiced, or the lead is recorded as lost.
+@references [task-selection/end-in-something-shown task-selection/the-operator-asked]
+! conclusion: Work is selected because it earns money or builds the evidence a buyer will see; select it against the budget and the artefact, not against internal leverage.
+
+  + context: The project needs consulting income, and the stack is the consultant's instrument and evidence of competence.
+
+  + IF:
+    Money is committed or a buyer is in view.
+
+  + HOWEVER:
+    Committed money with unspecified deliverables sits idle; chasing leads mechanically turns into a PR farm; internal scores do not see revenue at all.
+
+  + THEN:
+    Specify the paid features as items held against the budget; select the artefact the offer points at; keep demonstrations of value on a cadence without letting them become the whole of the work.
+
+  + BECAUSE:
+    Consultancy funds the product, and the only witnessed customer so far was invoiced and paid on delivered features.
+
+  + evidence:
+    - futon7/holes/C-greenlit-vsat-features.md:6-8,15-16 (Joe 2026-06-04): "Use £4500 to pay for greenlit VSAT features ... the £4500 is sitting there, greenlit, typed but not yet inhabited".
+    - futon7/holes/E-consulting-positioning.md:14-16 (Joe 2026-09-26): "to get some consulting income".
+    - futon7/holes/E-xiaoxiang-pilot-offer.md:8-14 (Joe 2026-10-01): "what would we actually be selling?"
+    - futon7/holes/M-demonstration-foundry.md:15-19: the one witnessed exemplar "was serendipitous"; mechanize the scan "without becoming a PR farm".
+    - futon0/holes/M-capability-levels.md:50: "warm-customer-pays | n=1 (VSAT PoC — invoiced, paid, ledgered)".

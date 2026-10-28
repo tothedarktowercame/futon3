@@ -1,0 +1,33 @@
+@flexiarg task-selection/take-the-cheap-win
+@title Take The Cheap Win
+@keywords quick win, smallest first, low-hanging fruit, de-risk, exposure
+@audience agents and the War Machine selecting the next task
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, witnesses K6)
+@role order
+@guard needs: a cost estimate per candidate (hour / day / week, or seat-tokens) and its risk.
+@effect raises candidates that are cheap and low-risk, especially ones that expose or reuse something that already exists.
+@predicts the task closes within the estimate, and the first closure de-risks the items after it.
+@references [task-selection/what-others-wait-on-first task-selection/take-the-hard-one-to-learn task-selection/a-portfolio-not-a-winner]
+! conclusion: When something cheap would close and de-risk what follows, do it first; the cheapest win is often exposing what already exists.
+
+  + context: Several candidates differ widely in cost, and some of the work already exists but is not reachable.
+
+  + IF:
+    A candidate is cheap, low-risk, and either closes something or makes the next items safer.
+
+  + HOWEVER:
+    Cheap work can crowd out the item others wait on, and a run of cheap wins can look like progress while the hard part waits. Splitting a hard problem into cheap pieces can also hide that its parts depend on each other.
+
+  + THEN:
+    Take the cheap win when it closes or de-risks; order sweeps smallest first; look first for work that exposes existing machinery rather than building. Do not use it to break up a problem whose parts depend on each other (see take-the-hard-one-to-learn).
+
+  + BECAUSE:
+    A cheap first closure tests the route at low cost, and failures found on the smallest case cost least.
+
+  + evidence:
+    - futon2/holes/M-custom-harness.md:144: "The cheapest first win is exposure, not construction: the PSR/PUR/PAR discipline tools already exist ... and are simply not offered to the model."
+    - futon2/holes/E-evaluate-policies-spikes.md:4-5 (Joe 2026-07-03): "Let's do the two small offers"; spike 2 "doubles as the first VERIFY-grade evidence" (:83).
+    - futon3c/holes/missions/M-populate-substrate-2.D3-sweep-runbook.md:78: "do them in THIS order — smallest first to de-risk".
+    - futon3c/holes/missions/M-action-cost-modelling.md:205: an :hour, LOW, LOW item marked "canonical low-hanging fruit".

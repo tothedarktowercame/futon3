@@ -1,0 +1,33 @@
+@flexiarg task-selection/end-in-something-shown
+@title End In Something Shown
+@keywords demonstration, verifiable capability, dispatch, demo, artefact
+@audience agents dispatching work; War Machine outer loop
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, witnesses K12)
+@role gate
+@guard needs: for each candidate, the capability it would demonstrate and how someone could verify it.
+@effect removes candidates that cannot end in a verifiable demonstrated capability, or reshapes them until they can.
+@predicts each dispatch ends with something a person can check working.
+@references [task-selection/halfway-house task-selection/the-date-decides]
+! conclusion: Select only work that ends in a capability someone can verify, and shrink work that cannot until it does.
+
+  + context: Agents can run long and report activity; the operator needs to see things work.
+
+  + IF:
+    A candidate's end state is "progress" rather than something shown.
+
+  + HOWEVER:
+    Long all-out runs look productive and some real work has no visible end for a long time; an end-to-end demonstration chosen too early fails and has to be cut back.
+
+  + THEN:
+    Require each dispatch to name what it will demonstrate and how it is checked. If a full demonstration is premature, select the smaller demonstrable step (harness plus tests) and drop the larger claim from the packet.
+
+  + BECAUSE:
+    Work that ends in nothing shown cannot be told apart from work that did nothing.
+
+  + evidence:
+    - memory every-dispatch-demonstrates-a-feature (Joe 2026-09-30): "Every dispatch ... must end in a demonstrated feature someone can verify ... Long all-out runs that end with no demonstrated capability are ruled out."
+    - futon3c/holes/missions/M-apm-demonstration.md:5833-5839 (Joe 2026-08-14): "frame-1 is the demo, let's build it", then cut to "harness + stage tests + refusal tests; no end-to-end claim".
+    - futon3c/holes/missions/M-war-machine-pilot.md:26-31 (Joe 2026-05-24): "I would like to put this to the test."
+    - futon7/holes/M-demonstration-foundry.md:15-19: demonstrations of value-add needed on a cadence.

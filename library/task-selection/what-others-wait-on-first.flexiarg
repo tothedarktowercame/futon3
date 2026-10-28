@@ -1,0 +1,36 @@
+@flexiarg task-selection/what-others-wait-on-first
+@title What Others Wait On, First
+@keywords leverage, unblocking, predecessor, cone, ordering
+@audience agents and the War Machine selecting the next task
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, witnesses K4, K5)
+@role order
+@guard needs: ready candidates (after only-what-can-start-now) and, for each, the items its completion would make ready (Giraffe one-step unblocks).
+@effect orders ready candidates by how many items their completion makes ready at once.
+@predicts after the task closes, the number of ready items rises by the predicted count.
+@references [task-selection/only-what-can-start-now task-selection/prepare-the-ground task-selection/take-the-cheap-win]
+! conclusion: Among items that can start now, do first the one that the most other items are waiting on.
+
+  + context: Several items are ready; their completions free different amounts of other work.
+
+  + IF:
+    One ready item is a predecessor of several others.
+
+  + HOWEVER:
+    Plans are often written in another order (the order pieces were thought of), and the item many others need may be harder or less visible than a cheap uncoupled one.
+
+  + THEN:
+    Order the ready items by one-step unblocking and reorder plans when a predecessor is found. When the cheap visible option is chosen instead, record that the high-leverage one was deferred and why.
+
+  + BECAUSE:
+    The pieces many others wait on, done first, let several chains close; skipped, those chains grow without closing.
+
+  + evidence:
+    - futon3c/holes/missions/M-giraffe.md:289-293 (Joe 2026-10-27): "prefer tasks that can be done now and tasks that unblock others ... they closed 72 problems in two weeks, while the same seats working from a dependency map without them let two chains grow for weeks without closing anything."
+    - futon4/holes/missions/M-interest-network-coupling.md:544-549: step (b) gated four items, so "the reshuffle was: step (b) FIRST".
+    - futon4/holes/missions/M-writing-ethics.md:262-264: "Claim-ledger: highest leverage ... Unblocks ~5–8 items. Low cost, high yield."
+
+  + counter-evidence: futon3/holes/missions/M-pattern-ingest.md:312-317 chose the cheapest uncoupled option and recorded "(iii) is the highest-leverage cross-mission move but should wait."
+
+  + data: Giraffe unblocks, futon3c/src/futon3c/giraffe/pass.clj:270-285; order row (ready, then unblocks, then cone, then source order) :300-322.

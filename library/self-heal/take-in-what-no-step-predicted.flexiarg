@@ -1,0 +1,33 @@
+@flexiarg self-heal/take-in-what-no-step-predicted
+@title Take In What No Step Predicted
+@keywords intake, new finding, prediction error, second stop, repair evidence
+@audience the War Machine and agents repairing it
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, from ~/notes/repair-patterns/witnesses-machine-repairs-2026-10-28.md K11 and witnesses-intake-and-extension-2026-10-28.md K3.1-K3.2)
+@role intake (closing)
+@guard needs: the cascade's steps with their @predicts, and what was observed at each step.
+@effect every observation no step's prediction accounted for is recorded against the injury as a finding, with its evidence pins and the step it surfaced at; findings where a pattern misled are recorded too.
+@predicts the next repair or library change starts from these records, not from a transcript summary.
+@references [self-heal/record-the-finding-with-its-target self-heal/match-the-finding-against-the-library cascades/heal-by-repair-cascades]
+! conclusion: At the end of a repair, record every observation that no step predicted, and every place a pattern pointed the wrong way, as findings against the injury.
+
+  + context: A repair cascade has run, to retirement, stop or abort. Along the way it saw things: a second stop, an intermediate failure, a step whose prediction failed.
+
+  + IF:
+    What the repair learned is to be used by later repairs.
+
+  + HOWEVER:
+    The repair's own outcome is what gets reported. A second stop looks like bad luck; a misleading pattern is quietly not mentioned; the findings stay in the session that saw them.
+
+  + THEN:
+    For each step, compare its prediction with the observation. Record each mismatch, and each finding no step covers, against the injury with its pins. Record a pattern that misled as such.
+
+  + BECAUSE:
+    Prediction errors are what a learning loop learns from; a repair that reports only its outcome has nothing to teach the library.
+
+  + evidence:
+    - machine K11.1, futon2/holes/labs/A-self-heal.md:126-128: "Each new stop is a new observation and may select a different repair pattern".
+    - machine K11.2, repair-iteration-1/receipt.md:14-26: parent and child refusal retained; "manufactured no attribution".
+    - intake K3.2, futon3c/holes/technotes/TN-apm-principle-scoring-ledger.md:20-24: "Twenty-one score a principle; four record findings no principle covered. 'Misled' means the principle pointed at the wrong thing and the ledger says so."
+    - machine thin kinds, witnesses-machine-repairs-2026-10-28.md:318-320: no completed witness yet of the machine doing this step itself; the records above were made by hand.

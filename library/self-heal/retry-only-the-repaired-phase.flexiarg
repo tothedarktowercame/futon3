@@ -1,0 +1,35 @@
+@flexiarg self-heal/retry-only-the-repaired-phase
+@title Retry Only The Repaired Phase, Otherwise Abort Or Stop
+@keywords retry, abort, stop, debugger, click, repeated failure, outside repair
+@audience the War Machine and agents repairing it
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, from ~/notes/repair-patterns/witnesses-machine-repairs-2026-10-28.md K9 and witnesses-intake-and-extension-2026-10-28.md K5)
+@role continue
+@guard needs: whether the failing boundary has changed since the last attempt (a reviewed, loaded repair at it), whether its semantics are decided, and whether this repair was already attempted once from the front of selection.
+@effect exactly one of: retry the repaired phase in the same attempt; abort, preserving the terminal failure; stop, with no new click and no mutation, handing the repair outside.
+@predicts after a retry the same stop does not recur (a different stop may); after a stop, ledger bytes before and after are equal.
+@references [task-selection/repair-goes-to-the-front apparatus/the-system-stops-on-schedule apparatus/every-wait-has-a-deadline self-heal/a-step-that-did-nothing-is-an-observation]
+! conclusion: Retry only a phase whose boundary a reviewed, loaded repair has changed; abort when its meaning is undecided; stop when the boundary is unchanged, and never spend a click known to repeat the last failure.
+
+  + context: A repair is done, or was refused, and the patient (a stopped click or a held repair transaction) is still there.
+
+  + IF:
+    The cascade decides how to continue.
+
+  + HOWEVER:
+    Retrying is cheap to ask for and sometimes works by accident; a fresh click looks like progress; waiting for the operator looks safe. Each of these has spent credits on an unchanged wall.
+
+  + THEN:
+    Retry the same attempt only at the repaired phase. Abort when no authority decides what success would be. Stop, change nothing, and take the repair outside when the boundary is unchanged or a front-of-queue repair has already been attempted and failed. Treat the next stop after a retry as a new observation.
+
+  + BECAUSE:
+    A retry of an unchanged boundary repeats the failure and costs a click; an abort or stop keeps the evidence for the next repair.
+
+  + evidence:
+    - machine K9.1/K9.2, futon2/holes/labs/A-self-heal.md:159-166: same attempt retried after the E-close-S6 repair; the next stop "was aborted rather than retried" for lack of a completion observation.
+    - machine K9.4, repair-iteration-3/receipt.md:5-11: "STOP: do not spend another credit on this unchanged resume-identity boundary." Ledger bytes identical.
+    - machine K9.5, futon2 e338d72d9, 0c5f71b8c: "enacted branch yields to another injury's retry". Worked.
+    - intake K5.1, memory repair-before-the-next-click: "that defect must be repaired *before* the next click."
+    - intake K5.4, memory repair-is-ordinary-selection-first:45-50: "a front ticket attempted and not resolved = stop the line (clicks refuse), repaired from outside, not retried in a loop."
+    - intake K5.5/K5.6, memory exhausted-frame-never-blocks-queue: hold and resume, never void; no overnight wait for the operator.

@@ -1,0 +1,35 @@
+@flexiarg self-heal/repair-the-producer-not-the-checker
+@title Repair The Producer, Not The Checker
+@keywords smallest fix, producer, invariant, upstream repair
+@audience the War Machine and agents repairing it
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, from ~/notes/repair-patterns/witnesses-machine-repairs-2026-10-28.md K5)
+@role fix
+@guard needs: a named producer (locate-the-producer-first), the decision that the check is right (a-correct-refusal-is-not-the-defect), and a red boundary (fix-the-red-before-the-repair).
+@effect one bounded commit changes the component that first emits the bad identity, event or evidence; the detector is not edited.
+@predicts the boundary turns green with the check's file unchanged; the change is one commit a reviewer can read whole.
+@references [apparatus/repairs-name-defects-not-neighborhoods self-heal/a-correct-refusal-is-not-the-defect self-heal/a-step-that-did-nothing-is-an-observation]
+! conclusion: Change the component that first produced the bad value, in one bounded commit, and leave the detector enforcing its invariant.
+
+  + context: The producer is located and the boundary is red.
+
+  + IF:
+    The repair is about to be written.
+
+  + HOWEVER:
+    While the context is loaded it is tempting to fix neighbours too, or to make the consumer tolerate the bad value, or to special-case the one path that failed.
+
+  + THEN:
+    One commit at the producer. If the producer cannot be fixed without a design change, the fix is a typed refusal at the producer (the bad value is never emitted), not tolerance downstream.
+
+  + BECAUSE:
+    A bounded change at the producer can be reviewed against the discovery, and its effect isolated when the next stop appears.
+
+  + evidence:
+    - machine K5.1, futon2 cc050c0a7 (provenance.md:7-9): durable stop line before end publication; "The held result remains incomplete". Worked, retired.
+    - machine K5.2, futon2 5cdaf1c75: "Bind requeue patch to authored injury transition". Worked prospectively.
+    - machine K5.3, futon2 a5dce0c19: "refuse unadmitted repair phase receipts" (silent skips became typed refusals). Worked prospectively.
+    - machine K5.4, futon2 37db58d96: "Bind ticket readiness dispatch to live runner context". Worked for dispatch.
+    - machine K5.5, futon2 f446e99ed: "observe durable service-failed retry child in coordinate-queued-retry"; independently accepted in 694cde52b.
+    - intake K5.7, futon2/holes/labs/A-self-heal.md:122-133: "Dispatch exactly one bounded repair".

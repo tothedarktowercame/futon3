@@ -1,0 +1,35 @@
+@flexiarg self-heal/record-the-finding-with-its-target
+@title Record The Finding With Its Target
+@keywords intake, injury, ticket, ledger, finding, evidence
+@audience the War Machine and agents repairing it
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, from ~/notes/repair-patterns/witnesses-intake-and-extension-2026-10-28.md K1 and witnesses-machine-repairs-2026-10-28.md K11)
+@role intake
+@guard needs: the failure as it happened (stop, refusal, run record, click state) and the injury ledger.
+@effect an injury entry exists carrying the failed target, the exact stop or refusal, and pins to the retained inputs; nothing about the failure is summarised away.
+@predicts a later step can reproduce the failure from the entry alone, without the transcript.
+@references [apparatus/open-conditions-live-in-a-ledger apparatus/replayable-not-precious cascades/heal-by-repair-cascades]
+! conclusion: A failure becomes repair work when it is written down with its target and its exact evidence; detection alone is not intake, and a record at the wrong grain is not one either.
+
+  + context: A click, run or repair step has failed or refused, and the machine is about to move on.
+
+  + IF:
+    The failure is to be repaired later, by a seat that was not there when it happened.
+
+  + HOWEVER:
+    Writing something is cheap and feels like intake: a generic ticket, a summary line, a terminal projection. Those record that a failure happened and drop what is needed to repair it (the target, the discriminating values, the intermediate failures).
+
+  + THEN:
+    Write the injury entry with the target, the stop or refusal as typed, and pins to the retained inputs and every intermediate failure the step produced. Keep the stopped frame as the patient rather than replacing it.
+
+  + BECAUSE:
+    Every later step of the repair reads this entry. What it does not carry has to be reconstructed, and reconstruction is where repairs go wrong.
+
+  + evidence:
+    - intake K1.1, futon2/holes/labs/wm-contract/TN-meta-self-heal-observation-oct-18-2026.md:40-51: "Every failure was converted automatically into a durable open repair ticket" ... "This is failure detection and obligation publication, not execution". Partial.
+    - intake K1.3, same TN :42-51: tickets "only at the generic grain 'Verify or restore abstained'; their target is `not retained`". Did not work as intake.
+    - intake K1.5, futon2/holes/tickets/T-meta-self-heal-dedicated-transaction.md:30-37: three run records named with their different stops. Worked.
+    - machine K11.3, ~/notes/wm-next/criteria-completeness/repair-iteration-2/receipt.md:19-24: "retains `acceptance-read-repair` appended 1 for an initial unmatched-brace reader failure; this is not hidden." Worked.
+    - machine K11.4, PACKET-r28-durable-failed-reading-2026-10-28.md:5-11: the preparation record "lives only in the exception until close, and the close projection ... drops exactly those fields"; repaired in futon2 fe785e7e7.
+    - intake K1.8, futon2/holes/labs/A-self-heal.md:117-121: "Preserve the stopped condition, selected target, decision, receipts and restart choices."

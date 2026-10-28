@@ -1,0 +1,33 @@
+@flexiarg self-heal/reproduce-on-retained-inputs
+@title Reproduce On The Retained Inputs
+@keywords replay, retained observation, reproduction, today's code
+@audience the War Machine and agents repairing it
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, from ~/notes/repair-patterns/witnesses-machine-repairs-2026-10-28.md K2)
+@role locate
+@guard needs: the retained inputs pinned by the injury entry, and today's code.
+@effect the failing predicate is re-evaluated by today's code on the incident's own inputs; the result is recorded with its exact values.
+@predicts if red, the values match the incident; if green, the injury is already fixed or was misclassified, and the cascade turns to disposition instead of repair.
+@references [apparatus/recorded-failures-before-live-runs apparatus/replayable-not-precious self-heal/locate-the-producer-first]
+! conclusion: Re-run the public predicate that failed, with today's code, on the incident's retained inputs, before writing any fix; a hand-built happy case is not a reproduction.
+
+  + context: An injury is recorded with pinned inputs, possibly days old.
+
+  + IF:
+    The repair needs to know whether the failure still happens and in exactly what shape.
+
+  + HOWEVER:
+    The incident may already be fixed, and a fresh fixture is easier to build than a replay. A fixture shows what its author expected, not what happened.
+
+  + THEN:
+    Evaluate the same predicate (the tripwire, the attribution check) through its own entry point on the retained inputs. Record the exact output. Its values become the boundary the later witness must turn.
+
+  + BECAUSE:
+    The reproduction decides between "repair", "already fixed" and "never an injury", and it supplies the red half of the discriminating witness.
+
+  + evidence:
+    - machine K2.1, DISCOVERY-t3-injury-a59c-2026-10-28.md:47-60: "the condition is still producible by today's implementation, on the retained real inputs. This is not merely a stale historical classification."
+    - machine K2.2, same :22-43: "T3 therefore produced: `{:kind :missing-durable-stop-line ... :statuses #{}}`." These values became the acceptance boundary.
+    - machine K2.4/K2.5, futon2/data/wm-meta-injuries-live-2026-10-22/HEAD.edn:1: genuine-repair corrections for 04e14314 and 6d673e5d carry `:negative-control-receipt` and `:post-replay-receipt`. Worked.
+    - machine K3.4/K3.5, same ledger: a9b900a4 and 9c622038 replayed as `:producer-qualified-non-injury` / `:successful-close-non-injury` and corrected as historical misclassification.

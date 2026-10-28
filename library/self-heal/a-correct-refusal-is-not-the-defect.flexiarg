@@ -1,0 +1,33 @@
+@flexiarg self-heal/a-correct-refusal-is-not-the-defect
+@title A Correct Refusal Is Not The Defect
+@keywords refusal, checker, tripwire, invariant, misclassification, stop
+@audience the War Machine and agents repairing it
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, from ~/notes/repair-patterns/witnesses-machine-repairs-2026-10-28.md K3)
+@role decide
+@guard needs: the discovery (locate-the-producer-first) and the reproduction (reproduce-on-retained-inputs).
+@effect one of three typed decisions: the refusing check is wrong (repair it); the check is right and its input is wrong (repair upstream, check unchanged); the premise for any repair is not established (stop, change nothing).
+@predicts under "check is right", the repaired run passes the unchanged check; under "stop", no file or ledger byte changes.
+@references [apparatus/one-authority-per-question self-heal/repair-the-producer-not-the-checker self-heal/locate-the-producer-first]
+! conclusion: When a check refuses, decide explicitly whether the check is wrong or is correctly refusing a bad input; in every witnessed repair that worked, it was the input.
+
+  + context: The injury surfaced as a refusal or tripwire.
+
+  + IF:
+    The cascade is about to choose what to change.
+
+  + HOWEVER:
+    Making the refusal go away is the shortest route to green, and an exemption for the failing case looks like a small, local fix.
+
+  + THEN:
+    Record the decision as one of the three outcomes, with the evidence for it. If the check is right, it stays unchanged and the repair moves upstream. If the discovery has not established why the input is bad, stop; a repair on an unproved premise is not attempted.
+
+  + BECAUSE:
+    A weakened check admits the next bad input as well. A stop with no mutation is a correct outcome, not a failed repair.
+
+  + evidence:
+    - machine K3.1, DISCOVERY-retry-attribution-refused-2026-10-28.md:91-104: "Letting either child through would falsely attribute arbitrary later repository state to repair `2f682638...`."
+    - machine K3.2, DISCOVERY-t3-injury-a59c-2026-10-28.md:76-87: "T3 is behaving correctly. The inconsistency is in the runner." Reviewer confirmed tripwire.clj unchanged; worked.
+    - machine K3.3, DISCOVERY-readiness-refusal-checkpoint-2026-10-28.md:61-65: "Stop at Step 1. The required premise for Step 2 ... is not established". Correct non-repair.
+    - machine thin kinds, witnesses-machine-repairs-2026-10-28.md:316-317: "No witness showed that weakening a checker repaired an injury".

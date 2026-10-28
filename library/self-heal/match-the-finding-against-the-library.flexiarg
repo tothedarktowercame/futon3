@@ -1,0 +1,34 @@
+@flexiarg self-heal/match-the-finding-against-the-library
+@title Match The Finding Against The Library
+@keywords analysis, failure class, census, pattern match, one layer down
+@audience the War Machine and agents repairing it
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, from ~/notes/repair-patterns/witnesses-intake-and-extension-2026-10-28.md K3, K4)
+@role analysis (closing)
+@guard needs: the findings recorded by take-in-what-no-step-predicted, the pattern library, and the census of failure and refusal classes.
+@effect each finding is classified as: a new witness for an existing pattern; a pattern that misled here; a new failure class (with the one-layer-down design question recorded); or unscorable from this repair.
+@predicts the census of failure classes does not grow by a class that one existing pattern already explains.
+@references [apparatus/new-failure-class-is-a-design-defect self-heal/take-in-what-no-step-predicted self-heal/introduce-the-pattern-from-the-repair]
+! conclusion: Before anything is added, each finding is matched against the library and the failure census: an existing pattern gets a witness, a misleading one is marked, a new class opens a design question, and a finding this repair cannot score is left unscored.
+
+  + context: A repair has recorded findings.
+
+  + IF:
+    The findings are to change the library or the machine.
+
+  + HOWEVER:
+    A new refusal class or handler is the cheapest response to each finding, so the census grows; and a plausible new principle is easy to write and promote on argument.
+
+  + THEN:
+    Search the library for a pattern that names the finding. If one does, the finding is its witness (or its counter-witness). If none does and the finding is a failure class, ask what one layer down would make it impossible, and record the answer. If the repair gave no occasion to test a candidate, say "unscored", not "promoted".
+
+  + BECAUSE:
+    The library is the evidence later repair cascades are scored on; entries added without a match are noise in it, and classes added without the design question are handlers in disguise.
+
+  + evidence:
+    - intake K3.1, TN-apm-principle-scoring-ledger.md:3-16: "the principles get committed to the library on field evidence from this repair, not on argument."
+    - intake K3.6, futon3/library/apparatus/new-failure-class-is-a-design-defect.flexiarg:18-27: "111 of 126 parks were apparatus, in ~40 mostly-singleton classes".
+    - intake K3.9, apparatus/open-conditions-live-in-a-ledger.flexiarg:21-28: two commits "each widened the stage set after a click forgot its injury" before the ledger pattern replaced the widening.
+    - intake K4.1, TN-apm-principle-scoring-ledger.md:536-551: "Three of the thirteen, with no occasion in this repair that tested them" ... "scoring it would be guessing." Parked.
+    - intake K4.4, TN-inbox-zero-consumer-2026-09-14.md:3-18: typed refusal `:atomic-feel-commit-unavailable` instead of a simulated promotion. A new refusal class that was the honest answer.

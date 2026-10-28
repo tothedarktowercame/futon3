@@ -1,0 +1,34 @@
+@flexiarg self-heal/a-step-that-did-nothing-is-an-observation
+@title A Step That Did Nothing Is An Observation
+@keywords silent no-op, skipped step, guard, ledger divergence, vacuous success
+@audience the War Machine and agents repairing it
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, from ~/notes/repair-patterns/witnesses-machine-repairs-2026-10-28.md K10)
+@role check (applies after every step)
+@guard needs: each step's @effect, and the state before and after the step (ledger bytes, transaction receipts, test outcome before the change).
+@effect a step whose effect is absent produces a typed refusal or an observation recorded against the injury; it is never carried forward as success.
+@predicts no repair cascade ends "succeeded" with ledger bytes unchanged, an acceptance test green before the fix, or a phase receipt the ledger did not admit.
+@references [apparatus/success-must-not-resemble-failure apparatus/loudness-is-conserved self-heal/record-the-finding-with-its-target]
+! conclusion: After each repair step, check that its effect happened; a step that silently did nothing becomes a typed refusal or a recorded finding, not a success.
+
+  + context: A repair cascade is a sequence of steps, each with a stated effect.
+
+  + IF:
+    A step returns without error.
+
+  + HOWEVER:
+    No error is not the same as the effect. A state guard that skips a write, a test that passed before the fix, a route that ran and changed no ledger byte all return normally, and a fixed pipeline carries on to the next step.
+
+  + THEN:
+    Compare each step's stated effect against the before/after state. Where the effect is missing, stop with a typed refusal at that step, or record the finding against the injury and choose the next step accordingly.
+
+  + BECAUSE:
+    Every witnessed silent no-op was found later, by hand, at the cost of a click or a divergence that needed its own repair.
+
+  + evidence:
+    - machine K10.1, repair-iteration-2/receipt.md:19-24: acceptance "passed 5 tests / 33 assertions before any repair."
+    - machine K10.2, DISCOVERY-2aef-ledger-transaction-divergence-2026-10-28.md:56-72: the transaction "contains successful author, review, enact, and retry receipts for `87c10683...`, while the ledger's only `:authored` transition ... remains ... `02e9d5e7...`." Prevented prospectively in futon2 a5dce0c19.
+    - machine K10.3, repair-iteration-1/receipt.md:30-32: "Ledger before SHA-256 ... Ledger after SHA-256 ... Equal bytes: True."
+    - machine K10.4, repair-iteration-2/receipt.md:31-34: "The same three active injuries therefore remain".
+    - machine K10.5, repair-iteration-3/receipt.md:5-7: refused before mutation, "Ledger bytes before and after the click are identical" (the guard working).

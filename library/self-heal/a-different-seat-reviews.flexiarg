@@ -1,0 +1,34 @@
+@flexiarg self-heal/a-different-seat-reviews
+@title A Different Seat Reviews The Repair
+@keywords independent review, author not reviewer, authority, trust manifest
+@audience the War Machine and agents repairing it
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, from ~/notes/repair-patterns/witnesses-machine-repairs-2026-10-28.md K7 and witnesses-intake-and-extension-2026-10-28.md K6)
+@role review
+@guard needs: the diff, the red-before record, the path witness, and a seat that did not author the repair.
+@effect a review receipt from another seat records the diff read, whether the tests pin what the repair claims, and what was re-executed; authorization, review and evaluation are separate receipts.
+@predicts reviews find defects in a share of repairs (the record has reviews that changed the repair); a repair the reviewer refuses does not proceed to disposition.
+@references [coordination/bind-promotion-to-post-repair-replay apparatus/one-authority-per-question self-heal/retire-by-appending-to-the-ledger]
+! conclusion: The repair is judged by a seat that did not write it, on the diff and on whether its tests pin the claim, and that judgment is its own receipt.
+
+  + context: A repair has a path witness and is about to be activated or disposed.
+
+  + IF:
+    Disposition of the injury will rest on this repair.
+
+  + HOWEVER:
+    The author's log already says green, and a second run of the same tests buys no judgment. Merging and reviewing in one act loses which was which.
+
+  + THEN:
+    Another seat reads the diff, judges test adequacy (would these tests catch the likely bug?), re-executes selectively, and records a review receipt separate from the authorization and from the evaluation. Evidence may overrule the review brief; that is recorded too.
+
+  + BECAUSE:
+    The disposition step trusts this receipt; if the author wrote it, nothing independent stands behind the retirement.
+
+  + evidence:
+    - machine K7.1, review-notes-claude-11.md:3-12: "Verdict: genuine-repair-qualified ... I reran the namespace at 9b1cbba12". Worked.
+    - machine K7.2, t3-retirement/genuine-repair/trusted-manifest.edn:1: separate `:authorization`, `:review`, `:evaluation` receipts. Worked.
+    - machine K7.3-K7.5, futon2 694cde52b, 2993fc0f1/e189b0c33, fcb0110c7/10f88008e: merge and independent review recorded as distinct commits.
+    - intake K6.3, TN-apm-principle-scoring-ledger.md:519-534: "useful precisely because it argued against what the reviewer had asked for."
+    - intake K6.7, T-meta-self-heal-dedicated-transaction.md:114-119: the architectural diagnosis came from reviewing all five patches together.

@@ -1,0 +1,34 @@
+@flexiarg self-heal/fix-the-red-before-the-repair
+@title Fix What Red Means Before The Repair
+@keywords acceptance test, discriminating witness, red before, negative arm, vacuous test
+@audience the War Machine and agents repairing it
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, from ~/notes/repair-patterns/witnesses-machine-repairs-2026-10-28.md K4 and witnesses-intake-and-extension-2026-10-28.md K2.4)
+@role witness
+@guard needs: the reproduction's exact red values (reproduce-on-retained-inputs) and the decision of where the repair goes.
+@effect an acceptance boundary is written before the fix: the values that must hold without it (red, including a no-op arm) and with it (green); the test is run on unchanged code and seen red.
+@predicts the test is red on unchanged code and green after the fix; a test green before the fix is refused as acceptance.
+@references [apparatus/success-must-not-resemble-failure self-heal/reproduce-on-retained-inputs self-heal/witness-the-path-not-the-helper]
+! conclusion: The acceptance test for a repair is fixed, and seen to fail on unchanged code, before the repair is written; a test that already passes authorizes nothing.
+
+  + context: The repair's location is decided and an acceptance test is about to be produced, possibly by the same seat that will write the fix.
+
+  + IF:
+    The test is meant to show that this repair removed this defect.
+
+  + HOWEVER:
+    A test written alongside the fix, or by the machine from the injury's description, tends to check behaviour that never changed. It passes, the suite is green, and nothing has been shown.
+
+  + THEN:
+    Write the boundary first from the reproduction's values: what the real predicate must return without the fix (and with only the producer call removed, as a negative arm) and with it. Run it on unchanged code; record that it is red. Only then dispatch the fix.
+
+  + BECAUSE:
+    Red-before is what makes green-after evidence. Without it the acceptance step can succeed while the repair step did nothing.
+
+  + evidence:
+    - machine K4.1, ~/notes/wm-next/criteria-completeness/repair-iteration-2/receipt.md:19-24: "refused as `:meta-self-heal/acceptance-test-passes-before-repair`: the produced test passed 5 tests / 33 assertions before any repair." The machine's own test was vacuous.
+    - machine K4.3, t3-retirement/acceptance-boundary.md:12-25: "Before the correction (or with only the producer call removed as a negative), the real T3 reread must yield missing-durable-stop-line". Worked.
+    - machine K4.4, t3-retirement/genuine-repair/review-notes-claude-11.md:14: "its no-op-producer arm is red, its real-producer arm is green". Worked.
+    - machine K4.5, PACKET-requeue-patch-from-authored-transition-2026-10-28.md:27-31: "Show the test fails against the old line." Worked at source.
+    - intake K2.4, futon3c/holes/technotes/TN-apm-principle-scoring-ledger.md:198-206: "My first S3 acceptance test re-implemented the strip's branch instead of calling `apm_status()`".

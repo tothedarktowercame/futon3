@@ -1,0 +1,34 @@
+@flexiarg self-heal/retire-by-appending-to-the-ledger
+@title Retire By Appending To The Ledger
+@keywords disposition, retirement, medic, append-only, authority, misclassification
+@audience the War Machine and agents repairing it
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, from ~/notes/repair-patterns/witnesses-machine-repairs-2026-10-28.md K8)
+@role dispose
+@guard needs: the review receipt (a-different-seat-reviews), an authority scoped to this injury, and the ledger.
+@effect one append-only, authority-backed transition retires the exact injury ordinal, citing the repair's receipts (or a correction of kind historical misclassification, citing the replay); the historical failure stays in the ledger.
+@predicts the effective injury set shrinks by exactly that injury; the ledger chain still validates; no earlier entry changed.
+@references [apparatus/evidence-to-disposition-once apparatus/open-conditions-live-in-a-ledger self-heal/a-different-seat-reviews]
+! conclusion: An injury is closed by appending one authority-backed disposition to the ledger for that exact injury, through the ledger's own transaction, never by rewriting what happened.
+
+  + context: A reviewed repair, or a replay showing the injury was never one, is in hand.
+
+  + IF:
+    The injury is to leave the set of open injuries.
+
+  + HOWEVER:
+    Saying "repaired" in prose, or editing the ledger to match, is quicker; an earlier authority bundle with the same schema is lying around and could be reused.
+
+  + THEN:
+    Fix the scope (which ordinal, which kind: genuine repair or historical misclassification) before the transaction. Use an authority made for this injury. Append the disposition through the supported entry point; leave the incident in the history.
+
+  + BECAUSE:
+    Selection, retry attribution and the next repair all read the ledger. A disposition outside its grammar is invisible to them or contradicts them.
+
+  + evidence:
+    - machine K8.1, t3-retirement/genuine-repair/retirement-receipt.md:3-9: appended with `meta-injury-store/transact-medic-disposition!`; "Effective injuries changed from three to two". Worked.
+    - machine K8.2, same :9: "This is retirement of the repaired injury, not deletion of the historical failure".
+    - machine K8.4, acceptance-boundary.md:31-38: "Existing authority/49-adoption is precedent for the schema, not authorization for a59c."
+    - machine K3.4/K3.5, HEAD.edn:1: a9b900a4 and 9c622038 closed as `:historical-misclassification` corrections, no code change.
+    - machine K8.5, futon2 080eeacf0, 9175221a1: 8467 forward repair accepted, then released, before disposition.

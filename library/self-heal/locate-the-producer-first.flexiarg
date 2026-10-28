@@ -1,0 +1,34 @@
+@flexiarg self-heal/locate-the-producer-first
+@title Locate The Producer Before Changing Code
+@keywords discovery, diagnosis, producer, upstream, trace
+@audience the War Machine and agents repairing it
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, from ~/notes/repair-patterns/witnesses-machine-repairs-2026-10-28.md K1)
+@role locate
+@guard needs: the injury entry and its retained inputs (record-the-finding-with-its-target).
+@effect a read-only discovery names the line or lifecycle transition that first produced the bad value, with path:line and the retained values that show it.
+@predicts the fix the discovery points at changes that line, and the later witness turns from red to green there.
+@references [apparatus/repairs-name-defects-not-neighborhoods apparatus/model-upstream-and-coupled self-heal/a-correct-refusal-is-not-the-defect]
+! conclusion: Before changing anything, trace back from the failing boundary until the record names the producer; discovery and repair are separate steps with a review between them.
+
+  + context: An injury is recorded. The place where it surfaced (a checker, a tripwire, a refusal) is obvious; where it was made is not.
+
+  + IF:
+    The repair is to remove the cause rather than the symptom.
+
+  + HOWEVER:
+    The surfacing point is in hand and editing it makes the failure go away. Storage accidents, busy stores and races are plausible stories that end the search early.
+
+  + THEN:
+    Run a read-only discovery: from the failing boundary, follow the value back through the code that produced it, citing path:line and the retained values at each step, until a line or transition is found that explains them exactly. Then review the discovery before any fix is dispatched.
+
+  + BECAUSE:
+    A fix at the wrong place either does nothing or moves the failure. A named producer can be checked against the evidence; a neighbourhood cannot.
+
+  + evidence:
+    - machine K1.1, futon2/holes/labs/wm-contract/DISCOVERY-t3-injury-a59c-2026-10-28.md:43-45: "The producer is the held-open-cascade-resume catch ... Those two choices jointly create exactly the T3 violation." Worked (retired).
+    - machine K1.2, DISCOVERY-retry-attribution-refused-2026-10-28.md:91-104: "The producer defect is upstream in requeue construction". Worked at source (futon2 5cdaf1c75).
+    - machine K1.3, DISCOVERY-2aef-ledger-transaction-divergence-2026-10-28.md:56-76: "step 3 was skipped by its own guard ... the false branch returned the unchanged ledger". Not a storage accident. Worked prospectively (a5dce0c19).
+    - machine K1.4, DISCOVERY-meta-clock-busy-2026-10-28.md:9-23: "The failing read is the `:session-resolved` clock decision ... not the admission decision". Partial.
+    - machine K1.5, DISCOVERY-c560-job-ledger-context-2026-10-28.md:47-69: loaded-source hashes showed the repair was 37db58d96, not the guard patch credited.

@@ -1,0 +1,35 @@
+@flexiarg self-heal/witness-the-path-not-the-helper
+@title Witness The Path, Not The Helper
+@keywords path witness, seam harness, consumer, end to end, loaded code
+@audience the War Machine and agents repairing it
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, from ~/notes/repair-patterns/witnesses-machine-repairs-2026-10-28.md K6 and witnesses-intake-and-extension-2026-10-28.md K2)
+@role prove
+@guard needs: the committed fix (repair-the-producer-not-the-checker) and the seam that produced the injury.
+@effect the injury's own path (real catch, real producer, real check, the code actually loaded) is driven once with the fix and once without, and both the intended effect and the preserved non-success state are observed.
+@predicts the path witness is green with the fix and red without; the claim made is no larger than what the path showed.
+@references [apparatus/done-is-observed-running apparatus/monitors-measure-the-work coordination/bind-promotion-to-post-repair-replay self-heal/fix-the-red-before-the-repair]
+! conclusion: After a local fix, drive the path that produced the injury, through the code that is actually loaded, and claim only what that path showed.
+
+  + context: A fix is committed and its focused test is green.
+
+  + IF:
+    The injury is to be retired on the strength of this repair.
+
+  + HOWEVER:
+    A helper-level test is green quickly and looks like proof. A commit is not a load, and one passing hop is not the whole retry.
+
+  + THEN:
+    Drive the injury's seam with its real participants, with and without the fix. Check the reader of the value, not only its writer, and check that the code under test is the code running. State what the witness does not establish.
+
+  + BECAUSE:
+    Repairs that passed at the helper and failed on the path are in the record; so are repairs committed and never loaded.
+
+  + evidence:
+    - machine K6.1, t3-retirement/acceptance-boundary.md:6-10: "It proves real producer/T3 ordering at the helper. It does not exercise the catch's actual data flow". Retirement held.
+    - machine K6.2, review-notes-claude-11.md:9-14: "The path witness drives the real catch via the seam harness with real T3 and producer." Worked.
+    - machine K6.4, DISCOVERY-c560-job-ledger-context-2026-10-28.md:87-91: "This establishes why readiness could dispatch in 8c8, not that ... the whole retry succeeded". Claim bounded.
+    - intake K2.1, memory check-the-consumer-not-the-producer: a fix verified on the writer while the reader still failed cost two clicks.
+    - intake K2.3: a live query caught a committed-but-unloaded repair.
+    - intake K3.4, futon3/library/apparatus/done-is-observed-running.flexiarg:18-27: "a fix that works in the repo and not in the process".

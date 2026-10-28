@@ -1,0 +1,34 @@
+@flexiarg self-heal/introduce-the-pattern-from-the-repair
+@title Introduce The Pattern From The Repair
+@keywords extension, formal introduction, promotion, pattern library, witness
+@audience the War Machine and agents repairing it
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, from ~/notes/repair-patterns/witnesses-intake-and-extension-2026-10-28.md K3, K6.6; Joe 2026-10-28 on formal introduction)
+@role extension (closing)
+@guard needs: an analysis result (match-the-finding-against-the-library) of "new witness" or "no pattern covers this", the repair's receipts, and whether the repair itself worked.
+@effect a formal introduction step, made by the machine, adds the witness to the existing pattern or a draft pattern to the library, citing the repair's receipts and stating the repair's outcome; the introduction is recorded so later use can be counted.
+@predicts the introduced pattern is selected in a later repair cascade and its @predicts holds there; a pattern introduced from a repair that did not work is marked so and is not promoted on that repair alone.
+@references [coordination/bind-promotion-to-post-repair-replay apparatus/new-failure-class-is-a-design-defect self-heal/match-the-finding-against-the-library cascades/heal-by-repair-cascades]
+! conclusion: A finding no pattern covers enters the library through a formal introduction made by the machine at the end of the repair, citing that repair's receipts and outcome, never by later scanning and attribution.
+
+  + context: Analysis found that no library pattern covers a finding, or found a new witness for one.
+
+  + IF:
+    The library is to learn from this repair.
+
+  + HOWEVER:
+    Two shortcuts are in the record. Patterns were promoted from repairs whose route still failed, so the library gained entries while the machine stayed injured. And patterns can be attached afterwards by scanning transcripts, which credits whatever was nearby.
+
+  + THEN:
+    Make the introduction a step of the repair cascade: the machine writes the witness or draft pattern with the receipts that support it and the repair's outcome (worked, partial, did not work). A draft from a repair that did not work stays a draft until a later repair witnesses it working. Record the introduction, so that each pattern's uses and outcomes can be counted.
+
+  + BECAUSE:
+    Counted uses with outcomes are the evidence G needs to score repair cascades; introductions that cite their repair are how those counts start. Joe, 2026-10-28: "if new patterns are introduced they should be introduced formally from the war machine, not scanned and attributed".
+
+  + evidence:
+    - intake K3.3-K3.5: repairs-name-defects-not-neighborhoods, done-is-observed-running and the success-must-not-resemble-failure extension each came from a field occasion with a quoted witness. Worked; promoted.
+    - intake K3.7, futon3/library/apparatus/recorded-failures-before-live-runs.flexiarg:20-36: "a five-click campaign ... ended at 106/106 budget with no end-to-end repair". Promotion only; the route still failed.
+    - intake K3.11/K3.12, futon3 f8dd164 and f49da8e: promotion commits record the move into the library.
+    - intake K6.6, coordination/bind-promotion-to-post-repair-replay.flexiarg:11-19: "A request is not a completed replay".
+    - machine thin kinds, witnesses-machine-repairs-2026-10-28.md:318-320: "No completed witness yet shows the proposed pattern-intake/analysis/extension step introducing a repair pattern formally through the machine." This pattern is evidenced by how introduction was done by hand; the machine step is new.

@@ -84,31 +84,43 @@ record is retired or left for a separate disposition. Cascade 3 skips the
 fix entirely. Given the same injury, they predict different things, which is
 what lets G choose among them.
 
-## The present fixed pipeline, against these patterns (first reading)
+## The present fixed pipeline, against these patterns
+
+Checked against the code in
+`futon2/holes/labs/wm-contract/DISCOVERY-self-heal-pipeline-2026-10-28.md`
+(codex-15, `a7a5a1b8d`; review corrections `c9cd8a4ce`).
 
 `meta_self_heal_production` runs diagnose → acceptance test → claim → author →
-review → enact → retry for every injury.
+review → enact → retry, with readiness checks, injury selection, deferred and
+stale transaction handling, sealed-receipt and resume-identity checks, and a
+checkpoint after every phase.
 
-- diagnose ≈ locate-the-producer-first, without reproduce-on-retained-inputs
-  as a separate step;
-- acceptance test ≈ fix-the-red-before-the-repair, but written by the
-  machine from the diagnosis; the red-before check
-  (`:meta-self-heal/acceptance-test-passes-before-repair`) catches a vacuous
-  test and then has no step to go to (machine K4.1);
-- author / review / enact ≈ repair-the-producer-not-the-checker,
-  a-different-seat-reviews, and activation;
-- retry ≈ retry-only-the-repaired-phase;
-- disposition (medic) sits outside the pipeline and was assembled by hand for
-  a59c (machine K8.1).
+| step | pattern | reading |
+|---|---|---|
+| diagnose | locate-the-producer-first | partial: a durable diagnosis bound to the transaction; nothing checks it found the first wrong producer, and no separate replay of retained inputs |
+| acceptance test | fix-the-red-before-the-repair | right: run before repair, a passing test refused, independent review of it; no path witness after enactment |
+| author / review / enact | repair-the-producer-not-the-checker, a-different-seat-reviews | partial: three distinct sessions and same-patch review hold; nothing records whether the producer or the checker was changed |
+| retry | retry-only-the-repaired-phase | partial: an ordinary retry attributed to the enacted repair, not a replay of the repaired phase alone; author failure opens a fresh attempt |
+| medic disposition | retire-by-appending-to-the-ledger | outside the pipeline, as first read |
 
-Not present as steps: a-correct-refusal-is-not-the-defect (there is no
-"stop, the premise is unproved" or "this is a misclassification" branch, so
-cascades 3 and 5 can only happen by hand); witness-the-path-not-the-helper;
-a-step-that-did-nothing-is-an-observation (silent skips existed until
-`a5dce0c19`); and all three closing steps. So the pipeline is roughly
-cascade 1 or 2 with its order hard-coded, and the other cascades are done
-outside it. This reading is claude-11's from the code and the record; a
-discovery should check it line by line before anything is built.
+Absent or partial as steps:
+
+- a-correct-refusal-is-not-the-defect: typed guards stop on unproved
+  premises before effects, but there is no branch that finds the refusal
+  correct and reclassifies the injury.
+- witness-the-path-not-the-helper: absent.
+- a-step-that-did-nothing-is-an-observation: partial (reused receipts kept,
+  unadmitted receipts refused, every checkpoint persisted); no phase declares
+  an expected change and compares before and after.
+- take-in-what-no-step-predicted: partial analogue only (failed retry
+  children and author failures recorded); no comparison with a prediction.
+- match-the-finding-against-the-library, introduce-the-pattern-from-the-repair:
+  absent.
+
+Self-heal is routed by an injury guard before any policy field is built
+(`full_loop_runtime.clj:743-746`, `route!` at
+`meta_self_heal_production.clj:1557`). It is not scored by G, and the
+`:self-heal` arm of `meta/meta-outer-policy-cascade` is read by no code.
 
 ## Scoring a repair cascade (proposed, not built)
 

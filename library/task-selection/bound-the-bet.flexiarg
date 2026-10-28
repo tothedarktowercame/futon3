@@ -1,0 +1,34 @@
+@flexiarg task-selection/bound-the-bet
+@title Bound The Bet
+@keywords timebox, kill criterion, stop rule, cost test, reversible
+@audience agents and the War Machine selecting the next task
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, witnesses K19, K9)
+@role reshape
+@guard needs: an uncertain candidate, and a stop rule that can be checked (a time limit, a kill clause, an artefact due by a date).
+@effect admits an uncertain candidate that would otherwise be ranked out, on condition that it carries the stop rule.
+@predicts the bet either succeeds within its bound or its stop rule fires and is recorded as a verdict.
+@references [task-selection/find-out-before-building task-selection/halfway-house]
+! conclusion: Select an uncertain task only with a stop rule written in advance, so that selecting it is cheap to undo and a failure is a finding.
+
+  + context: A candidate might be worth a lot or nothing, and nobody can tell without trying.
+
+  + IF:
+    The candidate is uncertain enough that it would not be selected on expected value alone.
+
+  + HOWEVER:
+    Unbounded exploration absorbs effort and is deferred again and again instead of being decided; a stop rule set afterwards is moved to fit the result.
+
+  + THEN:
+    Write the timebox or kill clause before starting. When it fires, record the result as a verdict and close the lane.
+
+  + BECAUSE:
+    A bound turns a hope into an experiment: the work produces a result whichever way it goes.
+
+  + evidence:
+    - futon2/holes/M-action-vocabulary.md:3,5: "ABANDONED — STOPPED BY KILL CRITERION (2026-07-05, same day as charter)".
+    - futon2/holes/E-gflownets-fold.md:49-51: "a fifth single-best-holds result ... closes the GFN lane for the fold, recorded as a real verdict, not deferred again."
+    - futon7/holes/M-interim-director.md:53 (Joe): "I'd cap it at about 2 weeks maximum".
+    - futon3c/holes/missions/M-pilot-appearance.md:60-62: "Timebox: 3 weeks soft ... If the storyboard does not produce a demonstrable artefact by end of window, that's evidence the artefact-shape is wrong".
+    - futon7/holes/M-demonstration-foundry.md:1161: "Proof-of-work bound: assemble-only, timebox 1 day."

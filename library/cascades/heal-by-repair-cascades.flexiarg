@@ -1,0 +1,77 @@
+@flexiarg cascades/heal-by-repair-cascades
+@title Heal by Repair Cascades
+@sigils [🌊/流]
+@keywords self-heal, repair, injury, active inference, design-pattern cascade, intake, new finding
+@audience War Machine builders, agents repairing the machine
+@tone design
+@provenance Joe, 2026-10-28 (claude-11 REPL): "it could be that the self-heal algorithm needs work, possibly thinking of refactoring it in pattern terms like we did selection?" and, later the same evening, "let's start on the self heal cascade, which should presumably include a pattern-based intake/analysis/extension for any new findings". Same day, on learning: "if new patterns are introduced they should be introduced formally from the war machine, not scanned and attributed like is going on in the interactive loop". Earlier: Joe 2026-09-22 (memory repair-is-ordinary-selection-first), "open obligations go to the front of ordinary selection". Sibling of cascades/select-tasks-from-cascade-live, written the same way by claude-11 from these statements.
+
+! conclusion:
+  Self-heal is the same loop as task selection and tactical work, with repairs as
+  the work. An injury is a task in the field and goes to the front of ordinary
+  selection; the policies for working it are repair cascades, design-pattern
+  cascades evidenced by how repairs have actually been done, and G chooses among
+  them in the current circumstances. Every repair cascade ends in an intake step:
+  a finding that no pattern in the cascade accounts for is analysed against the
+  library and, if nothing covers it, introduced as a pattern formally, by the
+  machine, with the repair as its first witness.
+
+  + context: The War Machine records injuries in a ledger (META injury ledger,
+    medic dispositions with intent, evaluation, review and authority receipts) and
+    repairs them through a fixed pipeline in futon2 (meta_self_heal_production,
+    meta_repair_coordinator, meta_pipeline_selector, medic_disposition: claim,
+    author, review, enact, retry). The written procedure is
+    futon2/holes/labs/A-self-heal.md (approved 2026-10-02). Repairs that actually
+    worked, including those of 2026-10-28 (T3 a59c, 2aef divergence, clock
+    busy-refusal, R28 failed-reading record, requeue patch identity), went through
+    discovery, a discriminating witness, a small fix at the producer, a path-level
+    witness, independent review, and retirement bound to the ledger entry.
+
+  + IF:
+      The machine is to repair itself, its repair steps must be ones that have
+      worked, chosen for the defect in front of it, and what each repair teaches
+      must reach the library rather than stay in a transcript.
+
+  + HOWEVER:
+      A fixed pipeline runs the same steps whatever the defect. It cannot skip a
+      step that does not apply or add one that does, and when a step silently does
+      nothing (an acceptance test that passed before any repair, a ledger append
+      skipped by a state guard) the pipeline carries on. It is also a second
+      machine beside the loop, the shape of the outer selector removed on
+      2026-10-28. And findings that fit no existing pattern get a new handler,
+      a new refusal class or a note, so the census of failure classes grows
+      while the library learns nothing.
+
+  + THEN:
+      Write the repair steps down as patterns from the record of repairs that
+      worked, each with a guard (what it must read), an effect (what it changes)
+      and a prediction (what should be observed after it), reusing the apparatus
+      patterns where they already say it. A repair cascade is an ordered
+      composition of these, earning its place among the repair policies only when
+      the record shows repairs done that way. Score the evidenced repair cascades
+      by the same G, over a repair-level model whose hidden states are things like
+      "defect located", "witness discriminates", "fix at the producer"; run the one
+      that is best now; observe its predictions against what happened.
+      End every cascade with intake / analysis / extension:
+      - intake: each finding the repair produced that no step's prediction
+        accounted for is recorded against the injury, with its evidence;
+      - analysis: the finding is matched against the library (does an existing
+        pattern name it? is it a new failure class, apparatus/new-failure-class-is-a-design-defect?);
+      - extension: if nothing covers it, the machine introduces a pattern (or a
+        new witness for an existing one) through a formal introduction step,
+        citing the repair's receipts; never by later scanning and attribution.
+
+  + BECAUSE:
+      Choosing the repair method by evidence is the same claim as choosing the
+      selection method by evidence, and the loop is already built to make it.
+      Steps with guards, effects and predictions can be checked as they run, so a
+      step that did nothing is observed, not carried. Formal intake is how the
+      repair record becomes the evidence that later repair cascades are scored on.
+
+  + NEXT-STEPS:
+    next[Joe to confirm or correct this wording before anything is built on it.]
+    next[Witness catalogue: how repairs have actually been done, from the injury ledger, medic dispositions, A-self-heal receipts, discovery notes, repair tickets and the apparatus patterns' own evidence, in the form of ~/notes/selection-patterns/witnesses-2026-10-28.md. Include how new findings were taken in (discoveries that became patterns, park/refusal classes added, notes that went nowhere).]
+    next[From the catalogue, the repair patterns in self-heal/ (README with the cascades found in the record), each with @guard, @effect, @predicts and quoted witnesses; apparatus patterns cited, not copied.]
+    next[Map the present fixed pipeline (claim, author, review, enact, retry) and A-self-heal's steps 0-10 onto those patterns: which steps are a pattern, which are one cascade's order hard-coded, which have no witness.]
+    next[Lean first: injuries as candidates in the outer field, repair cascades as inner policies of an injury task, the repair-level model, and the formal introduction step. Clojure follows; the fixed pipeline is retired piece by piece, with no shadow path.]
+    next[The medic ledger and its authority rules stay: they are where any repair cascade writes its evidence.]

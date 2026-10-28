@@ -1,0 +1,35 @@
+@flexiarg task-selection/only-what-can-start-now
+@title Only What Can Start Now
+@keywords readiness, dependencies, prerequisites, blocked, needs
+@audience agents and the War Machine selecting the next task
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, witnesses K4; Giraffe stage 1)
+@role gate
+@guard needs: each candidate's needs edges (Giraffe edge records: from, to, kind needs|precedes, class, quote, file:line) and whether each need is met.
+@effect removes candidates with an unmet need; keeps them visible with the need that blocks them.
+@predicts every selected task can begin when it is dispatched.
+@references [task-selection/what-others-wait-on-first task-selection/hold-with-a-rearm-condition]
+! conclusion: Select only work whose needs are met, and say which need blocks each item that is left out.
+
+  + context: The field holds items that depend on other items, often stated in Blocks / Depends on / Blocked by headers or in mission prose.
+
+  + IF:
+    Some wanted items cannot be started because something they need does not exist yet.
+
+  + HOWEVER:
+    A work list says what is wanted, not what can be done next; the most wanted item is often blocked. Dependency claims are also often broader than the real dependency: one criterion depends, the rest could run now.
+
+  + THEN:
+    Compute readiness from the recorded needs and drop items with an unmet need from this selection. Narrow each blocking claim to the part that truly depends, so the rest can run in parallel.
+
+  + BECAUSE:
+    A blocked item selected anyway spends a dispatch discovering the block.
+
+  + evidence:
+    - M-giraffe pilot 1 (futon3c/holes/missions/M-giraffe.md §VERIFY): none of the five items Plane's default view put first could be started; two waited on a superseded blocker.
+    - futon4/holes/missions/M-essay-corpus-substrate.md:7: "can proceed in parallel ... only the WebArxana-visibility completion criterion depends on D2."
+    - futon5/holes/missions/M-coupling-as-constraint.md:5: "Blocked by: M-xor-coupling-probe, M-tpg-coupling-evolution", both themselves unblocked.
+    - futon6/holes/missions/M-P8-rational-reconstruction.md:6-8: depends on M-P7 "(complete — method validated on branching proofs)".
+
+  + data: Giraffe readiness record per item, futon3c/src/futon3c/giraffe/pass.clj:102-256.

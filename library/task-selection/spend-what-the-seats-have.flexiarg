@@ -1,0 +1,34 @@
+@flexiarg task-selection/spend-what-the-seats-have
+@title Spend What The Seats Have
+@keywords quota, usage, seats, provider, routing, budget
+@audience agents dispatching work; War Machine outer loop
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, witnesses K1)
+@role gate
+@guard needs: current usage per provider and seat (Claude, Codex, Zai, Kimi), and which seats are reserved or contended.
+@effect removes candidates that need a seat with no usage, or reshapes them (do it in place, re-route, or wait); prefers candidates the available seats can finish.
+@predicts dispatched work is not killed by a usage limit; idle allowance is not lost at a reset.
+@references [budgeted-action-selection/mana-gated-work task-selection/take-the-cheap-win]
+! conclusion: What can be selected depends on which agents have usage now; select work the available seats can finish, and route around exhausted ones.
+
+  + context: Work is carried out by agent seats on several providers, each with its own allowance that resets on its own schedule.
+
+  + IF:
+    A candidate's natural author has no usage, or a seat is contended by other work.
+
+  + HOWEVER:
+    The protocol or the plan names an author (bell coding to Codex), and following it blindly means dispatches that die mid-job. Unused allowance is lost at a reset, but spending it too aggressively starves interactive work.
+
+  + THEN:
+    Read current usage before selecting. Pick work the available seats can finish; do small work in place when the planned author has no quota; re-route a parcel unchanged to a seat that has usage; hold work that needs a gated provider until headroom returns.
+
+  + BECAUSE:
+    A task selected for a seat that cannot run it is not selected; it is queued to fail.
+
+  + evidence:
+    - futon2/holes/M-custom-harness.md:261-263: "Small enough to do in-place rather than bell out (Codex quota out until 2026-07-18 anyway)".
+    - futon2/holes/M-evaluate-policies.md:1408: "codex-1 failed: OpenAI usage limit until 2026-07-18; re-routed."
+    - futon0/holes/missions/M-usage-hacking.md:15-20: "Subscription usage is a perishable resource ... the unattended APM formal-proof job runs only when every reported Zai token window has strictly more than 50% available."
+    - memory wm-closure-strategy-zai-owners (Joe 2026-09-16): "Codex usage is down to 3%, and a full day of Codex work produced 0 of 46 checklist closures." Chosen: Zai owners.
+    - memory prefer-kimi-zai-over-codex (Joe 2026-09-28): Joe runs three Codex projects of his own; Kimi and Zai first.

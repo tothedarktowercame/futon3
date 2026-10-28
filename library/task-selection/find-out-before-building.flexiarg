@@ -1,0 +1,34 @@
+@flexiarg task-selection/find-out-before-building
+@title Find Out Before Building
+@keywords exploration, spike, discovery, sample run, question first
+@audience agents and the War Machine selecting the next task
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, witnesses K9; prerequisite witness M-apm-capability-ratchet)
+@role reshape
+@guard needs: a build whose design depends on something unobserved, and a question whose answer would decide it.
+@effect puts a discovery task (read-only, spike, or sample run) ahead of the build in the field.
+@predicts the answer changes or confirms the build's design; either way the build is cheaper afterwards.
+@references [task-selection/bound-the-bet task-selection/halfway-house task-selection/prepare-the-ground]
+! conclusion: When the right build depends on something not yet observed, select the task that finds it out first, and keep it separate from the build.
+
+  + context: A build is wanted, but its shape depends on data or behaviour nobody has looked at.
+
+  + IF:
+    A question's answer would decide how, or whether, to build.
+
+  + HOWEVER:
+    Building at once feels faster, and a discovery packet that also implements gives no checkpoint between the finding and the code.
+
+  + THEN:
+    Select the discovery as its own task (find out and propose; no edits), review its answer, and then select the build. Look for one spike that settles several blockers at once.
+
+  + BECAUSE:
+    A wrong premise in a combined packet ships unchallenged; a separate answer can be read before anything is built on it.
+
+  + evidence:
+    - futon2/holes/excursions/E-kimi-task-96.md:12: "discovery under the coding-handoff protocol: you find out and propose ... NO commit, no edit to any tracked file".
+    - futon2/holes/M-G-over-cascades.md:766-769: "The two blockers are one ... So one spike clears".
+    - futon0/holes/missions/M-apm-capability-ratchet.md:395-399: "The shape of the real ratchet solution depends on what we observe ... This is why the sample run is a DERIVE prerequisite".
+    - futon2/holes/M-custom-harness.md:325: "First spike to settle the question".
+    - CLAUDE.md coding-handoff protocol: "Split discovery from implementation."

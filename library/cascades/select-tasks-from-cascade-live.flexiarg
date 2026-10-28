@@ -60,6 +60,7 @@
     next[futon2 M-wm-strategic-mission-selection already defines the strategic policy pi_S as a cascade of p4ng control patterns that retrieves witnessed episodes and proposes missions with reasons (dark kernel futon3c.peripheral.strategic-cascade, 2026-07-23). Check it against this pattern before building anything new.]
     next[Agree what G over several selection policies means: what each selection policy predicts, and how its efficiency in the current circumstances is scored.]
     next[Say, section by section, which part of Cascade Live supplies the circumstances the selection policies are scored in.]
-    next[M-giraffe (futon3c/holes/missions/M-giraffe.md) already computes readiness, cone size and one-step unblocking per item over Cascade Live's basins; these are inputs to selection policies, not a selection policy of their own.]
+    next[M-giraffe (futon3c/holes/missions/M-giraffe.md) computes readiness, cone size and one-step unblocking per item over holes/tickets (stage 1; Cascade Live's basins are not yet read, clusters are stage 2). These are inputs that several selection patterns read, and its fixed order (ready, unblocks, cone, source order) is one evidenced selection cascade among several.]
+    next[2026-10-28: the selection patterns these cascades are composed from, each with its tension and quoted witnesses, are drafted in task-selection/ (README lists six cascades found in the record and a proposed scoring).]
     next[Compare existing selection code (futon2 meta_live_outer_selector and the outer-* namespaces it requires) against this pattern, and keep only what reads Cascade Live.]
     next[No new machine and no new Lean specification for this: it is how tasks are selected, written down.]

@@ -1,0 +1,51 @@
+@flexiarg cascades/select-tasks-from-cascade-live
+@title Select Tasks from Cascade Live
+@sigils [🌊/流]
+@keywords outer loop, task selection, active inference, Cascade Live, development history, policy
+@audience War Machine builders, agents choosing the next task
+@tone design
+@provenance Joe, 2026-10-28 (claude-11 REPL): "the outer loop is for selecting tasks ... the policy is based on Cascade Live ... Cascade Live is the entire history of development". Earlier, Joe 2026-09-25: "the outer cascade should be based on Cascade Live"; Joe 2026-10-22: "the outer loop is really no different from the inner loop ... I don't see any reason why it should be treated differently from a G perspective". Written down by claude-11 from these statements; see memory no-inner-policies-before-selection.
+
+! conclusion:
+  The outer loop selects tasks, and the policy it selects by is based on Cascade Live:
+  the entire history of development. It is the same active-inference loop as the inner
+  loop (beliefs, policies, G, choose, act, observe); only the policies differ. Out here
+  the policies are tasks.
+
+  + context: The War Machine has to pick the next task (mission, excursion, ticket or
+    standing algorithm) before any tactical work happens. Cascade Live is the stepper
+    page behind Caddy at /wip/stepper/, fed by GET /api/alpha/cascade-real/graph, which
+    regenerates the pipeline-pattern cascade from live data: lineage (who worked on what,
+    dispatched by whom), clusters (missions grouped into basins), arrows (have -> want
+    moves with a delta-g), held (deferred work and why), patterns (which patterns each
+    mission applied) and tickets.
+
+  + IF:
+      Task selection is to be active inference, the beliefs it scores tasks with must
+      come from what has actually happened in development, and that record already
+      exists as Cascade Live.
+
+  + HOWEVER:
+      It is easy to build a separate outer-scoring mechanism instead: its own slots,
+      its own generative model, its own G, unconnected to the development history.
+      That is not this loop with tasks as its policies; it is a different machine.
+      Inner (tactical) policies do not exist until a task has been selected, so they
+      cannot be part of choosing the task.
+
+  + THEN:
+      Read Cascade Live as the outer loop's observations and beliefs. Take the candidate
+      tasks as the policies. Score each candidate task by G using predictions grounded
+      in Cascade Live, choose, act (run the task, whose own inner loop then constructs
+      tactical policies), and observe the result back into Cascade Live, so the next
+      selection sees it.
+
+  + BECAUSE:
+      The history of development is the evidence about which work closes, which work
+      stalls, what unblocks what, and what was held and why. A task policy scored
+      without it is guessing, and calling the guess active inference misdescribes it.
+
+  + NEXT-STEPS:
+    next[Joe to confirm or correct this wording before anything is built on it.]
+    next[Say, section by section, which part of Cascade Live supplies which part of the loop (for example whether arrows' delta-g is the predicted change in G for a task).]
+    next[Compare existing selection code (futon2 meta_live_outer_selector and the outer-* namespaces it requires) against this pattern, and keep only what reads Cascade Live.]
+    next[No new machine and no new Lean specification for this: it is how tasks are selected, written down.]

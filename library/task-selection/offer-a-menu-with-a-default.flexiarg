@@ -1,0 +1,31 @@
+@flexiarg task-selection/offer-a-menu-with-a-default
+@title Offer A Menu With A Default
+@keywords menu, recommendation, operator picks, default, options
+@audience agents selecting with the operator
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, procedure seen across witnesses)
+@role compose
+@guard needs: two or more candidates that survived the gates, each with the pattern that ranks it.
+@effect presents a short list with one recommended default and the reason for each; the operator's pick is recorded with the option it was.
+@predicts the operator picks the default unless they hold information the ranking lacked; when they do not, the reason is new evidence.
+@references [task-selection/the-operator-asked task-selection/a-portfolio-not-a-winner]
+! conclusion: When the operator decides, offer a few options each with its reason and recommend one; record which was picked and why the others were not.
+
+  + context: The agent ranks candidates but the operator holds the decision, or holds information the ranking lacks.
+
+  + IF:
+    Several candidates remain and the choice is the operator's.
+
+  + HOWEVER:
+    A bare list hands the whole judgment back; a single recommendation hides the alternatives; and an unrecorded pick teaches nothing.
+
+  + THEN:
+    List a few options, each tagged with the pattern that ranks it (cheapest, highest leverage, deferred), mark one default, and record the operator's pick against the menu.
+
+  + BECAUSE:
+    An operator's departure from the default is the clearest evidence of what the ranking missed. Note that this is a procedure, not a reason for choosing; it carries the reasons the other patterns supply.
+
+  + evidence:
+    - futon3/holes/missions/M-pattern-ingest.md:312-317: option (ii) as default, "(iii) is the highest-leverage cross-mission move but should wait."
+    - futon7/holes/M-descriptive-essay-of-the-stack.md:70: three exit criteria for Joe to pick from, with "(2) first" recommended.

@@ -1,0 +1,35 @@
+@flexiarg task-selection/take-the-hard-one-to-learn
+@title Take The Hard One To Learn From It
+@keywords challenging, deep dive, interdependence, learning, not a cheap win
+@audience agents and the War Machine selecting the next task
+@tone design
+@style pattern
+@status draft 2026-10-28 (claude-11, witnesses K8)
+@role order
+@guard needs: a statement of what the hard candidate would teach, or of which other items rest on it.
+@effect raises a hard candidate when its parts depend on each other or when it teaches what later items need; keeps it whole.
+@predicts doing it changes the plan for named later items, or closes items that the split version would have left open.
+@references [task-selection/take-the-cheap-win task-selection/what-others-wait-on-first task-selection/find-out-before-building]
+! conclusion: Select hard work, and keep it whole, when its parts depend on each other or when it will teach what later work needs; difficulty alone is not a reason.
+
+  + context: A candidate is hard and could be split into cheaper pieces, or passed over for an easier one.
+
+  + IF:
+    The hard candidate's parts depend on each other, or other items rest on it, or doing it teaches something the easy route would not.
+
+  + HOWEVER:
+    Cheap pieces close sooner and look better on a count, and splitting invites declaring the whole done when one piece lands. The opposite error is choosing the hard thing because it is hard.
+
+  + THEN:
+    Keep it as one item and select it, stating what it will teach or what rests on it. Guard against "declare done when one part lands".
+
+  + BECAUSE:
+    Interdependent parts done separately are each done against a guess about the others.
+
+  + evidence:
+    - futon0/holes/missions/M-capability-star-map.md:206,214-217 (Joe 2026-06-07): "ONE complex mission — not a family, and not a cheap win ... that interdependence is exactly why this is not a cheap win".
+    - futon7/holes/M-descriptive-essay-of-the-stack.md:69-70: "(2) first — it's the highest-leverage, the most distant from today's groundwork, and the bar that #1 and #3 rest on".
+    - futon0/holes/missions/M-landscape-positioning.md:1322-1324 (Joe 2026-10-11): "my goal is to learn from the best".
+    - futon7/holes/M-self-documenting-stack.md:52: "we learn what ranking signals matter from observed usage, which informs v2's design."
+
+  + absent: no witness was found for choosing work because it is challenging for its own sake.

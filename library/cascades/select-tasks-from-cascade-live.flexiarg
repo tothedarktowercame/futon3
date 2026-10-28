@@ -4,7 +4,7 @@
 @keywords outer loop, task selection, active inference, Cascade Live, development history, policy
 @audience War Machine builders, agents choosing the next task
 @tone design
-@provenance Joe, 2026-10-28 (claude-11 REPL, second statement, which corrects the first wording of this pattern): "we need multiple policies for selecting the tasks, and then we select the tasks in the most efficient way each time ... it's not always the same way of selecting the tasks ... g is over policies for selecting tasks ... it's contextual ... based on our current circumstances, we select the task that will be the most efficient to select". Same session, earlier: "the outer loop is for selecting tasks ... the policy is based on Cascade Live ... Cascade Live is the entire history of development". Earlier, Joe 2026-09-25: "the outer cascade should be based on Cascade Live"; Joe 2026-10-22: "the outer loop is really no different from the inner loop ... I don't see any reason why it should be treated differently from a G perspective". Written down by claude-11 from these statements; see memory no-inner-policies-before-selection.
+@provenance Joe, 2026-10-28 (claude-11 REPL, third statement): "a policy is not a design pattern a policy is a design pattern cascade and that's why I'm saying it needs to be based on Cascade Live, because Cascade Live should have evidence about how actual work was selected ... it's not brainstormed it's not a whim". Second statement, which corrects the first wording of this pattern): "we need multiple policies for selecting the tasks, and then we select the tasks in the most efficient way each time ... it's not always the same way of selecting the tasks ... g is over policies for selecting tasks ... it's contextual ... based on our current circumstances, we select the task that will be the most efficient to select". Same session, earlier: "the outer loop is for selecting tasks ... the policy is based on Cascade Live ... Cascade Live is the entire history of development". Earlier, Joe 2026-09-25: "the outer cascade should be based on Cascade Live"; Joe 2026-10-22: "the outer loop is really no different from the inner loop ... I don't see any reason why it should be treated differently from a G perspective". Written down by claude-11 from these statements; see memory no-inner-policies-before-selection.
 
 ! conclusion:
   The outer loop selects tasks. It has several policies for selecting a task, not one,
@@ -38,14 +38,16 @@
       so they cannot be part of choosing the task either.
 
   + THEN:
-      Keep a set of task-selection policies (for example: start what is ready now and
-      frees the most other work; continue the Cascade Live basin with recent momentum;
-      take up held work whose reason for holding has lapsed; follow the operator's latest
-      attested want). Read the current circumstances from Cascade Live. Score each
-      selection policy by G in those circumstances, run the one that is most efficient
-      now to pick the task, act (the task's own inner loop then constructs tactical
-      policies), and observe the result back into Cascade Live, so the next choice of
-      selection policy sees it.
+      A selection policy is a design-pattern cascade: patterns from the library,
+      composed in order, each step narrowing or ordering the candidate tasks for a
+      stated reason. Policies are not invented per occasion; a cascade earns a place
+      among the selection policies when Cascade Live holds evidence that work was
+      actually selected that way (who clocked on to what, after which closed hole,
+      held item or operator want). Read the current circumstances from Cascade Live,
+      score each evidenced selection cascade by G in those circumstances, run the one
+      that is most efficient now to pick the task, act (the task's own inner loop then
+      constructs tactical policies), and observe the result back into Cascade Live, so
+      the evidence for each selection cascade is updated by its own use.
 
   + BECAUSE:
       The history of development is the evidence about which work closes, which work
@@ -53,7 +55,9 @@
       without it is guessing, and calling the guess active inference misdescribes it.
 
   + NEXT-STEPS:
-    next[Joe to confirm or correct this wording before anything is built on it. The example selection policies in THEN are claude-11's, not Joe's.]
+    next[Joe to confirm or correct this wording before anything is built on it.]
+    next[Mine Cascade Live and the record behind it for how actual work was selected, and write each recurring way down as a pattern cascade with its witnesses. As of 2026-10-28 the lineage section records the selection act (197 clock-ons onto 31 targets, 2026-07-14 to 2026-10-28, 76 with no recorded caller) but not its reason; reasons are in mission prose (Motivation / Why now sections) and operator turns, which Cascade Live does not yet read.]
+    next[futon2 M-wm-strategic-mission-selection already defines the strategic policy pi_S as a cascade of p4ng control patterns that retrieves witnessed episodes and proposes missions with reasons (dark kernel futon3c.peripheral.strategic-cascade, 2026-07-23). Check it against this pattern before building anything new.]
     next[Agree what G over several selection policies means: what each selection policy predicts, and how its efficiency in the current circumstances is scored.]
     next[Say, section by section, which part of Cascade Live supplies the circumstances the selection policies are scored in.]
     next[M-giraffe (futon3c/holes/missions/M-giraffe.md) already computes readiness, cone size and one-step unblocking per item over Cascade Live's basins; these are inputs to selection policies, not a selection policy of their own.]

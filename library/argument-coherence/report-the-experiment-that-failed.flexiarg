@@ -1,0 +1,33 @@
+@flexiarg argument-coherence/report-the-experiment-that-failed
+@title Report the Experiment That Failed, as Evidence
+@keywords negative result, failed experiment, baseline, post mortem, honest finding
+@audience paper and proposal authors, reviewers, who-benefits analysts
+@tone normative
+@style pattern
+@grade principle
+@provenance Mined from Corneli's 2014 PhD thesis (~/notes/thesis2014, t.txt l.1875-1960: the DIY Math post mortem in Ch. 3, and Appendix A) set against the Peeragogy "Greatest Flops" archive (~/notes/peeragogy-flops/ARGUMENTS.md, recurring defeater 4). Drafted by claude-16 with Joe, 2026-10-29.
+@status draft 2026-10-29; runs correct it
+@references [argument-coherence/ARGUMENT argument-coherence/one-worked-instance argument-coherence/claims-as-hypotheses argument-coherence/evidence-the-venue-counts]
+
+! conclusion:
+  When an experiment of yours failed, put it in the argument as evidence: say what was tried, what happened, and what the failure rules out.
+
+  + context:
+    Authors who ran something that did not work tend either to omit it or to mention it in the discussion as a regret. When it is mentioned, the honest observation is often a stronger thesis than the one argued.
+
+  + IF:
+    You have a failed trial that bears on your claim.
+
+  + HOWEVER:
+    A failure can read as incompetence, and a single failure proves little by itself.
+
+  + THEN:
+    Report it as a baseline. Give what was tried and the result. Name which hypothesis it eliminates. If you can, pair it with a second trial that varies one thing.
+
+  + BECAUSE:
+    The thesis that was examined and passed does this. Its DIY Math course "quickly lost interest, and all participation stopped after two weeks". The thesis reads that as "quite useful as a baseline reading … what happens in a learning project where there is essentially no structure". It then reports a second, structured course ("Math for Game Designers") that "did not go much better", and concludes "it is not simply more structure but the right structure that is needed". The flops do the opposite. Three of them leave the honest finding out of the thesis: e/merge 2012, "what's difficult here is NOT the technology but the sense of what's 'worth doing'"; CLS 2018, "why some people stay and others leave"; Futures 2020, "Why did you ask us to read a script?".
+
+  + NEXT-STEPS:
+    next[Test blind on the flops: does a reviewer given this pattern find the buried finding in e/merge, CLS and Futures?]
+    next[Control: the thesis should pass.]
+    next[Related: one-worked-instance asks for a case; this asks that a failed case be counted as evidence, not hidden.]

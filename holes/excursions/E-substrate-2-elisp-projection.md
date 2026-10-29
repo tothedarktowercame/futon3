@@ -1,6 +1,6 @@
 # Excursion: Substrate-2 Emacs Lisp Projection
 
-**Status:** RESOLVED (2026-04-27, same day as discovery) by Codex,
+**Status:** DONE — confirmed 2026-10-29 (Giraffe closing check): The elisp projector was implemented, reviewed and wired into the substrate-2 ingest, verified on futon4 with 14.6x hyperedge growth and passing tests. Evidence: /home/joe/code/futon3/scripts/elisp_projection.clj, /home/joe/code/futon3/holes/labs/M-live-geometric-stack/tests/elisp_projection_test.clj.
 reviewed and integrated by Claude.
 **Owner mission:** `holes/missions/M-live-geometric-stack.md`
 **Discovered during:** pyramidal expansion phase 1 on futon4.

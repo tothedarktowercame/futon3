@@ -1,6 +1,6 @@
 # Excursion: Substrate-2 Directed-Edge Stable-ID Collision
 
-**Status:** RESOLVED (2026-04-27, same day as discovery) via option (a)
+**Status:** DONE — confirmed 2026-10-29 (Giraffe closing check): The directed-edge stable-ID collision was diagnosed and resolved the same day via the synthetic dir: third endpoint, with strict regression passing on all three -d labels. Evidence: /home/joe/code/futon3/scripts/ingest_v05_to_futon1a.clj.
 **Owner mission:** `holes/missions/M-live-geometric-stack.md`
 **Discovered during:** pyramidal expansion phase 1 on futon1a.
 

@@ -1,4 +1,5 @@
 # Excursion: Math Prototype Pilot — Hand-Tagging + First Geometry
+**Status:** DONE — confirmed 2026-10-29 (Giraffe closing check): Pilot delivered: 8 papers hand-tagged (7 patterns), triple quality assessed, and the tension-scalar/discrete-gradient demo computed on real data, committed to futon3. Evidence: 679d510e3e6c8f96844417091a8f531bdde4251d.
 
 **VERDICT (2026-10-09, provisional):** DONE — The pilot delivered its outcome — first concrete operational evidence that prototype 2's substrate is usable — and was committed as such. _(WM status classification by zai-3, medium confidence; not yet confirmed by the author.)_
 

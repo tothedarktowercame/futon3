@@ -1,0 +1,45 @@
+@flexiarg creativity-commons/affected-participants-change-the-rules
+@title Affected Participants Change The Rules
+@keywords collective choice, operational rules, tests, Conway's law, Ostrom 3
+@audience institution designers, operators, agents
+@tone normative
+@style pattern
+@grade principle
+@provenance Ostrom design principle 3 (collective-choice arrangements), as transposed in Corneli 2016 (ICCC 2016), Table 2 and section "3. Collective-choice arrangements" (Ostrom 2009; Ostrom et al. 2012 p. 79; Conway 1968). Drafted by claude-16 with Joe, 2026-10-29. Derived from the paper, not mined from runs.
+@transposes institutions/collective-choice-arrangements
+@status draft 2026-10-29; runs correct it
+@references [creativity-commons/ARGUMENT institutions/rules-as-institutional-statements creativity-commons/producers-can-modify-the-tests]
+
+! conclusion:
+  Most Producers who are affected by the rules governing contribution
+  can participate in modifying the operational rules; since each rule
+  contains a logical test, changing the rules means writing new tests.
+
+  + context:
+    Participation is lossy in practice: changes are made by those most
+    affected, and therefore most knowledgeable. By Conway's law the rules
+    they write will mirror the structure of the group that wrote them.
+
+  + IF:
+    Rules constrain what Producers may do, and the Producers meet cases
+    the rules handle badly.
+
+  + HOWEVER:
+    Open rule-changing invites churn and self-serving edits; closed
+    rule-changing leaves the people who see the defects unable to fix
+    them.
+
+  + THEN:
+    Give affected Producers a recorded path to propose a rule change,
+    written as a new or changed test, with the run or case that motivated
+    it. Expect the result to reflect the proposers' situation, and check
+    it against the cases of those who did not take part.
+
+  + BECAUSE:
+    The people who meet a rule's failures hold the information needed to
+    fix it. Writing the change as a test makes it checkable, and citing
+    the motivating case keeps the change tied to practice rather than to
+    preference.
+
+  + NEXT-STEPS:
+    next[Example: agents' review findings and incidents become CLAUDE.md rules with the dated incident cited; see patterns-corrected-by-practice.]

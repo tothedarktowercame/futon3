@@ -1,0 +1,47 @@
+@flexiarg creativity-commons/place-boundaries
+@title Place Boundaries
+@keywords boundaries, contract, interface, resignation, emergent definition, Ostrom 1B
+@audience institution designers, agent operators
+@tone normative
+@style pattern
+@grade principle
+@provenance Ostrom design principle 1B (resource boundaries), as transposed in Corneli 2016 (ICCC 2016), Table 2 and section "1B. Resource boundaries". Drafted by claude-16 with Joe, 2026-10-29. Derived from the paper, not mined from runs.
+@transposes institutions/resource-boundaries
+@status draft 2026-10-29; runs correct it
+@references [creativity-commons/ARGUMENT creativity-commons/contributor-boundaries creativity-commons/process-fits-local-conditions]
+
+! conclusion:
+  The boundaries of the Place are well defined, from either side: the
+  Place advertises its interface and its output guarantees, or the
+  Producer carries tests that decide which Places it will engage with.
+
+  + context:
+    A Place (Ostrom's action situation) is structured in advance by
+    context. Different participants see it differently, so the shared
+    definition can also emerge from how each one draws its own edge.
+
+  + IF:
+    Producers enter a Place whose extent, rules or guarantees are not
+    obvious from inside the work.
+
+  + HOWEVER:
+    A Place-side contract cannot anticipate every case; a Producer-side
+    test can be wrong about the Place. Neither side alone fixes the
+    boundary.
+
+  + THEN:
+    State the Place's contract (what goes in, what is guaranteed to come
+    out, design by contract). Give each Producer explicit stop tests for
+    when a situation lies outside what it should engage with, like a
+    game-playing agent that resigns an unwinnable position. Record each
+    stop with its reason so the shared boundary can be read off the
+    record.
+
+  + BECAUSE:
+    Engagement outside the Place's boundary produces work nobody can
+    accept. A recorded stop is information about where the boundary
+    lies; a silent overreach is not.
+
+  + NEXT-STEPS:
+    next[Example: the FUTON Emacs fix rule stopped for "needs C", "needs a ruling" and "needs a design decision"; the 32 stops of 96 draws mark the edge of what one Claude plus one Codex could close alone.]
+    next[Example: scripts/check-fix.sh is the Place-side contract (fails on master, passes patched, no new suite failures).]

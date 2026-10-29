@@ -1,0 +1,47 @@
+@flexiarg creativity-commons/low-cost-local-conflict-arenas
+@title Low-Cost Local Conflict Arenas
+@keywords conflict resolution, edit wars, escalation, modularity, integration cost, Ostrom 6
+@audience institution designers, maintainers, agent operators
+@tone normative
+@style pattern
+@grade principle
+@provenance Ostrom design principle 6 (conflict-resolution mechanisms), as transposed in Corneli 2016 (ICCC 2016), Table 2 and section "6. Conflict-resolution mechanisms" (Wikipedia edit wars; Heylighen 2015; Benkler 2002; Jakobson 1960). Drafted by claude-16 with Joe, 2026-10-29. Derived from the paper, not mined from runs.
+@transposes institutions/conflict-resolution-mechanisms
+@status draft 2026-10-29; runs correct it
+@references [creativity-commons/ARGUMENT creativity-commons/formative-sanctions creativity-commons/nested-places]
+
+! conclusion:
+  Producers have rapid access to low-cost local arenas to resolve
+  conflicts, with a higher authority for the cases those arenas cannot
+  settle.
+
+  + context:
+    Wikipedia's edit wars are fought on article pages and settled on
+    talk pages, using machine-generated metadata throughout; the
+    unresolvable cases go to site-wide policy or arbitration. Peer
+    production needs modules that are fine-grained and cheap to
+    integrate.
+
+  + IF:
+    Producers' work can collide, by editing the same thing or by
+    pursuing incompatible goals.
+
+  + HOWEVER:
+    A local arena that is too cheap settles nothing; escalating too
+    readily loads the higher authority with cases it need not see.
+
+  + THEN:
+    Make conflict detectable by the Producers themselves (two changes to
+    one region; two goals that cannot both hold). Give each conflict a
+    local place to be discussed next to the work, record what settled
+    it, and name the higher authority for what stays unsettled. Plan the
+    work in small modules so conflicts are rare and cheap to integrate.
+
+  + BECAUSE:
+    Conflicts settled where they arise cost little and teach the people
+    involved; a named escalation path stops them festering.
+
+  + NEXT-STEPS:
+    next[Example: 8 fork branches touch sh-script.el; detect that before merging, not during.]
+    next[Example: when bells between agents cross, switch to a whistle; the blocking call is the local arena.]
+    next[Example: a debbugs thread is the local arena; emacs-devel and the maintainers are the higher authority.]

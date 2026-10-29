@@ -1,0 +1,48 @@
+@flexiarg creativity-commons/contributor-boundaries
+@title Contributor Boundaries
+@keywords boundaries, access, permissions, protocol, revocation, Ostrom 1A
+@audience institution designers, agent operators, maintainers
+@tone normative
+@style pattern
+@grade principle
+@provenance Ostrom design principle 1A (user boundaries), as transposed in Corneli 2016, "An institutional approach to computational social creativity" (ICCC 2016), Table 2 and section "1A. User boundaries". Drafted by claude-16 with Joe, 2026-10-29. Derived from the paper, not mined from runs.
+@transposes institutions/user-boundaries
+@status draft 2026-10-29; runs correct it
+@references [creativity-commons/ARGUMENT creativity-commons/place-boundaries]
+
+! conclusion:
+  The population of Producers who can add to or alter the resource is
+  clearly defined, and the definition is recorded where a test can read
+  it: on each modifiable object (who may change this) or on each
+  Producer (what this one may change).
+
+  + context:
+    Humans and agents share repositories, trackers and message buses.
+    "Anyone can edit" works only because violating the site's
+    principles can lead to a block; the boundary is open at entry and
+    enforced afterwards.
+
+  + IF:
+    A resource can be changed by more than one Producer, and some
+    changes are costly to undo or to review.
+
+  + HOWEVER:
+    Tight boundaries at entry exclude useful contributions. Where a
+    contribution is cheap to reject (a bug report), keep entry open and
+    enforce later; tighten entry where review is costly (commit access,
+    a patch mailed to maintainers).
+
+  + THEN:
+    Record who may change what. Before granting access, require that the
+    Producer implements the Place's protocol (an API, callbacks, a
+    message envelope, a signed commit). Revoke access for non-compliant
+    behaviour after entry, and record the revocation.
+
+  + BECAUSE:
+    A test can only check a boundary that is written down. ACLs and
+    protocol conformance are the computational form of Ostrom's
+    "clear boundaries between legitimate users and nonusers".
+
+  + NEXT-STEPS:
+    next[Example: agent commits carry Agent-Id and Dispatched-By trailers, so every change in a shared checkout names its Producer.]
+    next[Example: in the FUTON Emacs pilot nothing left the fork; mailing GNU is a boundary crossing that needs Joe's sight first.]

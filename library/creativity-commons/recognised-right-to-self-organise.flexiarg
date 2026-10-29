@@ -1,0 +1,46 @@
+@flexiarg creativity-commons/recognised-right-to-self-organise
+@title Recognised Right To Self-Organise
+@keywords autonomy, external authority, programmer, creative acts, Ostrom 7
+@audience operators, institution designers, agent builders
+@tone normative
+@style pattern
+@grade principle
+@provenance Ostrom design principle 7 (minimal recognition of rights to organise), as transposed in Corneli 2016 (ICCC 2016), Table 2 and section "7. Minimal recognition of rights to organise" (Colton 2012; Colton et al. 2014). Drafted by claude-16 with Joe, 2026-10-29. Derived from the paper, not mined from runs.
+@transposes institutions/minimal-recognition-of-rights-to-organise
+@status draft 2026-10-29; runs correct it
+@references [creativity-commons/ARGUMENT creativity-commons/affected-participants-change-the-rules creativity-commons/nested-places]
+
+! conclusion:
+  The rights of Producers to devise institutions governing their
+  contributions are not challenged by external authorities, and how far
+  this holds is measured, not asserted.
+
+  + context:
+    In computational settings the foremost external authority is the
+    programmer (or operator). Teaching systems how to devise institutions
+    is at least as relevant as teaching them to conform to given
+    instructions.
+
+  + IF:
+    Agents or contributors work under rules set by someone outside the
+    group doing the work.
+
+  + HOWEVER:
+    Early on, outside direction is needed and right; a claim of autonomy
+    that the record does not support is the "mini me" critique waiting
+    to happen.
+
+  + THEN:
+    Count changes to the working rules by origin: operator- or
+    programmer-made versus made by the system itself. Identify the
+    individual acts (a rule proposed, a test changed, a pattern revised)
+    and attribute each one. Report the ratio over time.
+
+  + BECAUSE:
+    The frequency of system-originated changes compared with
+    operator-originated ones is a test of how far the right to organise
+    is actually exercised.
+
+  + NEXT-STEPS:
+    next[Example: a GPL fork is an exercise of this right relative to upstream; the FUTON Emacs fork organises its own fix rules without challenging GNU's.]
+    next[Trial: classify a week of CLAUDE.md and pattern edits by origin (Joe vs agent) from commit trailers.]

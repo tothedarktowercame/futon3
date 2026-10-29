@@ -1,0 +1,76 @@
+@flexiarg creativity-commons/ARGUMENT
+@title Argument for the Creativity Commons Pattern Domain
+@keywords creativity commons, creativity design principles, Ostrom, 4Ps, Producer, Process, Product, Place, tests, SPECS, institutional creativity
+@audience institution designers, computational creativity researchers, agent operators, fellowship and paper writers
+@tone analytic-foundational
+@style argument
+@references [creativity-commons/contributor-boundaries creativity-commons/place-boundaries creativity-commons/process-fits-local-conditions creativity-commons/benefit-proportional-to-contribution creativity-commons/affected-participants-change-the-rules creativity-commons/distributed-monitoring creativity-commons/producers-can-modify-the-tests creativity-commons/formative-sanctions creativity-commons/low-cost-local-conflict-arenas creativity-commons/recognised-right-to-self-organise creativity-commons/nested-places creativity-commons/institutions-are-products institutions/ARGUMENT institutions/rules-as-institutional-statements]
+@provenance Corneli 2016, "An institutional approach to computational social creativity", ICCC 2016 (https://metameso.org/~joe/papers/corneli2016institutional.pdf), Table 2 ("creativity design principles") and the sections that elaborate it. Drafted by claude-16 with Joe, 2026-10-29.
+@status draft 2026-10-29; runs correct it
+@summary Joe's 2016 transposition of Ostrom's design principles from
+managing a common-pool resource to contributing in a creativity
+commons. The polarity is switched from appropriation to contribution,
+Rhodes's 4Ps become Producer, Process, Product and Place, and each
+principle is tied to a computational test. Because rules are tests, the
+institutions themselves become Products of the commons. One pattern per
+principle (eleven items), plus institutions-are-products for that
+recursive reading. Ostrom's originals are the parallel family
+institutions/.
+
+! conclusion:
+  Ostrom's theory of institutions can be used to design systems that
+  exhibit computational social creativity, provided the principles are
+  restated for contribution rather than appropriation and expressed as
+  tests that Producers can run, read and change, including tests on the
+  institutions themselves.
+
+  + context:
+    Ostrom's commons are rivalrous and nonexcludable. A creative commons
+    such as Wikipedia, an "expressive commons" (Safner 2016), is
+    non-rivalrous in consumption; its social dilemmas are in
+    contribution (hence policies like Neutral Point Of View). The 2016
+    paper therefore rewrites Table 1 "replacing the focus on
+    appropriation with a focus on contribution". It renders Rhodes's 4Ps
+    as Producer, Process, Product and Place, labels that are more
+    inclusive and abstract than Rhodes's, so that Producers need not be
+    persons. The Place is Ostrom's action situation, structured in
+    advance by context. Software testing (assertions, advice, contracts,
+    test-driven development) supplies the technical form: each principle
+    becomes something a test can check.
+
+  + IF:
+    Humans and machines produce together in a shared Place, and the
+    rules of that Place are being written.
+
+  + HOWEVER:
+    The principles were offered as "guidelines (and with minor changes,
+    hypotheses)" that need empirical work. Some are thin when the
+    Producer is a machine: 2B (benefit for effort) is "perfectly
+    meaningless" for non-agentive machines, and 7 (rights to organise)
+    meets the programmer as the main external authority. In 2016 agents
+    with the assumed abilities did "not exist yet in any robust form";
+    now they do, so the patterns can be tried rather than only reasoned
+    about.
+
+  + THEN:
+    Design or review a Place with the twelve patterns. Where Table 2
+    departs from Ostrom, follow Table 2: sanctions come from other
+    Producers and range from critique to silence (5); monitoring becomes
+    tests that document Producer-Place interaction (4A) and tests that
+    Producers can modify (4B), not monitors of users and of a resource.
+    Treat the institution as one of the Products (institutions-are-
+    products). Evaluate with the correspondence the paper draws between
+    IAD and SPECS: context to definition, action to criteria, outcome to
+    evaluation.
+
+  + BECAUSE:
+    Rules are if-then statements, so changing the rules means writing
+    new tests; and "our institutions – including institutions for
+    building institutions – are analysable in programmatic terms". A
+    commons whose rules are tests its members can change can design its
+    own institutions, which is what makes the approach recursive.
+
+  + NEXT-STEPS:
+    next[Correct the drafts from runs, not by reading: apply the family to the FUTON Emacs fork (maintainer rulings, reporters as testers), to Agency dispatch rules, and to a mathematics workflow.]
+    next[Mine closed debbugs threads for how maintainers settled design questions: local-condition material (2A) for a separate emacs/ family.]
+    next[Review Alinery's playbook guidance and our FIX-RULE.md side by side against principles 3 and 4B.]

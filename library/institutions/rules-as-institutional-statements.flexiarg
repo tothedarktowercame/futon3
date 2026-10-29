@@ -1,0 +1,48 @@
+@flexiarg institutions/rules-as-institutional-statements
+@title Rules As Institutional Statements
+@keywords grammar of institutions, ADICO, rules, norms, strategies, deontic, or-else
+@audience institution designers, rule authors, agents reading rules
+@tone normative
+@style pattern
+@grade technique
+@provenance Ostrom's grammar of institutional statements as quoted in Corneli 2016 (ICCC 2016), section "3. Collective-choice arrangements" (Ostrom 2009 pp. 140, 142, 187, 191). The five-part form is usually called ADICO (Crawford and Ostrom 1995). Drafted by claude-16 with Joe, 2026-10-29. Derived from the paper, not mined from runs.
+@status draft 2026-10-29; runs correct it
+@references [institutions/ARGUMENT institutions/collective-choice-arrangements institutions/graduated-sanctions creativity-commons/affected-participants-change-the-rules]
+
+! conclusion:
+  Write each institutional statement in Ostrom's form so a test can read
+  it: ATTRIBUTES of participants who are OBLIGED, FORBIDDEN, or PERMITTED
+  to ACT (or AFFECT an outcome) under specified CONDITIONS, OR ELSE.
+
+  + context:
+    Institutions are "shared concepts used by humans in repetitive
+    situations organized by rules, norms, and strategies" (Ostrom 2010).
+    The three kinds differ in which parts they carry: a rule has all
+    five; a norm has no OR ELSE; a strategy has neither deontic nor OR
+    ELSE.
+
+  + IF:
+    Rules for humans and agents are written as prose instructions, and
+    nobody can tell which are binding, which are customs and which are
+    advice.
+
+  + HOWEVER:
+    Not every useful instruction fits the form, and forcing a strategy
+    into a rule invents sanctions nobody intends.
+
+  + THEN:
+    For each statement record: attributes (who it applies to), deontic
+    (obliged, forbidden, permitted; omitted for strategies), aim (the
+    action or outcome), conditions (when and where), and or-else (the
+    consequence; omitted for norms). Optionally weight the prescription
+    and attach a cost or value to the action and its consequence. State
+    which kind it is.
+
+  + BECAUSE:
+    In this form a statement is an if-then test with a named
+    consequence, so it can be checked against a record of actions, and a
+    change to it is a visible change to a test.
+
+  + NEXT-STEPS:
+    next[Trial: rewrite three CLAUDE.md rules (No work in /tmp; One JVM per repo; Park on every dispatch) in this form and see which are rules, norms or strategies.]
+    next[Relevant actions to type against (Ostrom 2009 p. 191): be in a position, cross a boundary, effect a choice, jointly exercise partial control, send or receive information, pay or receive costs or benefits.]

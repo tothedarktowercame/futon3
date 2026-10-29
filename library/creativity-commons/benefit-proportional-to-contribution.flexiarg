@@ -1,0 +1,48 @@
+@flexiarg creativity-commons/benefit-proportional-to-contribution
+@title Benefit Proportional To Contribution
+@keywords appropriation, provision, benefit, effort, memory, reinforcement, Ostrom 2B
+@audience institution designers, maintainers, agent operators
+@tone normative
+@style pattern
+@grade principle
+@provenance Ostrom design principle 2B (appropriation and provision), as transposed in Corneli 2016 (ICCC 2016), Table 2 and section "2B. Appropriation and provision" (Deacon; Ostrom 2009 p. 19 quoted below). Drafted by claude-16 with Joe, 2026-10-29. Derived from the paper, not mined from runs.
+@transposes institutions/appropriation-and-provision
+@status draft 2026-10-29; runs correct it
+@references [creativity-commons/ARGUMENT creativity-commons/affected-participants-change-the-rules]
+
+! conclusion:
+  Contributing to the Product has benefits for the Producer that are
+  proportional to the efforts expended, and every party's effort is
+  counted, including the effort a contribution asks of others.
+
+  + context:
+    The paper notes that for non-agentive machines this principle is
+    "perfectly meaningless" and turns first to the cost of effort. With
+    agents doing much of the production, the scarce effort is often the
+    human attention a contribution demands: review, rulings, testing.
+
+  + IF:
+    A Product receives contributions whose costs fall unevenly on
+    contributors, reviewers and users.
+
+  + HOWEVER:
+    Benefit is hard to judge in advance and may only show over repeated
+    situations. Counting only the producer's effort hides the cost moved
+    onto others.
+
+  + THEN:
+    Give each Producer a way to judge, tentatively, whether an option is
+    beneficial, and a memory that compares those judgements with later
+    iterations of similar situations. Shape contributions so that what a
+    party is asked to spend matches what it gets back (a maintainer asked
+    for one decision gets a ready-made close; a reporter gets a build to
+    try).
+
+  + BECAUSE:
+    This is the core of reinforcement learning and, Ostrom says, of how
+    new institutions form: "How about if you do A in the future, and I
+    will do B, and before we ever make a decision about C again, we both
+    discuss it and make a joint decision?" (Ostrom 2009, p. 19).
+
+  + NEXT-STEPS:
+    next[Example: 69 fork fixes in 43 minutes would be far more patches than GNU can review in a week; offering a build plus a record, rather than mailing patches, keeps the review asked for proportional to the benefit offered.]

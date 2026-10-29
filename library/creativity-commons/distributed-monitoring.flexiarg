@@ -1,0 +1,44 @@
+@flexiarg creativity-commons/distributed-monitoring
+@title Distributed Monitoring
+@keywords monitoring, tests, sensors, self-evaluation, proprioception, Ostrom 4A
+@audience institution designers, Producers, reviewers
+@tone normative
+@style pattern
+@grade principle
+@provenance Ostrom design principle 4A (monitoring users), as transposed in Corneli 2016 (ICCC 2016), Table 2 and section "4A. Monitoring users" (The Painting Fool; Keller 2012). Drafted by claude-16 with Joe, 2026-10-29. Derived from the paper, not mined from runs.
+@transposes institutions/monitoring-users
+@status draft 2026-10-29; runs correct it
+@references [creativity-commons/ARGUMENT creativity-commons/producers-can-modify-the-tests creativity-commons/process-fits-local-conditions]
+
+! conclusion:
+  Tests document the interaction of Producers and Place, and the
+  monitoring is distributed among the Producers themselves rather than
+  held only by one global watcher.
+
+  + context:
+    The obvious design is one function that tracks every Producer's
+    actions. But what a Producer first produces is sensory data, and
+    sensors come with effectors; monitoring is part of any action.
+
+  + IF:
+    Many Producers act in one Place and someone must know what each did
+    and how well.
+
+  + HOWEVER:
+    Self-monitoring can be self-serving; a Producer's account of its own
+    work needs a reader who is not the Producer.
+
+  + THEN:
+    Each Producer runs its own checks on what it produced (compare the
+    output with the input that prompted it, as The Painting Fool compares
+    its painting with the snapshot) and writes the result where others
+    can read it. A separate party reads that record and judges whether
+    the checks were the right ones.
+
+  + BECAUSE:
+    Distributed monitoring scales with the number of Producers and gives
+    each one feedback on its own actions; the separate reader keeps the
+    record honest without repeating all the work.
+
+  + NEXT-STEPS:
+    next[Example: each FUTON Emacs fix wrote fix-results/N.json from check-fix.sh; claude-16 read every diff and judged test adequacy instead of rerunning.]

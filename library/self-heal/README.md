@@ -66,8 +66,17 @@ these; each is a candidate repair policy, not a proposal.
    (refusal correct) → red-before at the real check → fix producer; the
    existing contradictory record is then a separate disposition (cascade 1's
    last steps, or cascade 3).
-3. **Historical misclassification** (a9b900a4, 9c622038): reproduce (replay
-   says non-injury) → decide (no defect) → retire as a correction. No code.
+3. **Historical misclassification** (a9b900a4, 9c622038): locate (the
+   classifier producer: patches `36afa9142`, `aa8bf5ed5`) → reproduce
+   (retained terminal record reclassified through `classify`/`integrate`
+   says non-injury) → decide (this occurrence is not a defect) → retire as a
+   correction through the medic historical grammar. No code change in the
+   disposition itself. Corrected 2026-10-29 from practice: the first draft
+   listed reproduce → decide → retire, but both records locate first
+   (`futon2/holes/labs/wm-contract/DISCOVERY-self-heal-s4b-misclassification-steps-2026-10-29.md`
+   §3, `aa0bb0a84`; `~/notes/wm-next/offline-repair/authority/a9-evaluation/intent.edn:18-20`,
+   `45-evaluation/intent.edn:18-20`). The Lean model's guard audit had found
+   the decide step unadmitted without locate.
 4. **The debugger loop** (A-self-heal, 2026-10-02): record (keep the stop as
    the patient) → locate → one bounded fix → review → retry the repaired
    phase or abort → the next stop is a new observation (back to locate).

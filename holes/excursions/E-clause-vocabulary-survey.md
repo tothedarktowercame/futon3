@@ -1,4 +1,5 @@
 # Excursion: Clause-Vocabulary Survey of `library/`
+**Status:** DONE — confirmed 2026-10-29 (Giraffe closing check): The read-only clause-vocabulary survey over 919 pattern files was completed and its raw tally JSON deliverable saved alongside the curated EDN seed in the excursion. Evidence: /home/joe/code/futon3/holes/excursions/data/clause-vocabulary-tally-2026-05-04.json.
 
 **VERDICT (2026-10-09, provisional):** DONE — Read-only survey whose stated output (curated EDN seed + implications for phase-2) is recorded as produced. _(WM status classification by zai-4, medium confidence; not yet confirmed by the author.)_
 

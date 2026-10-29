@@ -1,0 +1,37 @@
+@flexiarg argument-coherence/technology-is-the-problem
+@title Technology Is the Problem: Count Who Maintains It
+@keywords maintenance, follow-through, hidden cost, tooling, vibe coding, maintainers
+@audience paper and proposal authors, consultants, who-benefits analysts
+@tone normative
+@style pattern
+@grade principle
+@provenance Joe, 2026-10-29 ("technology creates costs, technology requires maintainers, technology keeps people up at night"), mined from the dated client and flop record in ~/notes/argument-graph/apex.edn: e/merge 2012 (Mumble), Patterns of Patterns II case study 2 (2023, Org Roam wiki), HDM_criticism 2005 (parser). Drafted by claude-16 with Joe, 2026-10-29.
+@status draft 2026-10-29; runs correct it
+@references [argument-coherence/ARGUMENT argument-coherence/say-how-it-carries-back argument-coherence/show-the-deliverable creativity-commons/benefit-proportional-to-contribution]
+
+! conclusion:
+  Do not argue that "technology is not the problem". Name each piece of technology the plan depends on, who will maintain it after delivery, and what it costs them. Treat that cost as part of the argument.
+
+  + context:
+    Proposals and offers present a method and treat the tool that carries it as incidental. The claim is now often stronger: with AI, anyone can build the app, so staff and machines are not needed.
+
+  + IF:
+    The benefit you promise reaches people through a tool: a wiki after the workshop, a voice channel during it, a harness, an app.
+
+  + HOWEVER:
+    Naming the maintenance burden makes the offer look more expensive. A tool can also succeed where its maintenance was never costed.
+
+  + THEN:
+    For each tool, state: who runs it after you leave; what it costs them (time, money, attention, being woken at night); what happens to the benefit if it stops; and whether it reaches people outside your own tool culture.
+
+  + BECAUSE:
+    In the record, the method worked in the room and the tool failed afterwards.
+    At e/merge 2012, Mumble did not connect and participation was lost.
+    In 2023 the workshop for Abby Tabor (UWE) went well, but "the main limitation was in regard to follow-through". The Org Roam wiki meant to carry it was late and usable only by Emacs enthusiasts. Joe: "technology kind of was the problem".
+    In 2005 a contributor left HDM partly over code he could not trust.
+    Every merged patch is a maintenance obligation for someone. Sixty-nine Emacs fixes are sixty-nine of them, which is why the maintainer argument measures maintainer cost, not patch count.
+
+  + NEXT-STEPS:
+    next[Test on the "the CEO can vibe-code the whole app" claim: who maintains the app in year two?]
+    next[Add a maintenance row to each client case in the argument graph.]
+    next[Related: say-how-it-carries-back asks how the benefit returns; this asks what it costs to keep the route open.]

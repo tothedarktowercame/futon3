@@ -1,9 +1,9 @@
 {:schema :wm/task-selection-executable-steps-v1
- :version 1
+ :version 2
  :readme-sha256 "51d2f2784b36afd065e680146d8d1358e83f62edf224a88c6947e321cd6b8337"
  :interpretation-authority "L5-4d-impl, claude-2 ruling job 9326; review required, not a transcription of executable library code"
  :cascades
- [{:id :what-others-wait-on-first :version 1 :status :executable
+ [{:id :what-others-wait-on-first :version 2 :status :alias :alias-of :giraffe-order
    :readme-cascade 1 :readme-lines [55 58]
    :realises {:row 1 :component true :full-row-executable true}
    :interpretation "Retained makeup component: ready, stable cone then stable unblocks. Cone is now explicitly bound to prepare-the-ground. Last ordering is primary."

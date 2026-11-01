@@ -1,0 +1,38 @@
+{:schema :wm/task-selection-executable-steps-v1
+ :version 1
+ :readme-sha256 "51d2f2784b36afd065e680146d8d1358e83f62edf224a88c6947e321cd6b8337"
+ :interpretation-authority "L5-4d-impl, claude-2 ruling job 9326; review required, not a transcription of executable library code"
+ :cascades
+ [{:id :what-others-wait-on-first :version 1 :status :executable
+   :readme-cascade 1 :readme-lines [55 58]
+   :realises {:row 1 :component true :full-row-executable true}
+   :interpretation "Retained makeup component: ready, stable cone then stable unblocks. Cone is now explicitly bound to prepare-the-ground. Last ordering is primary."
+   :patterns ["only-what-can-start-now" "prepare-the-ground" "what-others-wait-on-first"]
+   :steps [:ready-gate :by-cone :by-unblocks]}
+  {:id :only-what-can-start-now :version 1 :status :executable
+   :readme-cascade 1 :readme-lines [55 58]
+   :realises {:row 1 :component true :full-row-executable true}
+   :interpretation "Readiness component only; not the full Giraffe composition. Also occurs in README rows 2 and 3."
+   :patterns ["only-what-can-start-now"] :steps [:ready-gate]}
+  {:id :find-out-before-building :version 1 :status :executable
+   :readme-cascade 5 :readme-lines [68 70]
+   :realises {:row 5 :component true :full-row-executable false}
+   :interpretation "Approved component interpretation: undetermined tasks in Giraffe rank order. Does not implement bound-the-bet or halfway-house and does not claim equivalence to the full uncertain-design row."
+   :patterns ["find-out-before-building"]
+   :steps [{:status-gate :undetermined} :by-rank]}
+  {:id :giraffe-order :version 1 :status :executable
+   :readme-cascade 1 :readme-lines [55 58]
+   :realises {:row 1 :component false :full-row-executable true}
+   :interpretation "README priority is unblocks then cone; stable-sort execution is cone then unblocks. Unit order matches the retained witness's executable composition."
+   :patterns ["only-what-can-start-now" "prepare-the-ground" "what-others-wait-on-first"]
+   :steps [:ready-gate :by-cone :by-unblocks]}
+  {:id :closure-under-scarce-seats :version 1 :status :not-executable
+   :readme-cascade 2 :readme-lines [59 62] :needs [:seat-usage :seat-requirements]}
+  {:id :repair-click :version 1 :status :not-executable
+   :readme-cascade 3 :readme-lines [63 64] :needs [:repair-path-obligations :verifiable-capability]}
+  {:id :operator-portfolio :version 1 :status :not-executable
+   :readme-cascade 4 :readme-lines [65 67] :needs [:operator-charter :capacity :cost-risk :resolvedness :portfolio-composition]}
+  {:id :uncertain-design :version 1 :status :not-executable
+   :readme-cascade 5 :readme-lines [68 70] :needs [:design-question :checkable-stop-rule :smaller-useful-successor]}
+  {:id :dated-demonstration :version 1 :status :not-executable
+   :readme-cascade 6 :readme-lines [71 72] :needs [:external-date :verifiable-capability :smaller-useful-successor]}]}

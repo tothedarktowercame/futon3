@@ -1,0 +1,26 @@
+@flexiarg ways-of-working/inbox-zero
+@title All files are committed and pushed; no mess is left in the repos
+@keywords way of working, invariant, cascade live
+@audience agents, operators, institution designers
+@tone normative
+@style pattern
+@status draft 2026-11-02 by claude-16; runs correct it
+@provenance declared in futon3c/holes/excursions/ways-of-working.json (claude-2 with Joe, 2026-11-02)
+@why [creativity-commons/contributor-boundaries]
+
+! conclusion: Every repo under ~/code with an upstream has no untracked or modified files and no unpushed commits.
+
+  + IF:
+    Uncommitted and unpushed work is invisible to every other participant, cannot be reviewed, and is lost on the next disk failure; a dirty tree also stops the click loop's preflight.
+
+  + HOWEVER:
+    Agents leave work uncommitted, in worktrees and on branches, because committing is not part of finishing a thought.
+
+  + THEN:
+    Every repo under ~/code with an upstream has no untracked or modified files and no unpushed commits.
+
+  + BECAUSE:
+    Uncommitted work is invisible to other participants and is lost with a disk. A dirty tree also stops the click loop.
+
+  + VALIDATION:
+    Is every repo with an upstream clean and fully pushed?

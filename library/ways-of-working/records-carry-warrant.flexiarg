@@ -1,0 +1,26 @@
+@flexiarg ways-of-working/records-carry-warrant
+@title Nothing is accepted on say-so
+@keywords way of working, invariant, cascade live
+@audience agents, operators, institution designers
+@tone normative
+@style pattern
+@status draft 2026-11-02 by claude-16; runs correct it
+@provenance declared in futon3c/holes/excursions/ways-of-working.json (claude-2 with Joe, 2026-11-02)
+@why [creativity-commons/distributed-monitoring creativity-commons/producers-can-modify-the-tests agent/evidence-over-assertion]
+
+! conclusion: Every reviewed change carries a warrant whose shas match the diff; a run without one is the dirty tree, not a veto.
+
+  + IF:
+    An assertion severed from its derivation cannot be checked, learned from, or recovered.
+
+  + HOWEVER:
+    Agents report work done, and reports are cheap to write. Reviewing every report by rerunning it costs more than the work.
+
+  + THEN:
+    Every reviewed change carries a warrant whose shas match the diff; a run without one is the dirty tree, not a veto.
+
+  + BECAUSE:
+    A warrant with matching shas lets anyone check a run later, while a pasted count convinces nobody tomorrow. In one traced case, none of 12 live gaps closed with an independent record.
+
+  + VALIDATION:
+    Does a change in review carry a warrant whose shas match its diff?

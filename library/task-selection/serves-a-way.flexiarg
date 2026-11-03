@@ -1,0 +1,27 @@
+@flexiarg task-selection/serves-a-way
+@title Serves a Way
+@keywords placement, way, action, work
+@audience agents and the War Machine selecting the next task
+@tone design
+@style pattern
+@status draft 2026-11-02 (codex-12 for claude-2)
+@role gate
+@guard placement: the cited line and way(s) served, action, and open status.
+@effect keeps candidates placed under a way with action work.
+@predicts the selected task's reason names the way it serves.
+@references [task-selection/only-what-can-start-now task-selection/what-others-wait-on-first]
+! conclusion: Keep work placed under a cited way and name that way in the reason.
+
+  + context: Ant placements connect open tasks to the ways they serve.
+
+  + IF:
+    A ready candidate has an open placement under one or more cited ways.
+
+  + HOWEVER:
+    Audit, held, close, absent, and empty-way placements are not work placements.
+
+  + THEN:
+    Keep only placements whose action is work or a named work cluster.
+
+  + BECAUSE:
+    A dispatch should say which way the selected work serves.

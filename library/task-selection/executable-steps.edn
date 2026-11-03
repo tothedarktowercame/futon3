@@ -1,6 +1,6 @@
 {:schema :wm/task-selection-executable-steps-v1
- :version 2
- :readme-sha256 "51d2f2784b36afd065e680146d8d1358e83f62edf224a88c6947e321cd6b8337"
+ :version 3
+ :readme-sha256 "00d4573a81837d485fd7f42108742171c8028007c2d4873f17f6d6ad0d9c5e19"
  :interpretation-authority "L5-4d-impl, claude-2 ruling job 9326; review required, not a transcription of executable library code"
  :cascades
  [{:id :what-others-wait-on-first :version 2 :status :alias :alias-of :giraffe-order
@@ -26,6 +26,12 @@
    :interpretation "README priority is unblocks then cone; stable-sort execution is cone then unblocks. Unit order matches the retained witness's executable composition."
    :patterns ["only-what-can-start-now" "prepare-the-ground" "what-others-wait-on-first"]
    :steps [:ready-gate :by-cone :by-unblocks]}
+  {:id :serves-a-way :version 1 :status :executable
+   :readme-cascade 7 :readme-lines [73 75]
+   :realises {:row 7 :component false :full-row-executable true}
+   :interpretation "Ready candidates placed under a cited way with action work, then Giraffe's cone and unblocks order. The placement fact comes from futon2.aif.placement-adapter; a field without the fact refuses (placement-unavailable), it does not pass."
+   :patterns ["only-what-can-start-now" "serves-a-way" "what-others-wait-on-first"]
+   :steps [:ready-gate :placed-gate :by-cone :by-unblocks]}
   {:id :closure-under-scarce-seats :version 1 :status :not-executable
    :readme-cascade 2 :readme-lines [59 62] :needs [:seat-usage :seat-requirements]}
   {:id :repair-click :version 1 :status :not-executable

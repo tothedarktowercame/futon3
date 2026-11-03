@@ -70,6 +70,9 @@ these compositions; each is a candidate selection policy, not a proposal.
    halfway-house.
 6. **A dated demonstration** (E-futon-workshop-demo, M-apm-demonstration I.20):
    the-date-decides → end-in-something-shown → halfway-house.
+7. **Serves a way** (Joe 2026-11-02, ant placements;
+   futon2 SPEC-placement-adapter-2026-11-02): only-what-can-start-now →
+   serves-a-way → what-others-wait-on-first.
 
 Several cascades share patterns; they differ in which patterns they include
 and in which order. The same field gives different tasks under different

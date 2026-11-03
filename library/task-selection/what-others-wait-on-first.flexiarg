@@ -10,6 +10,7 @@
 @effect orders ready candidates by how many items their completion makes ready at once.
 @predicts after the task closes, the number of ready items rises by the predicted count.
 @references [task-selection/only-what-can-start-now task-selection/prepare-the-ground task-selection/take-the-cheap-win]
+@undercuts task-selection/take-the-cheap-win | shown-by giraffe.unblocks < other.giraffe.unblocks (other is any other ready candidate in the field) | "Plans are often written in another order (the order pieces were thought of), and the item many others need may be harder or less visible than a cheap uncoupled one."
 ! conclusion: Among items that can start now, do first the one that the most other items are waiting on.
 
   + context: Several items are ready; their completions free different amounts of other work.

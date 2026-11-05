@@ -1,6 +1,6 @@
 # Excursion: T_total — paper-level tension scalar across a batch
 
-**Status:** v0 — real data landed (2026-04-27)
+**Status:** DONE — script committed (futon6 046a25f); findings in this file; confirmed by Joe 2026-11-05 (completion-criteria batch 1, ~/notes/completion-criteria/CLOSURES-batch1.md). (Previous status: v0 — real data landed (2026-04-27))
 **Owner mission:** `holes/missions/M-pattern-application-diagnostic.md`
 **Parent excursion:** `holes/excursions/E-math-prototype-pilot.md`
   (this excursion is open-question item 1 from there).

@@ -571,3 +571,10 @@ These v0 + v0.5 + diachronic findings sharpen items in
   enrichment layers; this excursion's hypergraph projection
   is a v0 implementation of those edges restricted to a
   single subdirectory.
+
+## Completion criteria
+
+- The v0 hypergraph script exists and a first-pass run on futon2 is recorded — check: futon3/scripts/v0_codebase_hypergraph.clj exists; §'v0 run — futon2 baseline' of this file **Met.**
+- Cross-prototype machinery runs on a second manifold with a readable top-K — check: §'Transfer back to the parent mission' item 3 of this file **Met.**
+- The operator reverse check is done: the operator names the 5 functions that feel most owed work and the overlap with the computed top-K |ΔT| is recorded, whichever way it comes out — check: a dated subsection of this file recording the operator's names and the overlap count **Not started.**
+- The verdict word in §'Transfer back' item 3 is upgraded from 'provisionally' once the reverse check lands, or the failure is recorded as a finding — check: futon3/holes/excursions/E-cross-prototype-geometry.md:507 **Not started.**

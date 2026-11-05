@@ -141,3 +141,9 @@ phase 3 LLM-aided extraction.
   paper added to the corpus becomes immediately retrievable*; the
   block-detection layer is a precondition for older arxiv content
   to participate.
+
+## Completion criteria
+
+- A prose-convention detection layer (phase 1) exists and is invoked for papers where environment detection finds no blocks — check: a function in `futon6/src/futon6/` (paper_hypergraph.py or theorem_extraction.py) that synthesises virtual theorem/proof markers from prose conventions, with a unit test naming it **Not started.**
+- F2 on regular older-arxiv batches rises from the 0.13-0.20 baseline toward the 0.40-0.50 target, measured by the same `futon6/scripts/compute-paper-T.py` over results-005 — check: recorded before/after run of compute-paper-T.py over `~/code/storage/mark2/outbox/results-005/` **Not started.**
+- Either outcome is recorded: target reached, or the useful negative result ('regex plateaus at ~0.25') is written into this file with the measurement — check: this file's Expected-payoff section updated with the measured number **Not started.**

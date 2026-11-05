@@ -1,0 +1,30 @@
+@flexiarg militant-pacifism/world-to-come-in-the-present
+@title The World to Come Is Present (olam ha-ba): The Future We Prefer Chooses What We Do Now
+@audience futon theorists, AIF implementers
+@tone analytic
+@style pattern
+@tier optative
+@references ["militant-pacifism/demonstrable-harm-reduction (how the preference is observed)" "militant-pacifism/remove-causes-not-symptoms (what the preference selects for)" "futon-theory/structural-tension-as-observation (AIF reading of the library)" "futon-theory/task-as-arrow"]
+@status DRAFT 2026-11-05 (revised 2026-11-05 after Joe's reading), not approved
+
+! conclusion: A future we prefer affects what we do now only if it is written into the preferences that choose what we do. In active inference those preferences (C) are part of the score that picks the next action, so a more peaceful future has to be one of them, stated as outcomes that can be observed, rather than a hope about where the work might lead. Held this way, the preference selects active work: dismantling what produces harm, not waiting for harm to subside. And it must be stated step by step along the way (C_tau, a preference for each step tau up to the planning horizon), because a preference for peace with no plan for how to get there is a quiet endorsement of the status quo.
+
+  + context: Joe (2026-11-05) relates tikkun olam to olam ha-ba, "the concept that the world to come is present in the current world", and names it as a futon thesis that can be formalised through Friston's account of how preferences about the future influence present action. Rabbi Becky Silverstein draws the active consequence: "One way each of us can play a role in building olam haba is by working to dismantle the systems of oppression that our world is constructed on" (she relates this to "crash theory"; not yet read here). Joe (2026-11-05): "a preference for peace with no plan for how to get there is a quiet endorsement of the status quo", which is why he keeps returning to C_tau.
+
+  + IF:
+    A system chooses its next task by scoring candidates against what it prefers, and peace or reduced harm is not among those preferences. Peace may still be hoped for as a by-product of good work, but since nothing in the score refers to it, it plays no part when one task is chosen over another.
+
+  + HOWEVER:
+    In active inference the next policy is the one with the lowest expected free energy G, and the part of G that reflects goals is the expected log preference over future outcomes, ln P(o | C) (Friston et al. 2015, "Active inference and epistemic value"; Parr, Pezzulo and Friston 2022, Active Inference, ch. 2 and 7). An outcome that is not in C has no weight in that choice, however much it is hoped for. Two weaker forms fail in the same way. A preference for "peace" stated loosely cannot be scored, because C ranges over outcomes the system can observe. And a preference stated only for the end state, beyond or at the edge of the planning horizon, leaves every step before it without a preferred outcome: at those steps, continuing as things are scores as well as any move toward the end, so the current course is what gets chosen. In the expected free energy over a horizon, G(pi) sums a risk term for each step tau against C_tau; the steps where C_tau says nothing about progress give the plan no direction.
+
+  + THEN:
+    Put the preferred future into C as observable outcomes: a tension that is resolved, a harm that does not recur, work that is repaired rather than abandoned (the observations demonstrable-harm-reduction asks each deliverable to name). Prefer outcomes at the level of causes, such as a recurring conflict that stops recurring, so that the policies this favours are ones that take apart what produces the harm, and not only ones that tidy up after it (remove-causes-not-symptoms). State the preference as a schedule, C_tau: for each step within the horizon, the intermediate outcome that would show the way is being made (a cause identified, then its next occurrence prevented, then the recurrence rate down). That schedule is the plan, written where the selector reads it. Then the choice of the next task is made partly by that future. This is the formal sense in which the world to come is present: it is already at work in what is chosen now.
+
+  + BECAUSE:
+    A selector can only move toward outcomes its preferences represent. Writing the preference in, in a form that can be observed and so contradicted, is the difference between hoping for a world and acting from it; stating it at the level of causes is what makes the action it selects comprehensive rather than palliative; stating it for each step is what keeps it from defaulting to the status quo.
+
+  + NEXT-STEPS:
+    - Locate where the War Machine's C (preference) term lives in the Lean and the Clojure, and check whether any harm-reduction outcome is in it today.
+    - The War Machine's own C_tau has the shape this pattern warns against: in the class schedule (mathlib4 DarkTower/WarMachine/CTauClassPreference.lean, theorem before_horizon_all_mass_waiting), every step before the horizon puts all preference mass on :ending/not-yet-evaluated, and only the last step carries the 55/35/5/5 class weights. Intermediate progress (Joe's "effective intermediate progress", PROOF-2a <1>4) is today carried outside that schedule: by running clicks, conforming to the Lean and making improvements, at the interface between exogenous repair (the medic) and endogenous repair (self-heal). Formalising it in the machine's C_tau is deliberately left open (Joe, 2026-11-05) until the machine runs reliably; it is a refinement for a later stage, and would go into the Lean first.
+    - Do not add such an outcome to C until there are observations of it to score against (as demonstrable-harm-reduction says); until then it is recorded, not scored.
+    - Any formal statement goes through the Lean, citing the publications, not the Clojure.

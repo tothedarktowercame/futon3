@@ -17,7 +17,7 @@
 > *and to strive for the removal of all causes of war.*
 > — War Resisters International
 
-> *Those who love peace must learn to organize as effectively as those who love war.*
+> *Those of us who love peace must organize as effectively as the war hawks.*
 > — Martin Luther King Jr.
 
 > *As we know, the revolutionary problem today is to find some unity*

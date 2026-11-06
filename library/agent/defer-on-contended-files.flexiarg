@@ -1,0 +1,29 @@
+@flexiarg agent/defer-on-contended-files
+@title Defer On Contended Files, Not On A Dirty Tree
+@sigils [⏳/讓]
+@audience agent architects, War Machine maintainers, futon developers
+@tone foundational
+@style pattern
+@provenance Joe, emacs-repl 2026-11-06 ("WM shouldn't be made brittle in ways that other agents are not ... if another agent is actively working on a file that it wants to touch, that would be a good reason to defer that work, rather than abort a click"); incident: futon2 data/wm-click-loop/ledger.jsonl 2026-11-06T20:58:28Z, stop "preflight launch-unavailable: canonical-source-uncommitted-or-unavailable: /home/joe/code/futon3c", caused by an untracked src/futon3c/arxana/ that no click loads; preflight futon2 scripts/wm_click_prepare.py clean() (3f0a0c79a)
+
+! conclusion: An agent working in a shared live checkout guards only the files its work will read or load, defers when one of those is being edited by someone else, and never stops because unrelated work is in progress.
+
+  + context: Several agents share one live checkout and one serving process; they edit files and load code into the process as part of ordinary work. One agent (here the War Machine) needs its run to be attributable: the record must say which code ran.
+
+  + IF:
+    The agent refuses to start whenever the shared tree has any uncommitted or untracked file, so that the code it runs is exactly a commit.
+
+  + HOWEVER:
+    "Live" moves whenever anyone works, and work in progress is the normal state of a shared checkout. A whole-tree guard stops the agent for edits it would never load (on 2026-11-06 a new arxana namespace stopped a click that did not require it), so the agent becomes brittle in a way no other agent is. Dropping the guard instead lets the agent load someone's half-written file into the shared process, breaking it for everyone, and leaves the run record unable to say what ran.
+
+  + THEN:
+    Guard the closure, not the tree. Before running, compute the files the run will load or reload (its declared source composition and their dependencies). For each file in that closure: if it is committed and current, use it; if it is being edited (modified or untracked in the closure), do not load it and do not abort: defer the work that needs it, record the deferral with the file and the reason, and try again later. Record the run's code identity as what was actually loaded (commit plus the per-namespace status the verifier reports), including any namespace left at its previously loaded version. Files outside the closure are not consulted.
+
+  + BECAUSE:
+    The purpose of the guard is two things: do not put someone else's unfinished code into the shared process, and be able to say what ran. Both are properties of the files the run touches. Checking more than that adds failures without adding either guarantee, and deferring rather than aborting is what any agent does when a colleague is mid-edit on a file it needs.
+
+  + NEXT-STEPS:
+    - Replace the whole-tree check in wm_click_prepare.py clean() with a check over the source composition's closure; the loop's reload already skips dirty files ("skipped-dirty" in the reload ledger row), so the two should share one definition of the closure.
+    - Turn "closure file dirty" from a stop into a deferral with a recorded reason and a retry, distinct from a refusal.
+    - Test with the exact incident: an untracked namespace outside the closure must not block; a modified file inside the closure must defer, not stop, and must not be loaded.
+    - Open question: when the closure stays contended for a long time, who is told, and after how long.

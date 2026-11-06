@@ -10,23 +10,27 @@
    :patterns ["only-what-can-start-now" "prepare-the-ground" "what-others-wait-on-first"]
    :steps [:ready-gate :by-cone :by-unblocks]}
   {:id :only-what-can-start-now :version 1 :status :executable
+   :enactment-mode :implementation
    :readme-cascade 1 :readme-lines [55 58]
    :realises {:row 1 :component true :full-row-executable true}
    :interpretation "Readiness component only; not the full Giraffe composition. Also occurs in README rows 2 and 3."
    :patterns ["only-what-can-start-now"] :steps [:ready-gate]}
   {:id :find-out-before-building :version 1 :status :executable
+   :enactment-mode :discovery
    :readme-cascade 5 :readme-lines [68 70]
    :realises {:row 5 :component true :full-row-executable false}
    :interpretation "Approved component interpretation: undetermined tasks in Giraffe rank order. Does not implement bound-the-bet or halfway-house and does not claim equivalence to the full uncertain-design row."
    :patterns ["find-out-before-building"]
    :steps [{:status-gate :undetermined} :by-rank]}
   {:id :giraffe-order :version 1 :status :executable
+   :enactment-mode :implementation
    :readme-cascade 1 :readme-lines [55 58]
    :realises {:row 1 :component false :full-row-executable true}
    :interpretation "README priority is unblocks then cone; stable-sort execution is cone then unblocks. Unit order matches the retained witness's executable composition."
    :patterns ["only-what-can-start-now" "prepare-the-ground" "what-others-wait-on-first"]
    :steps [:ready-gate :by-cone :by-unblocks]}
   {:id :serves-a-way :version 1 :status :executable
+   :enactment-mode :implementation
    :readme-cascade 7 :readme-lines [73 75]
    :realises {:row 7 :component false :full-row-executable true}
    :interpretation "Ready candidates placed under a cited way with action work, then Giraffe's cone and unblocks order. The placement fact comes from futon2.aif.placement-adapter; a field without the fact refuses (placement-unavailable), it does not pass."

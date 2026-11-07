@@ -94,6 +94,7 @@ interval) between components. Agency/Forum/Drawbridge had 鹵 (potential)
 but no 皿 (recording protocol) — composition could not form.
 
 See: [futonic-logic.flexiarg](futonic-logic.flexiarg)
+Companions: [the-woven-form.flexiarg](the-woven-form.flexiarg) (what the name 蒲團 commits the stack to) and [putuan-is-the-empirical-cascade.flexiarg](putuan-is-the-empirical-cascade.flexiarg) (a mission's observed cascade, read off its sessions, set beside its authored one).
 
 ## Evolutionary Patterns (from futon5)
 

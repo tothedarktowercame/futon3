@@ -1,0 +1,36 @@
+@flexiarg futon-theory/putuan-is-the-empirical-cascade
+@title The Putuan Is the Empirical Cascade: a Mission's Cascade, Read Off the Sessions That Wove It
+@sigils [🧵/團]
+@keywords futon, 蒲團, putuan, cascade, orbit, phase-portrait, thread, session, scope-surface, empirical, authored-vs-observed, concentration
+@audience futon developers, pattern theorists, war room
+@tone analytic-foundational
+@factor Keen investigation (dhammavicaya)
+@style pattern
+@references [futon-theory/futonic-logic futon-theory/the-woven-form futon-theory/symbolic-individuation futon-theory/structural-tension-as-observation futon-theory/retroactive-canonicalization]
+@why [futon-theory/the-woven-form futon-theory/futonic-logic]
+@provenance Drafted by Claude (2026-11-07) from Joe's turn of that day, which proposed it as a complement to futon-theory/futonic-logic. Grounding source: futon2/holes/M-points-de-fuite.md §6.3 ("The putuan (蒲團) diagrams ARE the empirical per-mission cascade"), with its instruments and verification in §4 and §5.1. Not yet reviewed by Joe.
+
+! conclusion: A mission has two cascades. One is authored: the patterns it cites and their @why and @how links. The other is observed: the threads its sessions actually wound across the mission's scopes, drawn as orbits. The observed one is the putuan, the woven form made visible for one mission. Keep both, and read the gap between them as information about the mission, not as noise in either.
+
+  + context: futon-theory/futonic-logic gives the vocabulary and the recognition loop. futon-theory/the-woven-form says what the name 蒲團 commits the stack to: scattered fibres gathered into one concentrated form. Neither says how to *see* whether the gathering happened. M-points-de-fuite (June 2026) built an instrument that does this. futon6's `reflow.py` turns a session's turns into a comb, then threads, then orbits (`session_mission_comb.py`, `session_threads.py`, `thread_orbits.py`), and WebArxana's orbit layer (`client/graph.cljs`, `orbit-layer`) draws each recurrent thread that engages a mission as a curve across its scope surface. Hue marks the thread; each curve runs dim to bright along turn time, with an arrow towards now. It was verified live (40 → 49 orbits as one session grew) and reproduced on a second session by a different author.
+
+  + IF:
+    You want to know whether a mission is actually being woven, that is, whether its turns are gathering into continuous threads across its own scopes, and not just whether it has an authored cascade that looks coherent on paper.
+
+  + HOWEVER:
+    An authored cascade only states intent. It can look whole while the sessions never touch half its scopes, or while the work winds through scopes the cascade does not name. Turn-level evidence, read one turn at a time, cannot show this either: a single thread is a sliver, and only the family of threads shows coverage. Without the observed form, "the cascade" means only what was written down, and the 蒲/布 test of futon-theory/the-woven-form has nothing to be applied to.
+
+  + THEN:
+    For a mission under way, compute its putuan from its sessions: threads per recurrent pattern, retracted onto the mission's scope surface, ordered in turn time. Set it beside the authored cascade, and read three cases:
+    - **woven:** an authored link that the orbits also travel;
+    - **unworn:** an authored link no thread travels, so the cascade promises a path the work has not taken;
+    - **unwritten:** a path the threads travel that no authored link names, a candidate @how, or the sign of a misconstrual.
+    Treat both kinds of gap as observations (futon-theory/structural-tension-as-observation). A mission's authored cascade can be revised from its putuan (futon-theory/retroactive-canonicalization), and its putuan can be judged against what it set out to do.
+
+  + BECAUSE:
+    The woven form is defined by the act of gathering. The only place that act leaves a trace is in the sequence of turns. An orbit is that trace drawn at the mission's scale: scattered turns concentrated into one visible form. This makes the putuan the empirical counterpart of the authored cascade, as an execution trace is the counterpart of a program. Comparing them is how futonic logic's recognition loop gets an observation to work on. Otherwise the loop runs on the authored cascade alone, and confirms only what the author already believed.
+
+  + NEXT-STEPS:
+    - Revive the producer. It was tied to one configured session in Joe's Emacs (`session-overview--orbit-producer`), and as of 2026-11-07 no served `thread-orbits.json` was found.
+    - Compute the woven, unworn and unwritten counts for one closed mission whose authored cascade exists, and check by hand whether the unwritten paths are real.
+    - The pattern-graph view sketched in futon3c/holes/excursions/E-war-machine-viewer.md (packets G1–G3) is the library-side complement: the library joining up, where the putuan shows one mission winding. Both read the same 象 analyses.

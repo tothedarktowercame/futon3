@@ -87,6 +87,11 @@ specification of the symbolic operations they perform.
 | 化 | becoming-event (Verðandi) | Live writer-action, consent gate firing, loop turn presently composing |
 | 應 . 債 | owed-obligation (Skuld) | sorries.edn (debt registry); 應 = modal "shall"; 債 = substantive debt; cognate English shall/should |
 | 鹽 / 債 ledger | composition-debt pair | Every 鹽 emits worth (salt-pay/salarium) AND debt (Skuld/應/債); see futon-theory/wyrd |
+| 自尝 | bounded-self-application | The loop applied to its own output, named natively: one small taste per turn, no convergence claim — "no cook claims the soup is finished"; dissolves the halting objection without Turing (E-kimi-task-354) |
+| 團 (蒲團/putuan) | observed-woven-form | A mission's OBSERVED cascade — the threads its sessions actually wove, made visible — the empirical dual of the authored cascade; read the woven/unworn/unwritten gap between them (futon-theory/putuan-is-the-empirical-cascade) |
+| 部-ratchet | decomposition-as-earned-past | 部 once chosen becomes 既 for that line of turns; silent per-turn swapping makes tastings incomparable |
+| cold-皿 | cold-start condition | 鹽 does not dissolve in a cold 皿: first-turn compositions are structurally weaker, not a verdict on the 部 |
+| 香疲 | salience fatigue | 香 has a time-constant; unvarying 香 yields no 味 — the ledger owes a periodic 換勺 (change-the-ladle) obligation |
 
 Axiom A7 (compositional salience): generativity requires both 鹵 and 皿
 perceivable under the same 部, and only after perceiving 間 (the honest

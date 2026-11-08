@@ -1,10 +1,10 @@
-# militant-pacifism — DRAFT candidate patterns (not in the library)
+# militant-pacifism — harm-reduction patterns (in the library from 2026-11-08)
 
 Drafted by claude-6, 2026-11-05, from Joe's turn of 2026-11-05 ~18:00Z and the
-epigraphs at the top of futon3/holes/war-room.md. Kept out of
-futon3/library on purpose: the library is indexed for retrieval, and Joe asked
-to see these before anything cites them. Promote by moving the directory to
-futon3/library/militant-pacifism/ once approved; sigils are left unassigned.
+epigraphs at the top of futon3/holes/war-room.md. Joe committed them on
+2026-11-05 (futon3 3cbce67) and approved them for the library on 2026-11-08;
+moved here from futon3/militant-pacifism/ the same day. Sigils are still
+unassigned.
 
 ## Shape
 

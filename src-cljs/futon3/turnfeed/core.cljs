@@ -54,13 +54,10 @@
 ;; proforma") and in 小象 (futon3c/emacs/xiaoxiang-preview.el, whose
 ;; `xiaoxiang-preview-marks' must agree with this map). With legend-rows this
 ;; makes one table: intent, mark, chip, loop stage, R-node (Joe, 2026-10-01).
+;; BEGIN GENERATED INTENT-VOCABULARY/V1
 (def intent-mark
-  {"gist" "㊥" "propose" "㊭" "approve" "㊣" "disagree" "🈚" "qualify" "㊟"
-   "explain" "🈖" "clarify" "🈯" "report" "㊢" "report-problem" "㊩"
-   "verify" "㊬" "retract" "🈹" "withdraw" "🈡" "unresolved" "🈳"
-   "constrain" "🈲" "ask-action" "🈸" "delegate" "㊯" "prioritize" "㊝"
-   "collect" "㊮" "extend" "🈕" "continue" "🈰" "defer" "🈝"
-   "redirect" "🈘" "explore" "㊫"})
+  {"gist" "㊥" "propose" "㊭" "approve" "㊣" "disagree" "🈚" "qualify" "㊟" "explain" "🈖" "clarify" "🈯" "report" "㊢" "report-problem" "㊩" "verify" "㊬" "retract" "🈹" "withdraw" "🈡" "unresolved" "🈳" "constrain" "🈲" "ask-action" "🈸" "delegate" "㊯" "prioritize" "㊝" "collect" "㊮" "extend" "🈕" "continue" "🈰" "defer" "🈝" "redirect" "🈘" "explore" "㊫"})
+;; END GENERATED INTENT-VOCABULARY/V1
 
 (def loop-stages
   [["PERCEIVE" "what the agent observes"]

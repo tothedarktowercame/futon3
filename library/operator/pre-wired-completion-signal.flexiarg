@@ -1,0 +1,20 @@
+@flexiarg operator/pre-wired-completion-signal
+@title Pre-Wire the Completion Signal Before the Work Finishes
+@status accepted 2026-11-11: proposed by 象 for 20 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-2BN7Az turn-41QIuF turn-5nPy6g turn-8bXmhH turn-A8CdWC turn-ATYGBE turn-AZSFAo turn-BjqIGb turn-C0hr3E turn-FLVY3J turn-IwyFhe turn-K5pZrC turn-PeuuHX turn-QZR2of turn-dYhP46 turn-i0ntm2 turn-kFTZ3u turn-pZOev0 turn-tDgkpg turn-vqkeo6
+@parent apparatus/done-is-observed-running
+@context An autonomous agent is running a bounded task (here the codex-19 transpiler) and the operator will not be watching continuously.
+
+! conclusion: At resume time, attach a conditional completion ritual: 'when X is complete, do Y to signal completion and readiness for the next phase' — naming the exact action and its locus in advance.
+
+  + IF:
+    The task has a recognizable end state and there is a concrete mechanism by which the agent can announce done-ness (an Elisp form, a buffer action, a bell).
+
+  + HOWEVER:
+    The end state is machine-detectable but not machine-signaled by default: without instruction the agent may stop silently, or improvise a signal the operator's tooling does not read, leaving the next phase waiting on nothing.
+
+  + THEN:
+    At resume time, attach a conditional completion ritual: 'when X is complete, do Y to signal completion and readiness for the next phase' — naming the exact action and its locus in advance.
+
+  + BECAUSE:
+    It narrows done-is-observed-running from a standing comparator over mechanisms to a per-task operator act: done-ness must be an observable event in the substrate, so the operator pre-wires the observation instead of polling.

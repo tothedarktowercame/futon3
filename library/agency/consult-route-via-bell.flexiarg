@@ -1,0 +1,20 @@
+@flexiarg agency/consult-route-via-bell
+@title Route a Bounded Question to a Named Peer Agent
+@status accepted 2026-11-11: proposed by 象 for 2 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-FXOMDp turn-iSo2M1
+@parent orchestration/recorded-handoff
+@context An operator orchestrates several agents over an async bell transport and mid-task needs input from a specific peer rather than a work product.
+
+! conclusion: Tell the current agent to bell the named peer asking for input on the specific issue — recipient and scope travel in one sentence.
+
+  + IF:
+    The next step depends on another agent's judgement on one identified issue, and that agent can be reached by bell.
+
+  + HOWEVER:
+    A full handoff (spec, acceptance bar, gates) is overkill for a question, yet an unscoped 'any thoughts?' invites drift; the ask must be routed to the right agent and bounded to the issue at hand.
+
+  + THEN:
+    Tell the current agent to bell the named peer asking for input on the specific issue — recipient and scope travel in one sentence.
+
+  + BECAUSE:
+    It narrows the handoff to its consultation case: same modeled-dispatch discipline, but the deliverable is input on a named issue, not code under gates.

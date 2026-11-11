@@ -1,0 +1,20 @@
+@flexiarg operator/yes-to-the-ordering
+@title Yes to the Ordering — Approve the Sequence, Touch Nothing Else
+@status accepted 2026-11-11: proposed by 象 for 3 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-70sVIr turn-9dIsAr turn-JwR96x
+@parent exotic/immutable-vision-mutable-plan
+@context An agent has proposed not just what to do but in what order, and the operator must respond before work continues.
+
+! conclusion: Answer with a minimal assent that names only the layer being approved ('Yes to your ordering'), delegating arrangement to the agent while keeping every other layer of the proposal exactly where it was.
+
+  + IF:
+    The agent's proposal is a sequencing or arrangement of already-agreed work, and the operator has no amendment to make.
+
+  + HOWEVER:
+    A bare 'yes' is cheap to give and easy to over-read: it approves the order, not the content, the estimates, or the goal — and later disagreement can be confused about what was actually sanctioned.
+
+  + THEN:
+    Answer with a minimal assent that names only the layer being approved ('Yes to your ordering'), delegating arrangement to the agent while keeping every other layer of the proposal exactly where it was.
+
+  + BECAUSE:
+    Sequencing is the mutable-plan layer; a scoped assent lets the operator consent at exactly that layer without re-opening or implicitly re-approving the vision, which is how a two-word reply stays honest about what it decided.

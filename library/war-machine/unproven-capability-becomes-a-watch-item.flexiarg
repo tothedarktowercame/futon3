@@ -1,0 +1,20 @@
+@flexiarg war-machine/unproven-capability-becomes-a-watch-item
+@title An Unproven Capability Becomes a Named Watch-Item at the Next Run
+@status accepted 2026-11-11: proposed by 象 for 2 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-IjBG9k turn-Nrursc
+@parent data-mining/the-first-checkpoint-is-a-quality-probe
+@context The self-heal route has never been proved in practice (s6); a live run is coming.
+
+! conclusion: Collect the unproven items into a list of things to look for when the machine actually runs, so the run doubles as their first witness.
+
+  + IF:
+    Capabilities exist in design but lack practical witnesses, and a live run is imminent.
+
+  + HOWEVER:
+    Without a pre-declared watch-list, the run happens and nobody can say afterwards whether the unproven capabilities fired — the run teaches nothing about them.
+
+  + THEN:
+    Collect the unproven items into a list of things to look for when the machine actually runs, so the run doubles as their first witness.
+
+  + BECAUSE:
+    First-checkpoint says a run's early output is a quality probe with pre-declared bands; this candidate generalises the probe list from quality bands to named unproven capabilities the run should bear witness to. Covers s6 (the named gap) and s7 (the list).

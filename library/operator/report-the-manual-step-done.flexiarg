@@ -1,0 +1,20 @@
+@flexiarg operator/report-the-manual-step-done
+@title Report the Manual Step Done: The Operator's Half of a Split Operation Gets a Receipt
+@status accepted 2026-11-11: proposed by 象 for 2 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-SguEix turn-ncpLmm
+@parent hygiene/receipt-then-gate
+@context A task splits across the capability boundary: the agent writes files, but only the operator can act inside his own environment (reload, restart, approve locally).
+
+! conclusion: Report the manual step's completion explicitly and minimally ('OK I reloaded those files'), converting an invisible state change into the receipt the agent's next step gates on.
+
+  + IF:
+    The operator completes the manual step the agent was waiting on.
+
+  + HOWEVER:
+    From the operator's side the act is trivial and its completion feels obvious ('I just did it, you saw nothing because you can't see here'); but the agent has no sensor into the operator's environment, so an unreported completion looks identical to a forgotten one.
+
+  + THEN:
+    Report the manual step's completion explicitly and minimally ('OK I reloaded those files'), converting an invisible state change into the receipt the agent's next step gates on.
+
+  + BECAUSE:
+    Receipt-then-gate blocks the act half until the receipt exists; this proposal is the producing half of that pair across the human-agent boundary — the operator manufactures the receipt his environment denies the agent's sensors.

@@ -1,0 +1,20 @@
+@flexiarg operator/port-by-breadcrumbs
+@title Port by Breadcrumbs: the Prior Implementation Fixes the Order
+@status accepted 2026-11-11: proposed by 象 for 4 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-ATYGBE turn-UhKS9u turn-cXDDUA turn-vqkeo6
+@parent peeragogy/use-or-make
+@context Porting an existing implementation to a new language (here the pinned partial Python blank-file-parser to Lisp).
+
+! conclusion: Treat the prior implementation as breadcrumbs: follow its structure for behavior AND its completion order for sequencing, while writing idiomatic target-language code.
+
+  + IF:
+    A partial prior implementation exists in the source language.
+
+  + HOWEVER:
+    A porter working from the spec alone must re-derive implementation order and can front-load hard parts the original deferred; but copying the source wholesale imports its accidents.
+
+  + THEN:
+    Treat the prior implementation as breadcrumbs: follow its structure for behavior AND its completion order for sequencing, while writing idiomatic target-language code.
+
+  + BECAUSE:
+    Use-or-make decides to reuse; this specialises the reuse mode for ports: the existing artifact is consumed as an ordering and behavior guide, not as a deliverable or a library.

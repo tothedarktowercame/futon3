@@ -1,0 +1,20 @@
+@flexiarg operator/reproduce-on-the-current-version-before-reporting-upstream
+@title Reproduce On The Current Version Before Reporting A Bug Upstream
+@status accepted 2026-11-11: proposed by 象 for 2 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-1relYm turn-8mX1Ks
+@parent operator/pin-the-defect-with-its-evidence
+@context The agent found a bug in a dependency on an old version and wants to report it to the maintainers.
+
+! conclusion: Install a current version, rerun the reproduction there, search the issue tracker for the bug, and only then draft the report (as a draft, not filed).
+
+  + IF:
+    The operator says it is worth reporting only if it reproduces on a current version, and that the one tested is old.
+
+  + HOWEVER:
+    The bug may already be fixed upstream and a report would waste the maintainers' time or look careless.
+
+  + THEN:
+    Install a current version, rerun the reproduction there, search the issue tracker for the bug, and only then draft the report (as a draft, not filed).
+
+  + BECAUSE:
+    A bug fixed since the old version is not a bug in the current one.

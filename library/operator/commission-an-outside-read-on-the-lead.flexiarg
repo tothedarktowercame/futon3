@@ -1,0 +1,20 @@
+@flexiarg operator/commission-an-outside-read-on-the-lead
+@title Commission an Outside Read on Whether the Lead Is Progressing
+@status accepted 2026-11-11: proposed by 象 for 2 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-K69f1E turn-Q2zTT7
+@parent process-coherence/status-refresh-before-work
+@context One agent leads an effort (claude-8 on PROOF-2a) and reports progress through its own dispatches and artifacts; the operator's confidence in those reports has been taxed by earlier review findings.
+
+! conclusion: hand the primary artifacts to an independent agent with a read-only scope ('no code changes') and ask the adequacy question directly: how would you guide next steps, and is this adequately progressing under the current leadership?
+
+  + IF:
+    the adequacy of the lead's progress is itself in question, so the lead's own account cannot settle it.
+
+  + HOWEVER:
+    asking the lead to self-assess invites optimistic framing; an outside read costs a second agent's time and can feel like going behind the lead's back.
+
+  + THEN:
+    hand the primary artifacts to an independent agent with a read-only scope ('no code changes') and ask the adequacy question directly: how would you guide next steps, and is this adequately progressing under the current leadership?
+
+  + BECAUSE:
+    status-refresh checks recorded status against reality before further work; this specialises the refresh's source: when the status's author is the thing being assessed, the reality-check must come from an independent reader of the same artifacts.

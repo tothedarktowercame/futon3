@@ -1,0 +1,20 @@
+@flexiarg operator/port-the-self-hosted-part-the-same-way-as-the-earlier-case
+@title Port The Self-Hosted Part The Same Way As The Earlier Case
+@status accepted 2026-11-11: proposed by 象 for 2 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-77E8E0 turn-ZT897u
+@parent apparatus/done-is-observed-running
+@context A system is being ported and a large part of it is written in the language being ported.
+
+! conclusion: Reuse the method that worked, test it on a failing input, and say where it stops carrying over.
+
+  + IF:
+    The operator says it should be portable the same way as an earlier, finished case.
+
+  + HOWEVER:
+    The earlier case may have been simpler and the method may not carry over.
+
+  + THEN:
+    Reuse the method that worked, test it on a failing input, and say where it stops carrying over.
+
+  + BECAUSE:
+    A method that ported one case is the cheapest test of the next.

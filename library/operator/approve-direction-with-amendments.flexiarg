@@ -1,0 +1,20 @@
+@flexiarg operator/approve-direction-with-amendments
+@title Approve The Direction, Then Attach The Amendments
+@status accepted 2026-11-11: proposed by 象 for 2 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-FiAUFY turn-m6cqV3
+@parent orchestration/consent-gate
+@context An agent has produced a draft (mockup, page, plan) and the operator is reviewing it in an iterative loop.
+
+! conclusion: Open with a short directional approval ('Yeah something like this'), then list the concrete amendments; the approval licenses continued work, the amendments steer it.
+
+  + IF:
+    The overall direction is right but several details need changing.
+
+  + HOWEVER:
+    Silent edits read as rejection and stall the agent; full sign-off would endorse details that are wrong.
+
+  + THEN:
+    Open with a short directional approval ('Yeah something like this'), then list the concrete amendments; the approval licenses continued work, the amendments steer it.
+
+  + BECAUSE:
+    Consent-gate names the recorded approval locus from the acting side; this is the operator-side counterpart — the approval is recorded but scoped to direction, not detail, so the loop keeps moving without false sign-off.

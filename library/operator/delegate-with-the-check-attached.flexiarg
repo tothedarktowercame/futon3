@@ -1,0 +1,20 @@
+@flexiarg operator/delegate-with-the-check-attached
+@title Delegate With The Check Attached
+@status accepted 2026-11-11: proposed by 象 for 4 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-5HZerJ turn-KUDk61 turn-Wz1t63 turn-ZKoe7v
+@parent agent/handoff-preserves-context
+@context The operator routes a piece of work to another agent seat, through the agent currently in the conversation.
+
+! conclusion: Ask the present agent's feasibility judgement on the named seat ('Do you think Kimi could sort that out'), and attach the acceptance method to the delegation ('using Playwright to validate').
+
+  + IF:
+    The delegated artefact has a failure mode that only end-to-end validation catches (here: script errors that a casual load misses — the tokenDataEnd incident).
+
+  + HOWEVER:
+    A delegation that names only the deliverable invites 'it loads' as done; but specifying the whole validation protocol from the operator's chair over-prescribes. The middle move: name the validation METHOD and let its protocol be built by the doer.
+
+  + THEN:
+    Ask the present agent's feasibility judgement on the named seat ('Do you think Kimi could sort that out'), and attach the acceptance method to the delegation ('using Playwright to validate').
+
+  + BECAUSE:
+    The parent requires the handoff to carry what the receiver needs so it does not restart; the operator's addition is that the handoff must also carry what DONE means — the acceptance check travels with the work, so the receiver builds to the test rather than to the description.

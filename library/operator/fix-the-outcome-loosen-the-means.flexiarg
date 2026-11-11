@@ -1,0 +1,20 @@
+@flexiarg operator/fix-the-outcome-loosen-the-means
+@title Fix The Outcome, Loosen The Means
+@status accepted 2026-11-11: proposed by 象 for 2 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-llSmbF turn-sF3XIm
+@parent social/tension-before-code
+@context The operator requests a capability or artifact and knows what it must achieve, but not (or not only) how it should be built.
+
+! conclusion: State the outcome precisely, offer one example means explicitly loosened ('a progress bar or similar indication', 'possibly sorted by section'), and let the builder choose the implementation.
+
+  + IF:
+    One example implementation is available to make the request concrete, but the operator does not want to prescribe it.
+
+  + HOWEVER:
+    Naming an example risks the agent building exactly that example whether or not it fits; naming only the outcome risks a request too abstract to act on. The example must be marked as illustrative, not specified.
+
+  + THEN:
+    State the outcome precisely, offer one example means explicitly loosened ('a progress bar or similar indication', 'possibly sorted by section'), and let the builder choose the implementation.
+
+  + BECAUSE:
+    The parent's discipline — specify the invariant before the code that must satisfy it — applied at the request seam: the operator fixes the invariant (a visible done/remaining readout) and explicitly leaves the constraining implementation to the builder.

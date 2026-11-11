@@ -1,0 +1,20 @@
+@flexiarg operator/verdict-carries-its-reason
+@title The Operator's Verdict on an Agent Proposal Carries Its Reason
+@status accepted 2026-11-11: proposed by 象 for 2 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-STFTI2 turn-ZXN1KT
+@parent apparatus/one-authority-per-question
+@context The agent has proposed mappings, explorations, or a next-steps list; the operator answers each with a verdict.
+
+! conclusion: Attach the reason to the verdict — authority ('we don't need to ask', I already know), constraint ('that's at a reasonable scale'), or prior reframing ('I've reframed it myself').
+
+  + IF:
+    The operator approves ('that's accurate… we don't need to ask', s1; 'I agree… best to work with the mark8 APM data', s5) or declines ('I'd decline that list as stated', s6).
+
+  + HOWEVER:
+    A bare verdict leaves the agent unable to update its model of the operator's criteria; the next proposal repeats the same miss.
+
+  + THEN:
+    Attach the reason to the verdict — authority ('we don't need to ask', I already know), constraint ('that's at a reasonable scale'), or prior reframing ('I've reframed it myself').
+
+  + BECAUSE:
+    One-authority-per-question gives each question exactly one source of truth; the operator IS that authority for his own work, and the attached reason is what makes the verdict reusable rather than a bare bit. Covers fragments s1, s5, s6.

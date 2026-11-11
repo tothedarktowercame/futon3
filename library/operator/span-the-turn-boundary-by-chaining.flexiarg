@@ -1,0 +1,20 @@
+@flexiarg operator/span-the-turn-boundary-by-chaining
+@title Span The Turn Boundary By Chaining Parked Work
+@status accepted 2026-11-11: proposed by 象 for 3 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-EiWVid turn-Ev3IJ0 turn-PkpLp0
+@parent cycle-machine/step-machine
+@context A delegated batch may exceed what one turn can hold.
+
+! conclusion: Name the mechanism (parks) and the condition (too much for one turn) when delegating, so splitting is a declared plan rather than an improvised one.
+
+  + IF:
+    The work is a list of similar items and the agent has a park/resume mechanism.
+
+  + HOWEVER:
+    Without a sanctioned spanning mechanism, the agent either truncates the list silently or blows the turn trying to finish; both failures hide the overrun.
+
+  + THEN:
+    Name the mechanism (parks) and the condition (too much for one turn) when delegating, so splitting is a declared plan rather than an improvised one.
+
+  + BECAUSE:
+    The parked chain is the step machine seen from the operator's seat: intents parked with their state, resumed in order; the operator's move is to authorise and name that mechanism as the sanctioned span.

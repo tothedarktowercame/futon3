@@ -1,0 +1,20 @@
+@flexiarg operator/ask-for-the-environment-act
+@title Ask The Agent To Make The Environment Ready, In One Line
+@status accepted 2026-11-11: proposed by 象 for 2 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-0GAJoj turn-VJBAnL
+@parent operator/commission-the-smallest-reviewable-act
+@context Joe needs a physical or system resource (a backup drive) available before work can continue.
+
+! conclusion: say the one act, name the object, and add 'now'; the agent does it and reports the result
+
+  + IF:
+    a resource must be attached or enabled and the agent has host access
+
+  + HOWEVER:
+    it is a mundane act with no spec, review or check attached, so no existing delegation pattern fits
+
+  + THEN:
+    say the one act, name the object, and add 'now'; the agent does it and reports the result
+
+  + BECAUSE:
+    the act is small enough that the request is the whole specification

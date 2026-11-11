@@ -1,0 +1,20 @@
+@flexiarg operator/accept-the-plan-as-stated
+@title Accept the Plan As Stated — 'OK That Works for Me'
+@status accepted 2026-11-11: proposed by 象 for 2 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-pdMJrk turn-ubAan4
+@parent task-selection/offer-a-menu-with-a-default
+@context The agent has announced a plan that carries its own built-in limits (228 verdict-less items going out the same way, at most three Zai seats at a time).
+
+! conclusion: Accept plainly ('OK that works for me'), accepting the plan's limits as part of the plan.
+
+  + IF:
+    The plan as announced — including its self-imposed constraints — is acceptable and needs no amendment.
+
+  + HOWEVER:
+    Silence leaves the agent unsure whether the limits were noticed; amending for its own sake disturbs limits the agent chose well.
+
+  + THEN:
+    Accept plainly ('OK that works for me'), accepting the plan's limits as part of the plan.
+
+  + BECAUSE:
+    The parent's menu protocol ends in an operator decision; this is the decision's simplest form — the recommended option taken with its stated limits — complementing operator/accept-with-one-amendment, which covers the verdict-plus-delta case.

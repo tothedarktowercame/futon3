@@ -1,0 +1,20 @@
+@flexiarg operator/bare-continue-nudge
+@title The Bare Continue Nudge
+@status accepted 2026-11-11: proposed by 象 for 2 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-lQwNl8 turn-qa25CU
+@parent orchestration/state-in-substrate-deltas-in-messages
+@context A long-running agent session where the shared record (transcript, substrate, mission doc) already holds the task state.
+
+! conclusion: Send the minimal continuation signal ('Let's continue') and let the agent recover context from the record; treat it as a pure delta on shared state.
+
+  + IF:
+    The operator wants work to resume or proceed and has nothing new to add — no new constraint, object, or success criterion.
+
+  + HOWEVER:
+    The message carries zero content; it only works because state lives in the shared substrate and the agent can recover what 'continue' means. Where state lives in the message channel, a bare continue is unanswerable.
+
+  + THEN:
+    Send the minimal continuation signal ('Let's continue') and let the agent recover context from the record; treat it as a pure delta on shared state.
+
+  + BECAUSE:
+    The bare continue is the degenerate case of that pattern: a message that is nothing but a delta, viable precisely because the substrate holds the state it modifies.

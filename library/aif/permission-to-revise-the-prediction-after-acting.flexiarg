@@ -1,0 +1,20 @@
+@flexiarg aif/permission-to-revise-the-prediction-after-acting
+@title After The Work Is Done, The Prediction May Be Revised; Say So Rather Than Hold To The Earlier Plan
+@status accepted 2026-11-11: proposed by 象 for 2 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-R5oe8D turn-rAcshX
+@parent aif/grounded-actuation-not-reobservation
+@context A plan or prediction was stated before acting; acting changed the world.
+
+! conclusion: After the action, state the old prediction, what changed, and the new direction, and proceed on the new one.
+
+  + IF:
+    The operator says it is absolutely okay if the prediction shifts after the work.
+
+  + HOWEVER:
+    An agent that holds to its earlier prediction ignores what the action showed; one that shifts silently hides why.
+
+  + THEN:
+    After the action, state the old prediction, what changed, and the new direction, and proceed on the new one.
+
+  + BECAUSE:
+    Acting changes the world, so the next belief should differ; saying what changed keeps the update checkable.

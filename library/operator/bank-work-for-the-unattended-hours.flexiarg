@@ -1,0 +1,20 @@
+@flexiarg operator/bank-work-for-the-unattended-hours
+@title Bank Work For The Unattended Hours
+@status accepted 2026-11-11: proposed by 象 for 2 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-PkpLp0 turn-Pwecub
+@parent workshop/accountable-next-action-choice
+@context Agents can keep working while the operator is away (overnight), dispatching parked jobs whose preconditions are met.
+
+! conclusion: Explicitly mark tasks as overnight-suitable ('another good thing to work on overnight'), banking them for the unattended hours so the pipeline stays full.
+
+  + IF:
+    A stretch of operator-absent time is coming and there is well-ordered work that needs no decisions from the operator.
+
+  + HOWEVER:
+    Work queued for unattended hours must not secretly contain a decision only the operator can make; discovering that at 3am wastes the whole stretch.
+
+  + THEN:
+    Explicitly mark tasks as overnight-suitable ('another good thing to work on overnight'), banking them for the unattended hours so the pipeline stays full.
+
+  + BECAUSE:
+    It is the received-preference move batched in advance: the operator supplies the next-action preferences for a period when he cannot be consulted, keeping the agent's later choices accountable to a legitimate preference source rather than self-sourced.

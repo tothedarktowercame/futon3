@@ -1,0 +1,20 @@
+@flexiarg operator/ask-why-the-claimed-fix-did-not-hold
+@title When A Failure Recurs After A Claimed Fix, Ask Why The Fix Did Not Hold
+@status accepted 2026-11-11: proposed by 象 for 2 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-B2tLhn turn-UPt8fl
+@parent agent/evidence-over-assertion
+@context The agent said a class of failures was repaired by a reusable pattern, and the same failures return.
+
+! conclusion: ask why the same failures are back, quoting the earlier claim
+
+  + IF:
+    the recurrence matches the class the agent claimed to have fixed
+
+  + HOWEVER:
+    saying 'you were wrong' invites a defence; fixing again hides why it failed
+
+  + THEN:
+    ask why the same failures are back, quoting the earlier claim
+
+  + BECAUSE:
+    the answer shows whether the claim lacked evidence or the fix lacked reach

@@ -1,0 +1,20 @@
+@flexiarg orchestration/calibrate-consent-between-overshoot-and-undershoot
+@title Calibrate Consent Between Overshoot and Undershoot — scope the approval so the agent neither over-builds nor stalls
+@status accepted 2026-11-11: proposed by 象 for 2 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-InkU3S turn-mq3ECy
+@parent orchestration/consent-gate
+@context An agent holds an operator approval whose scope is ambiguous in both directions at once.
+
+! conclusion: Clarify the nature of the approval before acting — name what is in and out — aiming between the two failure modes, and treat this calibration as a first-class design object, not an inconvenience.
+
+  + IF:
+    A vague approval could be read too broadly (run off and build everything) or too narrowly (build a little, stop all work, re-ask).
+
+  + HOWEVER:
+    Both readings are failures: overshoot spends trust and builds unwanted things; undershoot wedges the loop on constant re-questioning, which is its own tax on the operator.
+
+  + THEN:
+    Clarify the nature of the approval before acting — name what is in and out — aiming between the two failure modes, and treat this calibration as a first-class design object, not an inconvenience.
+
+  + BECAUSE:
+    The consent-gate records the approval locus but is silent on how the operator and agent negotiate the scope of what is approved; this names the two-sided failure mode that scope clarification must steer between.

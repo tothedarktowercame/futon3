@@ -1,0 +1,20 @@
+@flexiarg operator/pick-an-offered-option
+@title pick an offered option
+@status accepted 2026-11-11: proposed by 象 for 2 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-2bpCVY turn-9OKHKi
+@parent orchestration/pattern-warranted-choice-point
+@context The agent has offered options for decision D3 and recommended one.
+
+! conclusion: Bind the selection to the menu, treat unchosen options as declined and proceed on R2.
+
+  + IF:
+    The operator says 'With D3, let's go with R2 (your recommendation)'.
+
+  + HOWEVER:
+    He follows the agent's recommendation, so the choice is the agent's as much as his.
+
+  + THEN:
+    Bind the selection to the menu, treat unchosen options as declined and proceed on R2.
+
+  + BECAUSE:
+    The operator has chosen from the agent's menu.

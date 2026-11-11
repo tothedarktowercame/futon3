@@ -1,0 +1,20 @@
+@flexiarg operator/again-is-the-signal
+@title Again Is The Signal — Report Recurrence, Not Just Failure
+@status accepted 2026-11-11: proposed by 象 for 9 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade; THEN worded 8 ways across its proposals
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-2zYeY0 turn-7aKVdZ turn-CBEWCl turn-InfUCq turn-NHbDPU turn-R0dctz turn-XoMKsX turn-pbM1K4 turn-qMNTxg
+@parent apparatus/new-failure-class-is-a-design-defect
+@context A failure appears in a running pipeline whose failures have been seen (and possibly repaired) before.
+
+! conclusion: Attach the recurrence mark to the report itself ('We again have failures', 'new failure', 'still failing'), then paste the evidence.
+
+  + IF:
+    The operator reports the failure and can mark, in one word, whether it is new or returned.
+
+  + HOWEVER:
+    A bare failure report forces the receiver to diff the failure against history to learn its standing; but over-claiming recurrence ('this again') without the mark being reliable poisons the census. The one-word mark is cheap exactly because it is decisive for routing: a returned class means the cause-removal did not hold; a new class opens a design question.
+
+  + THEN:
+    Attach the recurrence mark to the report itself ('We again have failures', 'new failure', 'still failing'), then paste the evidence.
+
+  + BECAUSE:
+    The parent's census discipline — classes closed, shrinking, growth rate reported — needs per-report standing to be computable: the operator's 'again' is the raw datum from which growth-rate and fix-didn't-hold are read off. It specialises the parent's health metric into the operator's one-word report shape.

@@ -1,0 +1,20 @@
+@flexiarg operator/name-the-done-signal-act
+@title Name the Act That Signals Done
+@status accepted 2026-11-11: proposed by 象 for 22 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-6bjr40 turn-7OqIIk turn-BwJv21 turn-CTt1G8 turn-KtSTA7 turn-MvH0V0 turn-Que9fD turn-VGG5nt turn-aaQK7Z turn-bvXQD8 turn-e04dpT turn-hCreYh turn-hshWUH turn-hyepbx turn-k20X5K turn-kGaFGa turn-lKCBbO turn-lO7uLw turn-nYzx66 turn-rPdt9m turn-tGc77o turn-uL9Sth
+@parent apparatus/done-is-observed-running
+@context An agent (codex-18) is running a pinned Python-to-LISP port under a standing 'please continue' with no defined end condition.
+
+! conclusion: Attach the completion condition and the exact signalling act to the continue: 'when X is complete, evaluate Y to signal completion and readiness for the next phase'.
+
+  + IF:
+    The task has a recognisable completion state and a concrete agent-executable act exists that can serve as the completion signal.
+
+  + HOWEVER:
+    Without a named off-switch, the continue-loop has no way to end cleanly or to communicate readiness for the next phase.
+
+  + THEN:
+    Attach the completion condition and the exact signalling act to the continue: 'when X is complete, evaluate Y to signal completion and readiness for the next phase'.
+
+  + BECAUSE:
+    It is the operator-side prescription of that pattern's observable done-state: the operator pre-names the act whose performance constitutes done.

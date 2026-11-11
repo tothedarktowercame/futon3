@@ -1,0 +1,20 @@
+@flexiarg operator/grant-standing-clearance
+@title Grant Standing Clearance
+@status accepted 2026-11-11: proposed by 象 for 2 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-408teJ turn-RtViPB
+@parent orchestration/consent-gate
+@context An operational act (a reload, a dispatch, a spend, a file transfer, a push) is within the agent's reach but touches shared infrastructure or sends work outside the checkout.
+
+! conclusion: Perform the named act at your own discretion when needed, without a further approval round-trip, and stay inside the named repos.
+
+  + IF:
+    The operator says the agent may do it, leaving the occasion to the agent ('as commits build up'), without asking each time.
+
+  + HOWEVER:
+    The clearance is scoped to the named act and surface (here: pushes to Joe's fork and his private repos); it is not a general licence, and a push cannot be quietly taken back.
+
+  + THEN:
+    Perform the named act at your own discretion when needed, without a further approval round-trip, and stay inside the named repos.
+
+  + BECAUSE:
+    Round-tripping permission for a routine act costs more than the act; the operator lifts the gate once, on record.

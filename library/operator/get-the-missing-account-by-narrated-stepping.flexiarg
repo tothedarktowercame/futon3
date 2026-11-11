@@ -1,0 +1,20 @@
+@flexiarg operator/get-the-missing-account-by-narrated-stepping
+@title Get The Missing Account By Narrated Stepping
+@status accepted 2026-11-11: proposed by 象 for 2 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-ekuwTV turn-stEppf
+@parent cycle-machine/step-machine
+@context The records of what a system's parts do are missing or partial, and the system can be run step by step.
+
+! conclusion: Run the machine stepped and narrated, then read the narration where it is written.
+
+  + IF:
+    The operator has an agent run it in a stepper and narrate each step in detail, and tells the other agent where to read.
+
+  + HOWEVER:
+    A narrated run covers one run only, and the narrator may invent activity for steps that do not act.
+
+  + THEN:
+    Run the machine stepped and narrated, then read the narration where it is written.
+
+  + BECAUSE:
+    Narration produces the account that the records lack.

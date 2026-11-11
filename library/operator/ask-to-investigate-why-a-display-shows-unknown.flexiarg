@@ -1,0 +1,20 @@
+@flexiarg operator/ask-to-investigate-why-a-display-shows-unknown
+@title Ask To Investigate Why A Display Shows An Unknown Marker
+@status accepted 2026-11-11: proposed by 象 for 2 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-5HxdtH turn-6paVBT
+@parent operator/ask-to-be-talked-through-the-blocker
+@context A status display shows a placeholder where a value should be.
+
+! conclusion: Check whether the display is behaving as designed, then look at the source it reads (here the server's output), name the cause, and then fix it or say you have not.
+
+  + IF:
+    The operator asks the agent to investigate why it appears.
+
+  + HOWEVER:
+    The placeholder is by design for an unreadable source, so the cause may lie behind the display and not in it.
+
+  + THEN:
+    Check whether the display is behaving as designed, then look at the source it reads (here the server's output), name the cause, and then fix it or say you have not.
+
+  + BECAUSE:
+    A placeholder only says a value could not be read, not why.

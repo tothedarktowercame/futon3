@@ -1,9 +1,8 @@
 @flexiarg operator/standing-dispatch-pattern-for-the-queue
 @title Stand Up A Dispatch Pattern For The Remaining Queue
 @status accepted 2026-11-11: proposed by 象 for 3 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
-@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-5wkP86 turn-TQqiPc turn-o1rDOX
-@parent orchestration/recorded-handoff
-@context A mission has a sequence of remaining items being worked via ad-hoc one-off dispatches, and a handoff gap (missing bell-back) just surfaced the cost of ad-hocery.
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-5wkP86 turn-TQqiPc turn-o1rDOX; first proposed for: A mission has a sequence of remaining items being worked via ad-hoc one-off dispatches, and a handoff gap (missing bell-back) just surfaced the cost of ad-hocery.
+@why [orchestration/recorded-handoff]
 
 ! conclusion: Name and instantiate a dispatch pattern for the queue: fixed sequencing, per-item dispatch as a modeled object, and a return leg that is expected, so its absence is itself a signal.
 

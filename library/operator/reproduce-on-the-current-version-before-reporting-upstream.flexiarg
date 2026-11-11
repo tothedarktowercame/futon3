@@ -1,9 +1,8 @@
 @flexiarg operator/reproduce-on-the-current-version-before-reporting-upstream
 @title Reproduce On The Current Version Before Reporting A Bug Upstream
 @status accepted 2026-11-11: proposed by 象 for 2 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
-@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-1relYm turn-8mX1Ks
-@parent operator/pin-the-defect-with-its-evidence
-@context The agent found a bug in a dependency on an old version and wants to report it to the maintainers.
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-1relYm turn-8mX1Ks; first proposed for: The agent found a bug in a dependency on an old version and wants to report it to the maintainers.
+@why [operator/pin-the-defect-with-its-evidence]
 
 ! conclusion: Install a current version, rerun the reproduction there, search the issue tracker for the bug, and only then draft the report (as a draft, not filed).
 

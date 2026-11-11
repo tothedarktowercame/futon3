@@ -1,9 +1,8 @@
 @flexiarg operator/bare-continue-signal
 @title Bare Continue Signal — "OK, Please Continue"
 @status accepted 2026-11-11: proposed by 象 for 2 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
-@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-FzcUn1 turn-l7W2HH
-@parent workshop/accountable-next-action-choice
-@context An agent is mid-task in a supervised session and has just reported progress or paused; the operator holds the turn.
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-FzcUn1 turn-l7W2HH; first proposed for: An agent is mid-task in a supervised session and has just reported progress or paused; the operator holds the turn.
+@why [workshop/accountable-next-action-choice]
 
 ! conclusion: Record it as a trajectory-approval-and-handback: approve the current course unchanged and let the agent proceed; do not mine it for new requirements.
 

@@ -1,9 +1,8 @@
 @flexiarg operator/ask-to-investigate-why-a-display-shows-unknown
 @title Ask To Investigate Why A Display Shows An Unknown Marker
 @status accepted 2026-11-11: proposed by 象 for 2 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
-@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-5HxdtH turn-6paVBT
-@parent operator/ask-to-be-talked-through-the-blocker
-@context A status display shows a placeholder where a value should be.
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-5HxdtH turn-6paVBT; first proposed for: A status display shows a placeholder where a value should be.
+@why [operator/ask-to-be-talked-through-the-blocker]
 
 ! conclusion: Check whether the display is behaving as designed, then look at the source it reads (here the server's output), name the cause, and then fix it or say you have not.
 

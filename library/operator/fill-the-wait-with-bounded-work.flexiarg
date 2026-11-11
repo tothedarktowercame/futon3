@@ -1,9 +1,8 @@
 @flexiarg operator/fill-the-wait-with-bounded-work
 @title Fill the Wait with Bounded Work
 @status accepted 2026-11-11: proposed by 象 for 2 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
-@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-7moxqm turn-YRKf71
-@parent apparatus/every-wait-has-a-deadline
-@context A wait has just been declared with a known trigger and rough duration (the restart deferred to a pause point, 'maybe in an hour').
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-7moxqm turn-YRKf71; first proposed for: A wait has just been declared with a known trigger and rough duration (the restart deferred to a pause point, 'maybe in an hour').
+@why [apparatus/every-wait-has-a-deadline]
 
 ! conclusion: Slot a bounded, interruptible piece of work into the window ('until then we could run the sweep'), sized to the wait's stated bound.
 

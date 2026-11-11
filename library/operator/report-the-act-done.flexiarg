@@ -1,9 +1,8 @@
 @flexiarg operator/report-the-act-done
 @title Report the Act Done
 @status accepted 2026-11-11: proposed by 象 for 2 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
-@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-JSYCf5 turn-Wj27g4
-@parent orchestration/state-in-substrate-deltas-in-messages
-@context The operator performs an operational act outside the session (transferred a repo, changed a setting) that changes the world the agent is reasoning about.
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-JSYCf5 turn-Wj27g4; first proposed for: The operator performs an operational act outside the session (transferred a repo, changed a setting) that changes the world the agent is reasoning about.
+@why [orchestration/state-in-substrate-deltas-in-messages]
 
 ! conclusion: open with a one-clause report of the completed act, then act on its consequences in the same turn.
 

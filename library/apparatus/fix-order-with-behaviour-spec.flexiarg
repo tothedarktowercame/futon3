@@ -1,9 +1,8 @@
 @flexiarg apparatus/fix-order-with-behaviour-spec
 @title Order the Fix and State the Behaviour That Defines Fixed
 @status accepted 2026-11-11: proposed by 象 for 2 turns (Joe 2026-11-11: recurrence suffices); attested once used in a mission or a War Machine cascade
-@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-8LFNR7 turn-ZKKD1Q
-@parent stack-coherence/commit-intent-alignment
-@context Immediately after a failure report and a delegated diagnosis (turn-zZk0DV), the operator orders the repair.
+@provenance 象 proposals, ~/.emacs-graph/session-turn-analysis/<record>[.json].candidates.json; records: turn-8LFNR7 turn-ZKKD1Q; first proposed for: Immediately after a failure report and a delegated diagnosis (turn-zZk0DV), the operator orders the repair.
+@why [stack-coherence/commit-intent-alignment]
 
 ! conclusion: Issue the fix directive and pair it with the observable behaviour that counts as fixed, not with implementation steps.
 

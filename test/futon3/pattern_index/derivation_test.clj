@@ -66,3 +66,22 @@
     (is (= exported
            (derivation/render-tsv entries)
            (derivation/render-tsv (derivation/sidecar-entries db))))))
+
+(deftest a-sidecar-from-before-embedding-seq-is-upgraded
+  ;; claude-13, 2026-11-11: the live sidecar's sigil_checkpoint was created by
+  ;; an earlier draft without embedding_seq, and every build then failed with
+  ;; "table sigil_checkpoint has no column named embedding_seq".
+  (let [root (fixture-root)
+        db (str (temp-dir) "/index.sqlite")]
+    (Class/forName "org.sqlite.JDBC")
+    (with-open [conn (java.sql.DriverManager/getConnection (str "jdbc:sqlite:" db))
+                st (.createStatement conn)]
+      (.execute st (str "CREATE TABLE sigil_checkpoint (seq INTEGER PRIMARY KEY, "
+                        "library_head TEXT, rows_indexed INTEGER NOT NULL, "
+                        "finished_at TEXT NOT NULL)")))
+    (derivation/write-sidecar! db (derivation/canonical-entries root) "fixture-head" 7)
+    (with-open [conn (java.sql.DriverManager/getConnection (str "jdbc:sqlite:" db))
+                st (.createStatement conn)
+                rs (.executeQuery st "SELECT embedding_seq FROM sigil_checkpoint ORDER BY seq DESC LIMIT 1")]
+      (is (.next rs))
+      (is (= 7 (.getInt rs 1))))))

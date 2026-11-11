@@ -288,6 +288,16 @@
                           "seq INTEGER PRIMARY KEY, library_head TEXT, "
                           "embedding_seq INTEGER NOT NULL, rows_indexed INTEGER NOT NULL, "
                           "finished_at TEXT NOT NULL)"))
+        ;; A sidecar created before embedding_seq existed keeps its old
+        ;; table under CREATE TABLE IF NOT EXISTS; add the column (claude-13,
+        ;; 2026-11-11: the live sidecar's table was made by an earlier draft
+        ;; of this code and every build then failed at this step).
+        (let [cols (with-open [rs (.executeQuery st "PRAGMA table_info(sigil_checkpoint)")]
+                     (loop [acc #{}]
+                       (if (.next rs) (recur (conj acc (.getString rs "name"))) acc)))]
+          (when-not (contains? cols "embedding_seq")
+            (.execute st (str "ALTER TABLE sigil_checkpoint ADD COLUMN "
+                              "embedding_seq INTEGER NOT NULL DEFAULT 0"))))
         (.executeUpdate st "DELETE FROM pattern_sigil"))
       (with-open [ps (.prepareStatement conn
                                         (str "INSERT INTO pattern_sigil "

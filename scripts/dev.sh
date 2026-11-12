@@ -165,6 +165,14 @@ cleanup() {
 trap cleanup EXIT
 
 if [[ "${FUTON3_USE_FUTON1A:-0}" == "1" ]]; then
+  # futon1a (XTDB 1) was retired 2026-07-14 and its old store at
+  # ~/code/storage/futon1a was deleted 2026-11-12. Require an explicit data dir
+  # so this path never quietly recreates that store.
+  if [[ -z "${FUTON1A_DATA_DIR:-}" ]]; then
+    err "[dev] FUTON3_USE_FUTON1A=1 needs FUTON1A_DATA_DIR set explicitly (futon1a is retired; there is no default store)."
+    exit 1
+  fi
+  export FUTON1A_DATA_DIR
   if port_open "${FUTON1A_PORT}"; then
     warn "[dev] Futon1a already running on port ${FUTON1A_PORT}."
   else
@@ -173,7 +181,7 @@ if [[ "${FUTON3_USE_FUTON1A:-0}" == "1" ]]; then
 #!/usr/bin/env bash
 set -euo pipefail
 cd /home/joe/code/futon1a
-export FUTON1A_DATA_DIR="${FUTON1A_DATA_DIR:-/home/joe/code/storage/futon1a/default}"
+: "${FUTON1A_DATA_DIR:?FUTON1A_DATA_DIR must be set}"
 export FUTON1A_PORT="${FUTON1A_PORT:-8080}"
 export FUTON1A_ALLOWED_PENHOLDERS="${FUTON1A_ALLOWED_PENHOLDERS:-${USER:-cli},futon3}"
 export FUTON1A_COMPAT_PENHOLDER="${FUTON1A_COMPAT_PENHOLDER:-${MODEL_PENHOLDER:-${USER:-cli}}}"

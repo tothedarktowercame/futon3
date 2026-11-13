@@ -1,3 +1,10 @@
+> **Status (2026-11-13):** futon3 is historical. Its code was refactored into
+> futon3a, futon3b and futon3c; the history keeps it. What remains is what is
+> still in use: `library/` (the pattern library), `holes/` (mission documents),
+> `inbox-zero-lib/` (on futon3c's classpath), `contrib/` (Emacs load-path),
+> `resources/sigils/`, `resources/vitality/`, `src-cljs/futon3/turnfeed/`
+> (the reply-mark legend) and `checks/zaif-cascade.edn`.
+
 # futon3 — Canon + Legacy Interface Layer
 
 > **New to FUTON? Start with [futon0/INSTALL.md](https://github.com/tothedarktowercame/futon0/blob/main/INSTALL.md)**, the single guide to

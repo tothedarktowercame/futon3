@@ -1,0 +1,31 @@
+@flexiarg mission-coherence/retro-spec-honest-scope
+@title Retro-Specify the Existing System, Stating the Scope Honestly
+@sigils [⊢/照]
+@keywords retro-specification, requirements-file, honest-scope, name-discipline, readiness-indexing, convergence, lean, existing-code
+@audience futonic authors formalising a system that already exists and still moves
+@references [problems/spec-and-implementation-must-converge-to-runtime-certificates mission-coherence/runtime-certificate-as-generated-lean mission-coherence/logic-model-before-code]
+@references-extra ["Instance of origin: mathlib4/DarkTower/WarMachine/Requirements.lean header — 'Every field below denotes a finite population in the world or in one run record. This file states requirements over those facts; it does not claim that today's runner exports them faithfully.' — countable requirements (RunKind, TargetConstruction, Q2 policy-counts) written as a spec OF the existing War Machine, discharged later per run" "Authority: the convergence ruling, futon2 holes labs wm-contract EPIC-run-era.md 2026-09-05 — keep distinct variable names clearly distinct, index the implementation by readiness level, let spec and implementation run ahead of each other but converge into runtime certificates"]
+@tone declarative
+@style pattern
+
+! conclusion: When formalising a system that ALREADY EXISTS, write the requirements module as a spec of what SHOULD hold — read from the code but not hostage to it — and state in the file header exactly what it does not yet claim about the running system. Discharge the gap later, per run, by generated certificates; never quietly edit the spec to match today's behaviour.
+
+  + context: The War Machine formalisation did not start from a blank design: the Clojure runner predated the Lean. The temptation in that position is either (a) transcribe the code as-is, laundering its bugs into theorems, or (b) write the ideal spec and let readers assume the code meets it. Requirements.lean shows the third way: a requirements file with an explicit non-claim.
+
+  + IF:
+    You are deriving Lean (or core.logic) requirements from an existing, still-moving implementation, and the two will legitimately disagree for a while — spec ahead on some fronts, implementation ahead on others.
+
+  + HOWEVER:
+    Spec transcribed from code proves nothing about the code (it IS the code, renamed); spec written as aspiration without a scope line overclaims and poisons every downstream certificate — a reader cannot tell which theorems the running system satisfies. And when the two disagree, silently adjusting either side destroys the audit trail (the PROOF-wm-works FALSIFIED CLAUSE is the cautionary case: a theorem naming a term the machine never supplied).
+
+  + THEN:
+    (1) Read the code to enumerate the finite populations of one run (targets, pins, policies, digests) and state requirements over THOSE — countable, decidable, per-run. (2) Keep distinct names distinct (the convergence ruling): spec variables and implementation fields are indexed and mapped, never silently identified. (3) Put the honest scope in the module header: what this file claims, and the explicit sentence about what it does not claim ('does not claim that today's runner exports them faithfully'). (4) Index disagreement by readiness level instead of forcing convergence; (5) close the gap run-by-run with generated certificates (runtime-certificate-as-generated-lean), so convergence is witnessed, never asserted.
+
+  + BECAUSE:
+    A spec with an honest non-claim is falsifiable in the right direction: every generated certificate that builds narrows the gap with kernel-checked evidence, and every failed generation names a concrete divergence between intent and behaviour. The header sentence is what makes the file safe to build on: downstream readers inherit the scope, not a misunderstanding.
+
+  + NEXT-STEPS:
+    - Enumerate one run's finite populations from the code; make every requirement decidable over them.
+    - Write the header non-claim before the first theorem; treat weakening it as a reviewed change.
+    - Maintain the name-mapping table (spec ↔ implementation) as a checked artifact, not prose.
+    - Wire certificate generation so each run either narrows the gap or files a named divergence.

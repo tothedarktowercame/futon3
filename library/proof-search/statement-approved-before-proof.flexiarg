@@ -1,0 +1,31 @@
+@flexiarg proof-search/statement-approved-before-proof
+@title Get the Statement Signed Before the Proof, and Prove Steps by Checks
+@sigils [⊢/名]
+@keywords theorem-statement, adversarial-signoff, lamport-structured-proof, check-passes, recorded-commit, falsified-clause, step-order, failure-log
+@audience futonic proof planners, mission authors running multi-agent structured proofs
+@references [mission-coherence/logic-model-before-code mission-coherence/planted-bugs-prove-the-model-has-teeth test-registry/register-the-run]
+@references-extra ["Instance of origin: futon2/holes/labs/wm-contract/PROOF-wm-works-2026-09-22.md — Lamport-style structured proof; sign-off order Zai (adversarial) → Codex → Joe BEFORE proof steps; management rules: a step is proved when its CHECK runs and passes with the commit/click-id recorded, 'merged', 'tests green' and 'receipt written' do not prove a step; failure log entries never deleted" "Cautionary evidence, same file: FALSIFIED CLAUSE 2026-09-24 — three reviewers signed a THEOREM naming σ(log E − F − γG) while every recorded selection carried :f nil; the finding (codex-3's, PROOF-2-F-discovery-2026-09-24.md) is that nobody checked whether the middle term had a value"]
+@tone declarative
+@style pattern
+
+! conclusion: Before any proof STEP begins, the THEOREM statement is fixed and signed by an adversarial reader whose specific job is to check that every named term is supplied by the machine — then each step is proved only by running its CHECK and recording the commit, never by narrative closure.
+
+  + context: Multi-agent structured proofs (Lamport-style, ⟨1⟩k steps proved in order) divide labour: one agent writes instructions and runs checks, others implement and review. The War Machine proof plan put the sign-off at the STATEMENT, in adversarial order (Zai GLM adversarial, then Codex, then Joe), and made "proved" mean "its check ran and passed, recorded with commit/click id".
+
+  + IF:
+    A mission's core claim will be established by a structured proof executed over weeks by several agents, where steps depend on earlier steps and each step consumes machine records.
+
+  + HOWEVER:
+    Statement drift and narrative closure are the two failure modes. The FALSIFIED CLAUSE is the specimen: three reviewers signed a theorem naming three terms of the selection law, and no one checked whether F — the middle term — was ever supplied. Every certificate the steps rested on carried :f nil. The steps were 'established' only as written on paper; the machine had run a different, weaker theorem. The repair cost was admitting ⟨1⟩3 and ⟨1⟩5 were not established as written — after the fact, in public.
+
+  + THEN:
+    (1) Fix the THEOREM statement first; route it through an explicitly adversarial reader instructed to verify each named term against a real record before sign-off. (2) Prove steps strictly in order; repairs happen inside the sub-steps of the step that needs them. (3) A step is proved exactly when its CHECK runs and passes and the result is recorded under the step with the commit, click id or record path — "merged", "tests green", "receipt written" do not prove a step. (4) Keep a per-step FAILURES log; entries are never deleted. (5) Running the machine and advancing the proof stay separate — the proof's order is never a rule against running. (6) When a check shows the statement overclaimed, amend the STATEMENT with a dated FALSIFIED/SCOPE clause, never silently edit history.
+
+  + BECAUSE:
+    The statement is the only thing the steps can collectively establish, so its correctness is the highest-leverage review target — and the cheapest to check BEFORE work: verifying that each named term appears in a real record is minutes, against weeks of steps resting on an unsupplied term. Check-pass-plus-recorded-commit makes "proved" a mechanical, auditable predicate, so proof status survives agent turnover; the immutable failure log keeps the proof's epistemics honest under pressure to close.
+
+  + NEXT-STEPS:
+    - Write the theorem with every term named; for each term cite the record field that must carry it.
+    - Commission the adversarial sign-off with the explicit instruction: check every named term is supplied.
+    - Define each step's CHECK (command + expected verdict + where the result is recorded) before the step opens.
+    - On any falsification, append a dated clause to the statement and re-derive which steps still stand.

@@ -1,0 +1,32 @@
+@flexiarg mission-coherence/planted-bugs-prove-the-model-has-teeth
+@title Planted Bugs Prove the Formal Model Has Teeth
+@sigils [⊢/驗]
+@keywords planted-bug, mutation-check, lean, lake-build, theorem-teeth, design-defect, adversarial-trace, logic-model
+@audience futonic mission authors in VERIFY, anyone claiming a Lean or core.logic model "checks the design"
+@references [mission-coherence/logic-model-before-code war-room/wr-22-logic-model-before-code-is-a-sanctioned-verify-method social/tension-before-code]
+@references-extra ["Instance of origin: futon5/lean-arxana/README.md — planted-bug check 2026-11-08: five design defects each introduced in a scratch copy (key drops roles, last-writer merge, assessment rewrites evidence, read without visited check, acceptance defaults to accepted), and each failed `lake build` at the theorem it violates" "core.logic sibling: mission-coherence/logic-model-before-code requires ONE adversarial trace per invariant, each caught — same discipline over pldb traces instead of the Lean kernel"]
+@tone declarative
+@style pattern
+
+! conclusion: A formal model is only evidence that the design is checked if you have demonstrated the model can FAIL: plant one defect per load-bearing theorem in a scratch copy and require that the build breaks AT THE THEOREM THE DEFECT VIOLATES. A model that has never been made to fail may be vacuous.
+
+  + context: VERIFY-phase logic models (Lean modules, core.logic query-violations) deliver their value by rejecting bad designs. But a green build is ambiguous: it can mean "the theorems pin the design" or "the theorems are trivially true / the definitions too weak to be violated". Reviewers cannot tell which from the green build alone.
+
+  + IF:
+    You have a formal model whose theorems are claimed to pin design decisions (identity discipline, append-only store, bounded reads, acceptance policy), and the claim "the model checks the design" is load-bearing for a gate or a handoff.
+
+  + HOWEVER:
+    Theorems can be vacuously true (wrong hypothesis shape, `Decidable` instances that always pass, definitions weakened during debugging to make the proof go through). Without a demonstrated failure mode, "lake build passes" certifies nothing about the design — it certifies that Lean accepted something.
+
+  + THEN:
+    In a SCRATCH COPY (never the model under review), introduce one defect per load-bearing property — the realistic failure modes of the eventual implementation: drop a component of the identity key, make merge last-writer-wins, let an assessment rewrite evidence, omit the visited-check in a bounded read, default acceptance to accepted. Require each mutated copy to FAIL the build, and to fail at the theorem naming the violated property. Record the check with date and defect list in the model's README. (The core.logic analogue is already mandatory: one adversarial trace per invariant, each caught — logic-model-before-code's per-invariant count IS the coverage contract.)
+
+  + BECAUSE:
+    The planted-bug check converts "the build passes" from a one-sided witness into a discriminating instrument: you now know the theorems distinguish the intended design from its five nearest wrong neighbours. It also pins WHICH theorem carries which property — a defect that fails the build at the wrong theorem, or at no theorem, reveals that the property was never where you thought it was. The lean-arxana run (2026-11-08) is the exemplar: five defects, five failures, each at its own theorem.
+
+  + NEXT-STEPS:
+    - Enumerate the model's load-bearing properties (one per theorem that a handoff or gate cites).
+    - For each, write the cheapest realistic mutation that violates exactly it; build in a scratch copy.
+    - Require: build fails, and the failing theorem is the one naming the property. Log both.
+    - Record the planted-bug ledger (date, defects, failing theorems) next to the model, and refresh it when the model's definitions change materially.
+    - Honest scope: this proves the model has teeth over the planted neighbourhood, not over all possible wrong designs.

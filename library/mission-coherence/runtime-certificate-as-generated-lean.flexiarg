@@ -1,0 +1,31 @@
+@flexiarg mission-coherence/runtime-certificate-as-generated-lean
+@title Certify a Run by Generating a Lean File From Its Record
+@sigils [⊢/勢]
+@keywords runtime-certificate, generated-lean, rfl, decide, print-axioms, run-id, source-sha, scope-header, do-not-edit
+@audience futonic operators certifying live runs, VERIFY/INSTANTIATE authors bridging spec and implementation
+@references [problems/spec-and-implementation-must-converge-to-runtime-certificates mission-coherence/logic-model-before-code test-registry/register-the-run]
+@references-extra ["Instance of origin: futon2/data/wm-certificates/runtime-*.lean (2026-10-01 run family) — generated files whose header pins Source SHA-256, run-id, click-id, candidate payload SHA-256 and an explicit scope line ('recorded P0 forbidden-provenance admission only; typed missing checks are excluded'), concrete facts as Finset/Id values, theorems closed by rfl and decide, and #print axioms per theorem" "Spec side: mathlib4/DarkTower/WarMachine/Requirements.lean — the requirements the generated certificates instantiate"]
+@tone declarative
+@style pattern
+
+! conclusion: To show a live run satisfied its spec, GENERATE a Lean file from the run record: the run's concrete facts become definitions, the spec's requirements become theorems over them closed by `rfl`/`decide`, and the header pins the source SHA, the run id and the honest scope. Verification is `lake build` on that file — cheap, mechanical, kernel-checked.
+
+  + context: The convergence ruling (Joe 2026-09-05, recorded in problems/spec-and-implementation-must-converge-to-runtime-certificates) requires runtime certificates showing the ACTUAL implementation's behaviour matches the intended one. A prose receipt or a green test-suite cannot do this: the receipt asserts, the suite samples. What certifies is the proof kernel accepting a per-run artifact.
+
+  + IF:
+    A run produces a record (selection certificate, admission record, construction census) whose fields should instantiate requirements already stated in a spec module (e.g. DarkTower.WarMachine.Requirements), and you need per-run evidence that the spec held ON THIS RUN — not in general.
+
+  + HOWEVER:
+    Hand-checking a run record against the spec is review labour per run and does not compose; and a general theorem about the implementation cannot be proved while the implementation still moves. Between the two there is a cheap exact option the War Machine found: certify runs, not the runner.
+
+  + THEN:
+    Generate (never hand-edit — mark the file GENERATED FILE — DO NOT EDIT) one .lean per run per requirement family: (1) a header pinning provenance — source SHA-256 of the generator inputs, run-id, click-id, payload digests, and an explicit SCOPE line naming what the certificate does NOT cover; (2) the run's facts as concrete definitions (Finset of ids, digests as strings, `0` for recorded absence); (3) the requirements as theorems over those facts, each closed by `rfl` or `decide` so no tactic cleverness mediates; (4) `#print axioms` after each theorem so the certificate discloses its own trust base. Commit the file; the certificate IS the checked artifact.
+
+  + BECAUSE:
+    `rfl`/`decide` certificates need no proof author per run, so certification scales with the run rate. The kernel, not a reviewer, is the verifier — a self-certifying artifact in the nomad sense. Concrete-data theorems cannot be vacuous about the run: if the record's selected digest differs from the admitted digest, `rfl` fails and the certificate does not exist. The scope header keeps the certificate honest about the checks it excludes, so a green file never silently overclaims.
+
+  + NEXT-STEPS:
+    - Name the requirement families a run must instantiate; give each a generator from the run record to Lean definitions.
+    - Emit theorems only over recorded facts; typed-missing values are excluded by the scope line, never coerced.
+    - Require the build of the generated file as the run's certificate gate; archive the file keyed by run-id.
+    - Keep the scope line current: when a new check is mechanised, narrow the exclusion explicitly.

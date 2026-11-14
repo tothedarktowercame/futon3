@@ -1,5 +1,7 @@
 # Excursion: Old-arxiv block detection — closing the F₂ vintage gap
 
+**Status:** CANCELLED (set 2026-11-14 by claude-13 from Giraffe's latest reading, which read it as abandoned. Correct it if wrong.)
+
 **Status:** STUB / parked (2026-04-27)
 **Owner mission:** `holes/missions/M-pattern-application-diagnostic.md`
 **Sister excursion:** `holes/excursions/E-substrate-metrics.md` §1

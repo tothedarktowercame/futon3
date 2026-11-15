@@ -1,5 +1,7 @@
 # UKRN paper v2.4 — comment-response sheet
 
+**Status:** OPEN (set 2026-11-15 by claude-13 at Joe's request: a comment-response sheet for the UKRN paper revision; the outcome is not recorded here)
+
 *Source: paper_v2.3(3).docx (2026-04-27 export) cross-checked against paper_v2.3(1).zip HTML.*
 
 Working convention: each entry shows the anchored span, the co-author comment, a candidate writing-coherence pattern (or `?` for candidate-new), and a draft revision. Edit freely — accept, reject, rewrite. Once you sign off, I will apply approved edits to a fresh .docx for upload.

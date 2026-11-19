@@ -1,0 +1,30 @@
+@flexiarg writing-coherence/thesis-compresses-the-answer
+@title The Thesis Is the Answer's Compression
+@keywords thesis, compression, key-points, coverage, summary, top-level-claim, short-answer
+@audience proposal and paper authors, reviewers of short-form answers
+@tone technical
+@style pattern
+@references [writing-coherence/plain-language-thesis writing-coherence/everyday-word-as-term writing-coherence/scope-mush writing-coherence/meta-lede]
+@provenance Joe Corneli, 2026-11-19, reading the public-benefit answer of the Mozilla incubator draft in the Arxana incubator form (futon4 holes/missions/M-arxana-incubator.md §6): "Broader collective benefit can be foreseen from various smaller collectives working together" sat in the thesis slot and "I'm not sure it really compresses the whole argument here at all". Drafted by claude-5 from that reading; the compression framing is Joe's ("Compression should help us identify the 100% key points and make sure they are solid").
+! conclusion: A thesis is the shortest faithful compression of the text it heads.  Every key point of the answer should be reachable from it, and it should claim nothing the answer does not go on to carry.  A sentence that is merely general, or merely first, is not a thesis because it sits at the top.
+  + context: Short answers (a 150-word grant field, an abstract, an exec-summary bullet) are assembled from material written for other purposes, and the most general-sounding sentence drifts to the top.  It reads like a thesis, and the reader then expects the rest to unpack it.  When the rest of the answer argues something else (how contributors are credited, how small groups interoperate), the reader finds two arguments and holds neither.
+  + IF:
+    The pattern operates on the axis: generality ↔ coverage.
+    Irreducible: a thesis must be short enough to read first and full enough that the answer is its unpacking; the more points the answer makes, the more the thesis must abstract, and abstraction drifts away from what the points actually say.
+  + HOWEVER:
+    Real costs: a thesis that names every key point is a list, not a claim, and a list at the top does no work.  Compression means choosing the claim the key points jointly support, which may be none of the sentences already present.
+    Active dynamic: the pull recurs whenever a draft is cut to a word limit, because cutting keeps the general sentence (it seems to cover more) and drops the specific ones that held the argument.
+    + FAILURE-MODES:
+      - Promoted generality: the broadest sentence is put first and called the thesis, though nothing below unpacks it ("Broader collective benefit can be foreseen from various smaller collectives working together").
+      - Partial thesis: the thesis covers one key point and the answer makes three; the other two read as digressions.
+      - Overreach: the thesis claims more than the answer carries (an outcome, a scale) and the answer never returns to it.
+      - Two theses: the answer has an opening claim and a different concluding claim, and neither compresses the other.
+  + THEN: Operate an explicit move on the named axis (see substructure below); steward the pattern against the declared discipline.
+    + COMPOSITIONS:
+      (1) Inventory first: list the answer's key points (each claim, the words that express it, what supports it).  Write the thesis after the inventory, not before.
+      (2) Coverage table: thesis against each key point.  Each key point is either reached by the thesis, or it is cut, or the thesis is rewritten.  No key point is left reachable from nothing.
+      (3) Demote the general sentence: if the top sentence is true but does not compress the answer, move it to where it supports a point, or cut it.
+      (4) Two-sentence head: when one sentence cannot carry it, state the claim plainly in one sentence and the mechanism in the next (compare plain-language-thesis composition 4).
+    + CHECK:
+      Engaged when: given the thesis alone, a reader could predict which points the answer makes, and every key point in the inventory is reached by the thesis.  Failing when: (a) a key point is reached by nothing at the top, (b) the thesis claims something no later sentence carries, or (c) removing the thesis would leave the answer's argument unchanged.
+      **Compression test:** write the answer's key points as a list without looking at the thesis, then check each against it.  Matching shared words only proposes a reach; the writer decides.

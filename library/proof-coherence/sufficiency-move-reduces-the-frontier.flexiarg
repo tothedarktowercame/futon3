@@ -1,0 +1,28 @@
+@flexiarg proof-coherence/sufficiency-move-reduces-the-frontier
+@title An “It Suffices” Move Must Reduce the Proof Frontier
+@keywords proof presentation, sufficiency, reduction, frontier, subgoal, wall, generated proof, decomposition
+@audience proof generators, informalizers, formal proof authors, reviewers
+@tone technical
+@style pattern
+@references [proof-search/typed-hole-as-frontier math-strategy/proof-architecture writing-coherence/missing-mechanism]
+@provenance Joe and Rob, 2026-11-22; PaperPrinter `P-sufficiency-wall` and the cleanup inventory of repeated or empty “It suffices” sentences
+
+! conclusion: Emit “it suffices to show Q” only when Q is a genuine reduction of the current typed frontier P: the presentation must name the bridge from Q to P, and Q must be smaller, more local, more standard or independently reusable by a declared measure.  A sequence of sufficiency sentences without visible reduction is a wall, not an explanation.
+
+  + context: A generated or reconstructed proof passes through transports, helper lemmas, normalized goals and nested subproofs.  Each intermediate proposition can be phrased as a sufficiency claim, so local fluency produces a globally monotonous proof in which the reader cannot tell why any new goal is progress.
+
+  + IF:
+    The system proposes to replace the current obligation P by a new obligation Q in the reader-visible proof.
+
+  + HOWEVER:
+    Some formally valid reductions increase expression size before they simplify the mathematical problem.  Text length is therefore not the measure.  The profile may count fewer quantifiers, a smaller dependency scope, entry into a named library theorem, separation into independent cases, or movement from a global statement to a local estimate.  The chosen measure must be stated; otherwise every administrative transport can masquerade as progress.
+
+  + THEN:
+    Record the move as {:from P :to Q :bridge R :frontier-measure M :delta D}.  Emit “it suffices” only when R is available to the reader and D improves the active presentation profile.  If Q merely restates P, is reflexive after normalization, or is one row in an unowned transport chain, suppress it.  If several reductions form one conceptual move, compose them and present the named hinge once.
+
+  + BECAUSE:
+    Sufficiency is a claim about proof architecture, not a connective phrase.  Making its reduction measure explicit lets the same flexiarg guide presentation now and proof generation later: a generator can prefer candidate subgoals that make measurable progress rather than merely typecheck.
+
+  + CHECK:
+    Engaged when a skeptical reader can answer, for every “it suffices”, “why does this new goal imply the old one?” and “in what declared sense is it progress?”  Failing when adjacent sufficiency sentences have no named bridge or the frontier measure stays flat or worsens.
+

@@ -1,0 +1,32 @@
+@flexiarg proof-coherence/scope-before-derived-claim
+@title Expose the Assumption Before Its Derived Claim
+@keywords proof presentation, scope, local assumption, contradiction, dependency, witness proof, generated proof
+@audience proof generators, informalizers, formal proof authors, reviewers
+@tone technical
+@style pattern
+@references [writing-coherence/one-paragraph-per-typed-claim proof-search/typed-hole-as-frontier]
+@provenance Joe and Rob, 2026-11-22; PaperPrinter C23/Q190-Q192 (`t96J07`: a local `v = 0` assumption is hidden while its consequence `1 = 0` is printed at top level)
+
+! conclusion: A reader-visible derived claim must remain inside the scope that licenses it.  Before presenting a consequence, present or name every local assumption on which it depends, and show the role by which the consequence discharges that scope.  A kernel-correct proof can become an incoherent explanation when a local contradiction is flattened into an unconditional fact.
+
+  + context: A proof term contains a lambda, case arm, contradiction argument, subtype witness or other nested proof.  The generator or printer can see a derived fact but is tempted to emit it as a top-level sentence because that fact has a convenient proposition and the enclosing proof role does not.
+
+  + IF:
+    A proposed proof sentence depends on a local hypothesis that is not live in the reader-visible presentation at the sentence's location.
+
+  + HOWEVER:
+    Repeating every elaborator-local variable produces unreadable proof dumps.  The obligation is not to print the whole local context; it is to preserve the minimal dependency boundary that changes how the sentence is understood.  In a contradiction proof, “suppose v = 0” and “this is impossible” are load-bearing; implicit typeclass instances usually are not.
+
+  + THEN:
+    (1) Attach each candidate sentence to its nearest typed scope owner.
+    (2) Compute the free local hypotheses used by its value, proposition and justification.
+    (3) Introduce any load-bearing hypothesis not already visible before emitting the sentence.
+    (4) Close the block with its proof role: contradiction, case closure, witness property or returned subclaim.
+    (5) Refuse top-level emission when the owner or closing role is unknown; retain a typed presentation hole instead.
+
+  + BECAUSE:
+    Scope is part of mathematical meaning.  “Under v = 0 we derive 1 = 0, a contradiction” is a proof; “We have 1 = 0” is an apparent falsehood.  Preserving scope during presentation is also training for generation: the same dependency boundary says which hypotheses a generated subproof may use and what it must return.
+
+  + CHECK:
+    Engaged when every reader-visible claim's load-bearing free hypotheses are introduced in an enclosing visible block and the block's closing role is stated.  Failing when a consequence is promoted above a hypothesis it uses, or when a contradiction is displayed without saying what assumption it discharges.
+

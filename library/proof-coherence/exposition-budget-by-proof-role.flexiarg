@@ -1,0 +1,35 @@
+@flexiarg proof-coherence/exposition-budget-by-proof-role
+@title Choose an Exposition Budget by Proof Role
+@keywords proof presentation, exposition budget, ink, proof role, density, generated proof, reader model, profile
+@audience proof generators, informalizers, formal proof authors, reviewers
+@tone strategic
+@style pattern
+@references [writing-coherence/meet-the-reader-where-they-are writing-coherence/citation-density-load-bearing-claim math-strategy/proof-architecture]
+@provenance Joe and Rob, 2026-11-22; PaperPrinter residual-ink measurements and Joe's distinction between 30%, 3% and 0.03% exposition
+
+! conclusion: Before presenting or generating a proof, choose an exposition profile that allocates visible ink to proof roles.  Thirty percent exposition, three percent exposition and 0.03 percent exposition are different proof products, not cosmetic variants of one product.  The budget must say which transitions deserve explanation and which may remain compressed.
+
+  + context: A proof system can emit every elaborated step, only theorem names, or something between.  Cleanup after emission discovers accidental density: long walls of administrative prose in one region and unexplained conceptual jumps in another.  Without a profile, “more detail” and “less detail” cannot be evaluated coherently.
+
+  + IF:
+    The system must select, order or verbalize proof steps for a particular audience and use: audit, expert reference, teaching, discovery, or source-proof distillation.
+
+  + HOWEVER:
+    A global character percentage is not itself quality.  Three percent spent on reflexive transports is worse than 0.3 percent spent on the proof's decisive reduction.  Conversely, an audit profile may deliberately expose ugly administrative structure that a polished article should hide.  The allocation must be typed by role and audience, not optimized as one scalar.
+
+  + THEN:
+    Choose a profile with at least:
+      {:audience A
+       :purpose :audit | :reference | :teaching | :discovery
+       :target-ink-band [low high]
+       :role-weights {:architecture _ :assumption _ :reduction _ :case-split _
+                      :calculation _ :citation _ :administrative _}
+       :compression-rules [...]
+       :mandatory-visible-roles [...]}
+    Score candidate sentences by their typed proof role and marginal explanatory value.  Spend ink first on architecture, scope-changing assumptions, non-obvious reductions and contradiction/case closure; compress repeated normalization and administrative transport unless the purpose is audit.  Measure the resulting role-colored ink and revise the profile from reader evidence.
+
+  + BECAUSE:
+    Presentation and generation share a selection problem: from many valid next steps, choose the ones that make the proof intelligible at the intended resolution.  A role-typed exposition budget turns PaperPrinter's post-hoc inks into a controllable objective for proof search, while retaining different legitimate products for different readers.
+
+  + CHECK:
+    Engaged when the emitted proof reports its profile, its total ink band and ink by role, and mandatory roles are present even under compression.  Failing when density is an accidental consequence of tactic traces, or when a lower ink percentage is treated as better without asking which roles disappeared.

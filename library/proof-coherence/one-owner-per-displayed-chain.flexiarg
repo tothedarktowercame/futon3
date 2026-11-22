@@ -1,0 +1,31 @@
+@flexiarg proof-coherence/one-owner-per-displayed-chain
+@title Keep One Owner and One Level in a Displayed Chain
+@keywords proof presentation, equality chain, scope, nesting, side goal, subterm, repeated expression, generated proof
+@audience proof generators, informalizers, formal proof authors, reviewers
+@tone technical
+@style pattern
+@references [proof-coherence/scope-before-derived-claim proof-coherence/sufficiency-move-reduces-the-frontier writing-coherence/one-paragraph-per-typed-claim]
+@provenance Claude-7 and codex-18, 2026-11-22; PaperPrinter C4/N2 inventory (106 records), including Q189's 78 traced returns caused by mixing a Step chain's whole expression with subterm rewrites or side goals
+
+! conclusion: A displayed chain has one typed owner and stays at one proof level.  Every row must continue from the previous row's typed end.  A subterm rewrite, side goal or supporting fact belongs in a nested chain or a separate statement, not as a peer row that later returns to the owner's expression.
+
+  + context: A typed proof walk contains a main calculation together with rewrites of its subterms and proofs of side conditions.  A flat printer can place all of these Steps in one aligned display because they occur nearby and have printable endpoints.
+
+  + IF:
+    A proposed chain row's typed start is not the previous visible row's typed end, or the row is owned by a subterm or side goal rather than by the display's current expression.
+
+  + HOWEVER:
+    Printed equality is not a sufficient identity test.  Distinct typed nodes may realize as the same text, and one mathematical move may legitimately use a subsidiary calculation.  The planner must retain typed ownership and nesting even when realization collapses notation; the realizer may report that nodes print alike but must not silently delete one.
+
+  + THEN:
+    (1) Assign the display a typed owner and scope.
+    (2) Require each peer row to begin at the preceding peer row's typed end.
+    (3) When ownership or level changes, open a nested chain or state the supporting fact separately and link its result back to the owner.
+    (4) If realization makes two nodes print alike, return a report-only collision to the planner.
+    (5) Let the planner choose `compress`, `omit` or `nest`, recording the reason and retaining both typed nodes in the accounting.
+
+  + BECAUSE:
+    A chain is read as a continuous transformation of one expression.  Mixing in a transformation of a component and then showing the outer expression again creates a false loop: the reader sees an expression repeated without knowing that the proof temporarily changed level.  Typed ownership makes the same constraint usable during generation, where it prevents a side goal from masquerading as progress on the main frontier.
+
+  + CHECK:
+    Engaged when every displayed chain has one owner, every peer row composes by typed endpoints, every level change is visibly nested or separated, and realization collisions return to the planner.  Failing when an expression appears twice at one display level because intervening rows belong to a subterm or side goal, or when a row disappears merely because two endpoints print alike.

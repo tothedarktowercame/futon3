@@ -1,0 +1,30 @@
+@flexiarg agent/stop-on-unexplained-surprise
+@title Stop on Unexplained Surprise
+@sigils [🌽/止]
+@keywords stop-the-line, surprise, prediction error, justification, operator model, agent model, explanation, active inference
+@audience anyone running agents alongside a human operator; War Machine and stack-level loops
+@tone foundational
+@style pattern
+@references [futon-theory/stop-the-line aif/interoceptive-tripwires agent/eat-your-own-tail agent/pause-is-not-failure agent/evidence-over-assertion]
+@provenance Joe, 2026-11-24 (claude-14 REPL, War Machine stepper session): "STL is invoked if something happens that doesn't match my mental model *or* the agents' model. Typically that shows up by the agent reporting something happened which doesn't match my mental model and offering no justification." Drafted by claude-14; record in ~/notes/claude-14/CONTRACT-cascade-live-r1.md ("Stop-the-line in active-inference terms").
+
+! conclusion: When something happens that neither the operator's model nor the agents' model can explain, and no justification is offered that would, stop pragmatic work and revise the model before acting again.
+
+  + context: An operator and agents work from two generative models of the same system: the operator's mental model and the agents' (including the War Machine's). Agents report what happened; the operator reads the reports against what they expected.
+
+  + IF:
+    An observation is surprising under the operator's model or under the agents' model: an agent reports that something happened which the operator did not expect, or the machine meets a state its own model cannot place.
+
+  + HOWEVER:
+    Surprise alone is not a reason to stop: most surprises are absorbed by an ordinary update, and a reported justification is exactly an explanation that makes the observation expected. The danger is the report with no justification: the mismatch cannot be attributed, the model that would guide the next action has lost its grounds, and continuing spends effort on predictions nobody can now vouch for. Agents tend to report the mismatch and carry on.
+
+  + THEN:
+    Treat unexplained surprise as the trigger for stop-the-line. Halt pragmatic work (no further changes applied on the strength of the model in question) while keeping observation and diagnosis open; ask for or construct the explanation; resume only when an update or a justification makes the observation expected, or when the model has been revised. An agent that reports a mismatch must either carry its justification with the report or stop.
+
+  + BECAUSE:
+    In active-inference terms the stop is the policy that minimises expected free energy once a model's precision has collapsed: while surprise is unexplained, acting pragmatically has high ambiguity, and the epistemic policy (inspect, ask, revise) is the one with grounds. Stop-the-line makes that policy mandatory rather than optional, and the halt itself is the sanction that keeps the institution honest when no other party can be sanctioned.
+
+  + NEXT-STEPS:
+    - Wire an interoceptive tripwire (aif/interoceptive-tripwires) for reports that carry a mismatch without a justification.
+    - In the War Machine, read a :stop-the-line ending (model/implementation mismatch) and a refusal such as :tie-at-minimum as unexplained surprise in the agents' model; repair is an explanation or a model revision, never a tie-break or an override.
+    - Record each stop with the observation, whose model it surprised, and what explanation or revision ended it, so later stops can be compared.

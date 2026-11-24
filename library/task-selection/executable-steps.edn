@@ -1,5 +1,5 @@
 {:schema :wm/task-selection-executable-steps-v1
- :version 3
+ :version 4
  :readme-sha256 "00d4573a81837d485fd7f42108742171c8028007c2d4873f17f6d6ad0d9c5e19"
  :interpretation-authority "L5-4d-impl, claude-2 ruling job 9326; review required, not a transcription of executable library code"
  :cascades
@@ -9,6 +9,13 @@
    :interpretation "Retained makeup component: ready, stable cone then stable unblocks. Cone is now explicitly bound to prepare-the-ground. Last ordering is primary."
    :patterns ["only-what-can-start-now" "prepare-the-ground" "what-others-wait-on-first"]
    :steps [:ready-gate :by-cone :by-unblocks]}
+  {:id :operator-focus :version 1 :status :executable
+   :enactment-mode :implementation
+   :readme-cascade 4 :readme-lines [65 67]
+   :realises {:row 4 :component true :full-row-executable false}
+   :interpretation "A declared focus is the operator ask: keep ready candidates whose pinned relation to that focus is :focus, then retain the standard cone/unblocks ordering. Unknown relations are excluded upstream and never pass the focus gate."
+   :patterns ["only-what-can-start-now" "the-operator-asked"]
+   :steps [:ready-gate :focus-gate :by-cone :by-unblocks]}
   {:id :only-what-can-start-now :version 1 :status :executable
    :enactment-mode :implementation
    :readme-cascade 1 :readme-lines [55 58]
